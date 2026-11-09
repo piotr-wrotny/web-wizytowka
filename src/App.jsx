@@ -15,14 +15,14 @@ const site = plDeep(rawSite);
 const articles = plDeep(rawArticles);
 const glossary = plDeep(rawGlossary);
 
-const navSections = { '/#wspolpraca': ['wspolpraca', 'zakres', 'standard', 'konsultacja'], '/#podejscie': ['podejscie', 'analizy'], '/#o-mnie': ['o-mnie'], '/#kontakt': ['kontakt'] };
+const navSections = { '/#wspolpraca': ['wspolpraca', 'sytuacje', 'zakres', 'standard'], '/#podejscie': ['podejscie', 'analizy'], '/#o-mnie': ['o-mnie'], '/#kontakt': ['kontakt'] };
 
 export function getPageMeta(path) {
   const article = articles.find(a => path === `/analizy/${a.slug}/`);
   if (article) return { title: `${article.title} — ${site.descriptor}`, description: article.lead };
   if (path === samplePath) return { title: 'Przykład standardu pracy z AI — dane syntetyczne', description: 'Otwarta demonstracja metody: wejście, kontrola faktów, odpowiedzialność i warunki przerwania pracy.' };
   if (path === '/prywatnosc/') return { title: 'Prywatność prototypu — niezależny doradca AI', description: 'Jak działa demonstracyjny kontakt i co wymaga uzupełnienia przed uruchomieniem obsługi zapytań.' };
-  return { title: `${site.name} — niezależny doradca AI`, description: 'Pomoc w uporządkowaniu jednego sposobu pracy z AI i w konkretnych decyzjach technologicznych. Standard, próba i pisemne rekomendacje.' };
+  return { title: `${site.name} — niezależny doradca AI`, description: 'Konsultacje AI szyte na miarę zespołu i zadania: standard dla zespołu, jedna decyzja albo przegląd oferty. Ocena technologii, kryteria jakości i praktyczna próba.' };
 }
 
 /* Eyebrow is the opening's device (header to the K row, as in the selected mock). Below it, headings stand alone. */
@@ -108,9 +108,9 @@ function StandardTable({ rows, className = '' }) {
 }
 
 function Home() {
-  const { workflow, consultation, standard } = site;
+  const { offer, pointer, cases, formats, workflow, consultation, review, standard } = site;
   return <main id="tresc" tabIndex="-1">
-    {/* Opening: faithful to design/selected-reference.jpeg down to the K row. */}
+    {/* Opening: composition of design/selected-reference.jpeg down to the pointer row, at the mock's native scale. */}
     <section className="hero content-width" aria-labelledby="hero-title">
       <Eyebrow line>{site.descriptor}</Eyebrow>
       <h1 id="hero-title">{site.hero.lines.map((line, i) => <span className="hero-line" key={line}>{line}{i < 2 ? ' ' : ''}</span>)}</h1>
@@ -122,30 +122,66 @@ function Home() {
       <div className="perspective-grid content-inset"><Eyebrow>Perspektywa</Eyebrow><p className="perspective-title">Produkt. Proces.<br />{' '}Technologia.</p><p className="perspective-copy">Doświadczenie Technical Product Managera. Jasne pytanie, uzasadniony wybór, sprawdzalny rezultat.</p></div>
     </section>
 
-    <section className="workflow-feature" id="wspolpraca" aria-labelledby="workflow-heading">
-      <div className="content-width"><Eyebrow line>Współpraca</Eyebrow><h2 id="workflow-heading">{workflow.name}</h2><p className="workflow-subtitle">{workflow.subtitle}</p><p className="workflow-intro">{workflow.intro}</p><TextLink href="#zakres">Poznaj zakres współpracy</TextLink></div>
+    <section className="offer-feature" id="wspolpraca" aria-labelledby="offer-heading">
+      <div className="content-width"><Eyebrow line>Współpraca</Eyebrow><h2 id="offer-heading">{offer.name}</h2><p className="offer-subtitle">{offer.subtitle}</p><p className="offer-intro">{offer.intro}</p><TextLink href="#zakres">{offer.link}</TextLink></div>
     </section>
 
-    <section className="consultation-teaser content-width" aria-labelledby="consultation-teaser-title">
-      <div><h2 id="consultation-teaser-title"><a href="#konsultacja">{consultation.name}</a></h2><p>{consultation.subtitle}</p></div>
-      <TextLink href="#standard" arrow={false}>Przykład standardu — dane syntetyczne</TextLink>
+    <section className="pointer-row content-width" aria-labelledby="pointer-title">
+      <div><h2 id="pointer-title"><a href={pointer.href}>{pointer.title}</a></h2><p>{pointer.subtitle}</p></div>
+      <TextLink href="#standard" arrow={false}>{pointer.link}</TextLink>
     </section>
 
-    {/* Below the K row: one axis. Problem, offer, exhibit, consultation, method, analyses, person, contact. */}
-    <section className="section scope-section content-width" id="zakres" aria-labelledby="scope-title">
+    {/* One axis: situations, formats, exhibit, method, analyses, person, contact. */}
+    <section className="section cases-section content-width" id="sytuacje" aria-labelledby="cases-title">
       <div className="split-intro">
-        <h2 id="scope-title">AI już jest w zespole. Czas uporządkować sposób pracy.</h2>
-        <div className="body-copy">{workflow.situation.map(p => <p key={p}>{p}</p>)}</div>
+        <h2 id="cases-title">{cases.title}</h2>
+        <div className="body-copy"><p>{cases.intro}</p></div>
       </div>
-      <div className="results">
-        <h3 className="subheading">Co zostaje po współpracy</h3>
-        <dl className="result-list">{workflow.result.map(item => <div key={item.title}><dt>{item.title}</dt><dd>{item.text}</dd></div>)}</dl>
+      <ul className="case-list">{cases.items.map(c => <li key={c.role}>
+        <h3>{c.role}</h3>
+        <div className="case-text"><p>{c.situation}</p><p className="case-question">{c.question}</p></div>
+        <p className="case-format"><span>Format</span>{c.format}</p>
+      </li>)}</ul>
+      <p className="boundary-note">{cases.note}</p>
+    </section>
+
+    <section className="section formats-section content-width" id="zakres" aria-labelledby="formats-title">
+      <div className="split-intro">
+        <h2 id="formats-title">{formats.title}</h2>
+        <div className="body-copy"><p>{formats.lead}</p></div>
       </div>
-      <div className="disclosures">
-        <Disclosure id="warunki-w" title="Dla kogo, jak długo i czego potrzebujemy">{workflow.conditions.map(p => <p key={p}>{p}</p>)}</Disclosure>
-        <Disclosure title="Granice zakresu i odpowiedzialności">{workflow.boundaries.map(p => <p key={p}>{p}</p>)}</Disclosure>
+      <div className="format-list">
+        <article className="format format-primary" id="standard-dla-zespolu" aria-labelledby="format-w">
+          <div className="format-head"><h3 id="format-w">{workflow.name}</h3><p>{workflow.subtitle}</p></div>
+          <div className="format-body">
+            <p>{workflow.text}</p>
+            <h4 className="format-sub">{workflow.resultTitle}</h4>
+            <dl className="result-list">{workflow.result.map(item => <div key={item.title}><dt>{item.title}</dt><dd>{item.text}</dd></div>)}</dl>
+            <div className="disclosures">
+              <Disclosure id="warunki-w" title="Dla kogo, jak długo i czego potrzebujemy">{workflow.conditions.map(p => <p key={p}>{p}</p>)}</Disclosure>
+              <Disclosure title="Granice zakresu i odpowiedzialności">{workflow.boundaries.map(p => <p key={p}>{p}</p>)}</Disclosure>
+            </div>
+            <TextLink href="/?temat=zadanie#kontakt">Opisz zadanie zespołu</TextLink>
+          </div>
+        </article>
+        <article className="format" id="konsultacja" aria-labelledby="format-k">
+          <div className="format-head"><h3 id="format-k">{consultation.name}</h3><p>{consultation.subtitle}</p></div>
+          <div className="format-body">
+            <p>{consultation.text}</p>
+            <p>{consultation.outcome}</p>
+            <div className="disclosures"><Disclosure title="Format i rezultat konsultacji">{consultation.details.map(p => <p key={p}>{p}</p>)}</Disclosure></div>
+            <TextLink href="/?temat=decyzja#kontakt">Opisz decyzję</TextLink>
+          </div>
+        </article>
+        <article className="format format-footnote" id="przeglad-oferty" aria-labelledby="format-r">
+          <div className="format-head"><h3 id="format-r">{review.name}</h3><p>{review.subtitle}</p></div>
+          <div className="format-body">
+            <p>{review.text}</p>
+            <TextLink href="/?temat=oferta#kontakt">Zapytaj o przegląd oferty</TextLink>
+          </div>
+        </article>
       </div>
-      <div className="scope-end"><a className="primary-link primary-link-compact" href="#kontakt"><span>Opisz zadanie</span><ArrowRight weight="light" aria-hidden="true" /></a><p>{workflow.boundaryNote}</p></div>
+      <p className="boundary-note">{formats.boundaryNote}</p>
     </section>
 
     <section className="exhibit-section" id="standard" aria-labelledby="exhibit-title">
@@ -157,18 +193,6 @@ function Home() {
           <TextLink href={samplePath}>Otwórz pełny przykład</TextLink>
         </div>
         <StandardTable rows={standard.rows.slice(0, standard.exhibitRows)} className="exhibit-table" />
-      </div>
-    </section>
-
-    <section className="section consultation-note content-width" id="konsultacja" aria-labelledby="consultation-title">
-      <div className="note-body">
-        <h2 id="consultation-title">{consultation.name}</h2>
-        <p className="note-lead">{consultation.subtitle}</p>
-        <p>{consultation.text}</p>
-        <p>{consultation.outcome}</p>
-        <TextLink href="/?temat=decyzja#kontakt">Opisz decyzję do konsultacji</TextLink>
-        <Disclosure title="Format i rezultat konsultacji">{consultation.details.map(p => <p key={p}>{p}</p>)}</Disclosure>
-        <p className="footnote"><span>Na zapytanie.</span> {consultation.review} <a href="/?temat=oferta#kontakt">Zapytaj o przegląd oferty</a>.</p>
       </div>
     </section>
 

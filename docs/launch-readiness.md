@@ -11,7 +11,7 @@ Wybrany Esej autorski odtworzony w responsywnym frontendzie. Strona główna, dw
 | Właściciel | Zadanie | Warunek ukończenia |
 |---|---|---|
 | Założyciel | Publiczny zapis nazwiska i opis doświadczenia | Zatwierdzone fakty, realny profil i dozwolony zakres ujawnienia; bez placeholderów |
-| Założyciel | Akceptacja treści oznaczonych `DRAFT` (2026-11-09) | Brzmienie „Czego nie robię” (`site.principles`), słownika (`src/content/glossary.js`) oraz tez analiz (`articles[].theses`) zatwierdzone lub poprawione; usunięte komentarze `DRAFT` |
+| Założyciel | Akceptacja treści oznaczonych `DRAFT` (2026-11-09) | Brzmienie „Czego nie robię” (`site.principles`), słownika (`src/content/glossary.js`), tez analiz (`articles[].theses`) oraz pięciu sytuacji przykładowych (`site.cases`) zatwierdzone lub poprawione; usunięte komentarze `DRAFT` |
 | Założyciel | Dane działalności, kontakt i dostępność | Prawdziwe dane, e-mail oraz wykonalny termin odpowiedzi |
 | Założyciel | Polityka oferty i ceny | Akceptowany zakres, cena kohorty, podatki/VAT, płatności i realny kalendarz; hipotezy DR07 nie są walidowanym cennikiem |
 | Założyciel i prawnik | Prywatność i warunki usług | Dokumenty odpowiadają administratorowi, dostawcom, retencji i przepływowi; odpowiednio ocenione obowiązki oraz prawa kupującego |

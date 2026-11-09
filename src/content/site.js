@@ -1,11 +1,11 @@
 // Public content. Replace only with founder-approved facts.
-// Prices remain internal DR07 hypotheses and are intentionally not public.
+// Prices remain internal hypotheses and are intentionally not public.
 export const site = {
   name: '[IMIĘ I NAZWISKO]',
   descriptor: 'Niezależny doradca AI',
   hero: {
     lines: ['Od odpowiedzi AI', 'do dobrze', 'wykonanej pracy.'],
-    lead: 'Pomagam zespołom uporządkować pracę z AI.\nŁączę ocenę technologii, kryteria jakości\ni praktyczną próbę jednego zadania.',
+    lead: 'Konsultacje szyte na miarę zespołu i zadania.\nOcena technologii, kryteria jakości\ni praktyczna próba na Twoim materiale.',
   },
   nav: [
     { label: 'Współpraca', href: '/#wspolpraca' },
@@ -13,14 +13,43 @@ export const site = {
     { label: 'O mnie', href: '/#o-mnie' },
     { label: 'Kontakt', href: '/#kontakt' },
   ],
-  workflow: {
-    name: 'Jeden sposób pracy z AI',
-    subtitle: 'Standard, próba i przekazanie zespołowi.',
-    intro: 'Jedno powtarzalne zadanie w zatwierdzonym narzędziu.\nJasne zasady, kontrola jakości i właściciel procesu.',
-    situation: [
-      'Pierwsza wersja jest gotowa, ale senior nadal poprawia fakty, dopowiada kontekst i porządkuje wynik. Każda osoba pracuje inaczej. Trudno powiedzieć, kiedy rezultat jest dobry i kto go zatwierdza.',
-      'Jeśli rozpoznajesz tę sytuację, zacznijmy od jednego zadania. Ustalimy, co przeszkadza w jego wykonaniu i jaką zmianę warto sprawdzić.',
+  // Primary offer: the green block.
+  offer: {
+    name: 'Konsultacje AI szyte na miarę',
+    subtitle: 'Jedno pytanie, jeden zespół albo jedna decyzja.',
+    intro: 'Zaczynam od zadania, nie od narzędzia.\nKończę pisemną rekomendacją albo standardem, który zespół utrzyma sam.',
+    link: 'Zobacz formaty współpracy',
+  },
+  // Row under the green block (the mock's secondary row).
+  pointer: {
+    title: 'Jedna decyzja',
+    subtitle: 'Sesja 60 minut i pisemna rekomendacja.',
+    href: '#konsultacja',
+    link: 'Przykład standardu — dane syntetyczne',
+  },
+  // DRAFT 2026-11-09: illustrative situations. Generic roles, no clients, no outcomes. Wording awaits founder approval.
+  cases: {
+    title: 'Od czego zaczynają klienci.',
+    intro: 'Pierwsza wersja jest gotowa, ale senior nadal poprawia fakty, dopowiada kontekst i porządkuje wynik. Każda osoba pracuje inaczej. Trudno powiedzieć, kiedy rezultat jest dobry i kto go zatwierdza. Konsultacja zaczyna się od nazwania tej sytuacji.',
+    note: 'Sytuacje przykładowe. Pokazują rodzaj pytania i dobór formatu; nie opisują zleceń ani klientów.',
+    items: [
+      { role: 'Zespół sprzedaży', situation: 'Notatki po rozmowach z klientami powstają w kilku formach, a podsumowania dla opiekunów wymagają poprawek seniora.', question: 'Czy AI może przygotować robocze podsumowanie bez dopisywania ustaleń, których nie było?', format: 'Standard dla zespołu' },
+      { role: 'Obsługa klienta', situation: 'Odpowiedzi na zgłoszenia korzystają z bazy wiedzy, która jest częściowo nieaktualna. Rozważany jest zakup nowego asystenta.', question: 'Czy luka jest w narzędziu, czy w źródłach i sposobie pracy?', format: 'Jedna decyzja' },
+      { role: 'Zarząd lub właściciel', situation: 'Na stole leży oferta dostawcy rozwiązania AI z obietnicą oszczędności i terminem decyzji.', question: 'Które założenia oferty da się sprawdzić przed podpisaniem i czego w niej brakuje?', format: 'Przegląd oferty' },
+      { role: 'Analizy i raportowanie', situation: 'Miesięczny raport składa się z danych z kilku systemów. AI ma pomóc w opisie, ale nikt nie mierzy, ile czasu faktycznie oszczędza.', question: 'Jak ustawić baseline i próbę, żeby decyzja opierała się na pomiarze?', format: 'Standard dla zespołu' },
+      { role: 'HR i rekrutacja', situation: 'Streszczenia kandydatur i notatki z rozmów mają powstawać z pomocą AI. Pojawia się pytanie o dane osobowe i granice użycia.', question: 'Co wolno przekazać narzędziu, a co musi zostać przy człowieku?', format: 'Jedna decyzja, potem standard' },
     ],
+  },
+  formats: {
+    title: 'Trzy formaty. Zakres ustalamy razem.',
+    lead: 'Każda konsultacja kończy się zapisem: rekomendacją, standardem albo oceną oferty. Format dobieram do pytania, nie odwrotnie.',
+    boundaryNote: 'Zakres, cenę i terminy potwierdzam przed rozpoczęciem współpracy.',
+  },
+  workflow: {
+    name: 'Standard dla zespołu',
+    subtitle: 'Jeden sposób pracy z AI: standard, próba i przekazanie.',
+    text: 'Jedno powtarzalne zadanie w zatwierdzonym narzędziu. Jasne zasady, kontrola jakości i właściciel procesu. Zespół odtwarza metodę samodzielnie, a po użyciu podejmujemy decyzję: stosować, zmienić, odrzucić.',
+    resultTitle: 'Co zostaje po współpracy',
     result: [
       { title: 'Jasne wejście i przebieg', text: 'Karta celu, mapa obecnej i proponowanej pracy oraz edytowalny szablon wejścia.' },
       { title: 'Standard i kontrola jakości', text: 'Instrukcja z rolami i wyjątkami, kryteria oceny oraz przypadki do próby.' },
@@ -39,10 +68,9 @@ export const site = {
       'Przekazuję uzgodniony standard, próbę i ocenę. Wynik może prowadzić także do zmiany metody, pozostania przy obecnej lub rezygnacji z AI w tym zadaniu.',
       'Jedna zbiorcza runda doprecyzowań dotyczy uzgodnionego wyniku. Moje własne błędy koryguję niezależnie od tej puli; nowy przedmiot pracy wymaga osobnego ustalenia.',
     ],
-    boundaryNote: 'Zakres, cenę i terminy potwierdzam przed rozpoczęciem współpracy.',
   },
   consultation: {
-    name: 'Konsultacja jednej decyzji AI',
+    name: 'Jedna decyzja',
     subtitle: 'Rozmowa i pisemna rekomendacja.',
     text: 'Rozważasz dwa rozwiązania, nie wiesz, co sprawdzić przed zakupem, albo chcesz zrozumieć nieudaną próbę? Porządkujemy jedno pytanie, dostępne fakty i kompromisy.',
     outcome: 'Po 60-minutowej sesji otrzymujesz krótką rekomendację z uzasadnieniem, niewiadomymi i następnym krokiem.',
@@ -51,7 +79,11 @@ export const site = {
       'Memo 1–2 strony do dwóch dni roboczych: rekomendacja, uzasadnienie, niewiadome i następny krok. Jedna zbiorcza odpowiedź do tego samego pytania w ciągu pięciu dni roboczych.',
       'Rozległy research, ocena dużej oferty, konfiguracja zespołu i test działającego systemu wymagają osobnego ustalenia. Konsultacja jest samodzielną usługą; nie trzeba jej kupować przed pracą z zespołem.',
     ],
-    review: 'Niezależny przegląd jednej oferty AI: jej założeń, kosztów, dowodów i warunków decyzji. To ocena dokumentów; test działającego systemu wymaga osobnego ustalenia.',
+  },
+  review: {
+    name: 'Przegląd oferty',
+    subtitle: 'Na zapytanie.',
+    text: 'Niezależny przegląd jednej oferty AI: jej założeń, kosztów, dowodów i warunków decyzji. To ocena dokumentów; test działającego systemu wymaga osobnego ustalenia.',
   },
   // Example standard shown as an exhibit on the home page (first six rows) and in full on the sample page.
   standard: {

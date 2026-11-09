@@ -6,9 +6,27 @@ Wersja 1.0, 30 października 2026. Wybrany przez założyciela wariant Editorial
 
 Duże zdanie otwarcia, spokojne pole papieru, osobista sygnatura i pełna zielona sekcja jednej głównej usługi. Bez fotografii, dekoracyjnego AI i równorzędnej siatki pakietów.
 
-Makieta jest wiążąca dla otwarcia: header, hero, pasek „Perspektywa”, zielony blok W i wiersz K (decyzja założyciela z 2026-11-09). Poniżej strona główna prowadzi jedną oś: sytuacja i rezultaty W, eksponat standardu, nota K z R w przypisie, metoda, analizy, osoba, kontakt. Każda sekcja ma inną anatomię; powtarzanie jednego układu jest błędem, nie konsekwencją.
+Makieta jest wiążąca dla kompozycji otwarcia: header, hero, pasek „Perspektywa”, zielony blok oferty głównej i wiersz wskazujący (decyzja założyciela z 2026-11-09). Jej natywne proporcje (893 px szerokości) są sufitem skali; otwarcie nie jest już skalowane 1,6× do 1440 px. Poniżej strona główna prowadzi jedną oś: sytuacje przykładowe, trzy formaty współpracy, eksponat standardu, metoda, analizy, osoba, kontakt. Każda sekcja ma inną anatomię; powtarzanie jednego układu jest błędem, nie konsekwencją.
 
-Na desktopie hero zachowuje trzy wiersze makiety. Na mobile hero łamie się na trzy wiersze przy 390 i 320 px (skala 11,8vw). Zakres W dominuje; K pozostaje samodzielną konsultacją, a R krótką opcją na zapytanie.
+Oferta główna to konsultacje AI szyte na miarę. Formaty: Standard dla zespołu (W, najbardziej rozbudowany: rezultaty i warunki), Jedna decyzja (K), Przegląd oferty (R, na zapytanie). Wiersz pod zielonym blokiem wskazuje format K i eksponat, jak w makiecie.
+
+Na desktopie hero zachowuje trzy wiersze makiety. Na mobile hero łamie się na trzy wiersze przy 390 i 320 px (skala 11,8vw).
+
+## Skala typograficzna
+
+Jedno źródło dla wszystkich stron, tokeny w `:root`:
+
+| Token | Wartość | Użycie |
+|---|---|---|
+| --t-display | clamp(54px, 7.3vw, 108px) | Wyłącznie H1 hero |
+| --t-title | clamp(40px, 4.9vw, 72px) | H2 zielonego bloku, H1 podstron, H1 404 |
+| --t-h2 | clamp(32px, 3.3vw, 48px) | H2 sekcji strony głównej; 34 px na mobile |
+| --t-h3 | clamp(23px, 2vw, 28px) | Podnagłówki, role w sytuacjach, kroki metody |
+| --t-lead | clamp(20px, 1.75vw, 25px) | Lead podstron |
+| --t-body | 19 px (17 px mobile) | Tekst główny |
+| --t-small / --t-meta | 15 / 14 px | Noty, podpisy, metadane |
+
+Poza tokenami dopuszczalne są tylko lokalne rozmiary pośrednie (np. nagłówek formatu 26–34 px, nagłówek eksponatu 26–34 px). Nie dodawać nowych rozmiarów w vw bez tokenu.
 
 ## Urządzenia typograficzne i ich zasięg
 
@@ -44,15 +62,16 @@ Skład polski: jednoliterowe spójniki i przyimki (i, w, z, o, a, u oraz wersali
 
 | Rola | Szeroki ekran | Mobile |
 |---|---|---|
-| Hero H1 | Płynnie 11,4vw, maks. 164 px; interlinia 0,91 | Płynnie 11,8vw; 40 px przy 320; interlinia 1,04 |
-| Lead hero | Do 45 px, interlinia 1,38 | 21 px; 19 px przy 320; interlinia 1,5 |
-| Nazwa W na zieleni | Płynnie 9,3vw, maks. 134 px | 44–76 px; 42 px przy 320 |
-| Pozostałe H2 | Zwykle 40–60 px | 37 px, 34 px przy 320 |
-| Tekst główny | 18–20 px, interlinia 1,6–1,7 | 17 px, interlinia 1,7 |
-| Artykuł | 19 px, maks. 760 px szerokości | 17 px, interlinia 1,75 |
+| Hero H1 | --t-display, maks. 108 px; interlinia 0,95 | Płynnie 11,8vw; 40 px przy 320; interlinia 1,04 |
+| Lead hero | 21–29 px, interlinia 1,4 | 20 px; 18 px przy 320 |
+| Oferta na zieleni | --t-title, maks. 72 px | 38–64 px; 36 px przy 320 |
+| H2 sekcji | --t-h2, maks. 48 px | 34 px, 31 px przy 320 |
+| Tekst główny | 19 px, interlinia 1,65 | 17 px, interlinia 1,7 |
+| Artykuł | 19 px, kolumna 720 px | 17 px, interlinia 1,75 |
+| Nawigacja / sygnatura | 15–17 px / 24–30 px | 15 px / 23 px |
 | Kontrolki | 16–18 px | Co najmniej 16 px w polach |
 
-Duża skala hero wynika z wybranej makiety; nie jest wzorem dla całej strony. Metadane są mniejsze od tekstu głównego. Długie akapity pozostają wyrównane do lewej, bez wyjustowania.
+Metadane są mniejsze od tekstu głównego. Długie akapity pozostają wyrównane do lewej, bez wyjustowania.
 
 ## Siatka i odstępy
 
@@ -66,7 +85,7 @@ Przyciski mają radius 3 px, pola 2 px. Karty nie są domyślną jednostką. Dow
 
 Otwarcie: Header i menu; primary CTA; podkreślony TextLink; Eyebrow z opcjonalną linią; pełna sekcja W; wiersz K.
 
-Strona główna poniżej: sekcja W (split 5/7, trzy rezultaty w kolumnach z linią w kolorze ink, Disclosure dla warunków, kompaktowy CTA i jedna nota graniczna); eksponat (`.exhibit-section`, tło sand, kolumna boczna sticky z etykietą „Tablica 1”, tytułem, podpisem i linkiem; `StandardTable` z grubą linią górną); nota K (`.consultation-note`, wcięcie od kolumny 4, zielona linia po lewej, `.footnote` dla R); metoda (`.method-steps`, trzy kolumny z `.step-numeral`; `.principles` „Czego nie robię”); analizy (`.article-grid`, dwie kolumny, `.article-meta` bez separatorów); osoba (split 5/7, `Pending`, `.expertise-rows`); Contact z jedną notą demonstracyjną; Footer.
+Strona główna poniżej: sytuacje (`.case-list`, wiersze 3/6/3: rola w serifie, sytuacja i pytanie w kursywie, format; `.boundary-note` z etykietą „przykładowe”); formaty (`.format-list`, wiersze 4/8: `.format-head` z serifowym tytułem i kursywnym podtytułem, `.format-body`; wariant `.format-primary` z grubszą linią zawiera `.result-list` i Disclosure, `.format-footnote` dla R); eksponat (`.exhibit-section`, tło sand, kolumna boczna sticky z etykietą „Tablica 1”, tytułem, podpisem i linkiem; `StandardTable` z grubą linią górną); metoda (`.method-steps`, trzy kolumny z `.step-numeral`; `.principles` „Czego nie robię”); analizy (`.article-grid`, dwie kolumny, `.article-meta` bez separatorów); osoba (split 5/7, `Pending`, `.expertise-rows`); Contact z jedną notą demonstracyjną; Footer z kolofonem.
 
 Podstrony: `ArticleFrame` (kicker `.article-kind`, H1, lead, `.article-meta`, `.theses` w trzech kolumnach, `.article-body` = kolumna czytelnicza 720 px + `Marginalia` sticky), `.pull` dla cytatu wyciągniętego, `DataTable` z podpisem pod spodem, `.boundary` dla jednego zastrzeżenia, `StandardTable` w wariancie czytelniczym.
 

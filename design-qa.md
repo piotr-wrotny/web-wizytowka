@@ -35,6 +35,16 @@ Wnioski z `design/qa/before/`:
 - Kolofon w stopce: skład, brak śledzenia, status prototypu.
 - `@view-transition` między stronami przy braku preferencji reduced-motion.
 
+## Trzecie przejście (2026-11-09, skala i oferta)
+
+Założyciel: strona główna „samym skalowaniem odstaje” od jakości podstrony analizy; usługą główną są konsultacje AI szyte na miarę; dozwolone placeholdery sytuacji.
+
+- Jedna skala typograficzna dla całej strony (tokeny `--t-*`). Otwarcie wraca do natywnych proporcji makiety: hero 108 px zamiast 164, nagłówek zielonego bloku 72 zamiast 134, nawigacja 17 zamiast 24, sygnatura 30 zamiast 42, przycisk hero 24 px zamiast 40. Header strony głównej i podstron jest teraz identyczny.
+- Zielony blok: „Konsultacje AI szyte na miarę”. Wiersz pod nim wskazuje format „Jedna decyzja” i eksponat.
+- Nowa sekcja sytuacji: pięć przykładowych ról z pytaniem i doborem formatu, oznaczone jako poglądowe (`site.cases`, DRAFT).
+- W/K/R jako trzy formaty w jednej sekcji; W zachowuje rezultaty i warunki, R jest przypisem.
+- Zweryfikowane na 1440, 768 i 390: brak sierot w nagłówkach, hero w trzech wierszach na mobile, wiersze sytuacji i formatów składają się do jednej kolumny poniżej 900 px.
+
 ## Stan po (weryfikacja na `design/qa/after/`)
 
 - 1440: brak sierot w nagłówkach sekcji; eksponat czytelny jako tablica; nota K wcięta od kolumny 4 z zieloną linią; cyfry metody w zieleni; analizy w dwóch kolumnach z linkiem w polu.

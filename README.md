@@ -1,6 +1,6 @@
 # Portfolio niezależnego doradcy AI
 
-Responsywny prototyp w wybranym kierunku Esej autorski / Editorial Expert. Wersja 1.0, 30.10.2026. Zgodny z hierarchią DR07: główny W, samodzielny K, R na zapytanie.
+Responsywny prototyp w wybranym kierunku Esej autorski / Editorial Expert. Wersja 1.1, 09.11.2026. Oferta główna: konsultacje AI szyte na miarę, w trzech formatach: standard dla zespołu (W), jedna decyzja (K), przegląd oferty (R, na zapytanie).
 
 ## Co zawiera projekt
 
@@ -8,7 +8,7 @@ Stronę główną, dwie analizy, syntetyczny standard pracy i opis prywatności 
 
 ## Edycja
 
-- `src/content/site.js`: hero, nawigacja, zakresy usług, przykład standardu (eksponat i pełna wersja), metoda, zasady „Czego nie robię” (DRAFT) i ekspertyza.
+- `src/content/site.js`: hero, nawigacja, oferta główna, sytuacje przykładowe (DRAFT), trzy formaty współpracy, przykład standardu (eksponat i pełna wersja), metoda, zasady „Czego nie robię” (DRAFT) i ekspertyza.
 - `src/content/articles.js`: treści dwóch analiz z tezami, cytatem wyciągniętym i tabelą; pomocnicze `formatDate` i `readingMinutes`.
 - `src/content/glossary.js`: słownik roboczy pokazywany jako marginalia na podstronach (DRAFT).
 - `src/App.jsx`: skład sekcji, profil, kontakt i mikrocopy.
