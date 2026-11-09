@@ -8,9 +8,11 @@ Stronę główną, dwie analizy, syntetyczny standard pracy i opis prywatności 
 
 ## Edycja
 
-- `src/content/site.js`: hero, nawigacja, zakresy usług, metoda i ekspertyza.
-- `src/content/articles.js`: treści dwóch analiz.
-- `src/App.jsx`: skład sekcji, profil, przykład standardu, kontakt i mikrocopy.
+- `src/content/site.js`: hero, nawigacja, zakresy usług, przykład standardu (eksponat i pełna wersja), metoda, zasady „Czego nie robię” (DRAFT) i ekspertyza.
+- `src/content/articles.js`: treści dwóch analiz z tezami, cytatem wyciągniętym i tabelą; pomocnicze `formatDate` i `readingMinutes`.
+- `src/content/glossary.js`: słownik roboczy pokazywany jako marginalia na podstronach (DRAFT).
+- `src/App.jsx`: skład sekcji, profil, kontakt i mikrocopy.
+- `docs/plan-fable.md`: diagnoza i koncepcja rewizji z 2026-11-09; `design/qa/before` i `design/qa/after`: zrzuty przed i po.
 - `src/styles.css`: tokeny, typografia, siatka i zachowania responsive.
 - `design/selected-reference.jpeg`: dokładny obraz wybrany przez założyciela.
 - `docs/design-system.md`: finalny system wizualny.

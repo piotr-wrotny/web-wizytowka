@@ -17,7 +17,9 @@ try {
     const html = shell
       .replace('<div id="root"></div>', `<div id="root" data-page="${route}">${markup}</div>`)
       .replace(/<title>[^<]*<\/title>/, `<title>${escapeAttribute(meta.title)}</title>`)
-      .replace(/<meta name="description" content="[^"]*"\s*\/>/, `<meta name="description" content="${escapeAttribute(meta.description)}" />`);
+      .replace(/<meta name="description" content="[^"]*"\s*\/>/, `<meta name="description" content="${escapeAttribute(meta.description)}" />`)
+      .replace(/<meta property="og:title" content="[^"]*"\s*\/>/, `<meta property="og:title" content="${escapeAttribute(meta.title)}" />`)
+      .replace(/<meta property="og:description" content="[^"]*"\s*\/>/, `<meta property="og:description" content="${escapeAttribute(meta.description)}" />`);
     if (!html.includes('data-page=')) throw new Error('Prerender placeholder not found');
     const destination = path.join('dist/client', route, 'index.html');
     await mkdir(path.dirname(destination), { recursive: true });

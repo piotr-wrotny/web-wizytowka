@@ -4,9 +4,19 @@ Wersja 1.0, 30 października 2026. Wybrany przez założyciela wariant Editorial
 
 ## Zasada kompozycji
 
-Duże zdanie otwarcia, spokojne pole papieru, osobista sygnatura i pełna zielona sekcja jednej głównej usługi. Bez fotografii, dekoracyjnego AI i równorzędnej siatki pakietów. Dalsze sekcje korzystają z typografii, odstępów, wierszy i cienkich linii.
+Duże zdanie otwarcia, spokojne pole papieru, osobista sygnatura i pełna zielona sekcja jednej głównej usługi. Bez fotografii, dekoracyjnego AI i równorzędnej siatki pakietów.
 
-Na desktopie hero zachowuje trzy wiersze przesłanej makiety. Na mobile tekst łamie się naturalnie. Zakres W dominuje; K pozostaje samodzielną konsultacją, a R krótką opcją na zapytanie.
+Makieta jest wiążąca dla otwarcia: header, hero, pasek „Perspektywa”, zielony blok W i wiersz K (decyzja założyciela z 2026-11-09). Poniżej strona główna prowadzi jedną oś: sytuacja i rezultaty W, eksponat standardu, nota K z R w przypisie, metoda, analizy, osoba, kontakt. Każda sekcja ma inną anatomię; powtarzanie jednego układu jest błędem, nie konsekwencją.
+
+Na desktopie hero zachowuje trzy wiersze makiety. Na mobile hero łamie się na trzy wiersze przy 390 i 320 px (skala 11,8vw). Zakres W dominuje; K pozostaje samodzielną konsultacją, a R krótką opcją na zapytanie.
+
+## Urządzenia typograficzne i ich zasięg
+
+- Eyebrow (all-caps, tracking 0,2em, opcjonalna linia): tylko w otwarciu, bo tak jest w makiecie. Poniżej wiersza K nagłówki stoją same.
+- Strzałka przy linku: działania główne (CTA, „Czytaj analizę”, „Otwórz pełny przykład”). Linki w treści i przypisach bez strzałki.
+- Numeracja: tylko tam, gdzie treść jest sekwencją (trzy kroki metody, duże cyfry Newsreader w zieleni). Rezultaty i lista analiz bez numerów.
+- Jedno zastrzeżenie na kontekst. Fakty do uzupełnienia przez założyciela wyłącznie przez komponent `Pending` („Do uzupełnienia:” z przerywaną linią po lewej), nigdy jako nawias w treści.
+- `text-wrap: balance` na nagłówkach, `pretty` na akapitach. Ręczne `<br>` tylko w otwarciu.
 
 ## Kolory
 
@@ -31,7 +41,7 @@ Newsreader 400 dla głównych nagłówków, sygnatury i redakcyjnych akcentów. 
 
 | Rola | Szeroki ekran | Mobile |
 |---|---|---|
-| Hero H1 | Płynnie 11,4vw, maks. 164 px; interlinia 0,91 | Płynnie 13,8vw; 44 px przy 320; interlinia 1,02 |
+| Hero H1 | Płynnie 11,4vw, maks. 164 px; interlinia 0,91 | Płynnie 11,8vw; 40 px przy 320; interlinia 1,04 |
 | Lead hero | Do 45 px, interlinia 1,38 | 21 px; 19 px przy 320; interlinia 1,5 |
 | Nazwa W na zieleni | Płynnie 9,3vw, maks. 134 px | 44–76 px; 42 px przy 320 |
 | Pozostałe H2 | Zwykle 40–60 px | 37 px, 34 px przy 320 |
@@ -45,13 +55,19 @@ Duża skala hero wynika z wybranej makiety; nie jest wzorem dla całej strony. M
 
 Kontener treści do 1280 px, rama linii do 1344 px. Margines treści płynny do 88 px, na mobile 22 px i 18 px przy 320. Menu mobilne pojawia się poniżej 768 px. Dalsze sekcje korzystają z dwóch kolumn na desktopie i jednej na mobile.
 
-Sekcje redakcyjne: zwykle 100 px odstępu pionowego, 76 px na mniejszych desktopach i 58 px na mobile. Otwierające sekcje mają osobny rytm dopasowany do źródła. Nie dodajemy sztucznego 100vh ani animacji wejścia.
+Sekcje poniżej otwarcia: `.section` z odstępem pionowym płynnie 60–108 px, 56 px na mobile. Siatki trzykolumnowe składają się do jednej kolumny poniżej 900 px; split 5/7 poniżej 768 px. Otwierające sekcje mają osobny rytm dopasowany do źródła. Nie dodajemy sztucznego 100vh ani animacji wejścia. Jedyny ruch: otwieranie Disclosure (220 ms), obrót chevronu, przesunięcie strzałki przy hover; wyłączone przy `prefers-reduced-motion`.
 
 Przyciski mają radius 3 px, pola 2 px. Karty nie są domyślną jednostką. Dowód, analiza i standard są dokumentami, a usługi i metoda — układem treści.
 
 ## Komponenty
 
-Header i menu; primary CTA; podkreślony TextLink; Eyebrow z opcjonalną linią; pełna sekcja W; spokojny wiersz K; Disclosure dla warunków; wiersze rezultatów i metody; lista ekspertyzy; lista analiz; ArticleFrame; standard w liście definicji; informacja syntetyczna; Contact; lokalny podgląd opisu; Footer.
+Otwarcie: Header i menu; primary CTA; podkreślony TextLink; Eyebrow z opcjonalną linią; pełna sekcja W; wiersz K.
+
+Strona główna poniżej: sekcja W (split 5/7, trzy rezultaty w kolumnach z linią w kolorze ink, Disclosure dla warunków, kompaktowy CTA i jedna nota graniczna); eksponat (`.exhibit-section`, tło sand, kolumna boczna sticky z etykietą „Tablica 1”, tytułem, podpisem i linkiem; `StandardTable` z grubą linią górną); nota K (`.consultation-note`, wcięcie od kolumny 4, zielona linia po lewej, `.footnote` dla R); metoda (`.method-steps`, trzy kolumny z `.step-numeral`; `.principles` „Czego nie robię”); analizy (`.article-grid`, dwie kolumny, `.article-meta` bez separatorów); osoba (split 5/7, `Pending`, `.expertise-rows`); Contact z jedną notą demonstracyjną; Footer.
+
+Podstrony: `ArticleFrame` (kicker `.article-kind`, H1, lead, `.article-meta`, `.theses` w trzech kolumnach, `.article-body` = kolumna czytelnicza 720 px + `Marginalia` sticky), `.pull` dla cytatu wyciągniętego, `DataTable` z podpisem pod spodem, `.boundary` dla jednego zastrzeżenia, `StandardTable` w wariancie czytelniczym.
+
+Słownik (`src/content/glossary.js`) i zasady (`site.principles`) są oznaczone `DRAFT` do akceptacji założyciela.
 
 Strzałki i chevrony pochodzą z Phosphor Light. Nie są odręcznie rysowanymi substytutami. W wybranej makiecie nie ma niezależnych assetów rastrowych do odtworzenia.
 

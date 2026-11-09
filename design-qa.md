@@ -1,64 +1,37 @@
 # Design QA
 
-Source visual truth: `design/selected-reference.jpeg`, supplied by the founder, 893 × 1536 pixels, desktop composition. No source photography, logos or raster illustrations to reproduce. Standard directional icons use Phosphor Light; no hand-drawn replacements.
+Źródło wizualne: `design/selected-reference.jpeg` (893 × 1536 px, kompozycja desktopowa). Od 2026-11-09 makieta jest wiążąca dla otwarcia strony: header, hero, pasek „Perspektywa”, zielony blok W i wiersz K. Poniżej układ projektowany samodzielnie w granicach systemu wizualnego (`docs/design-system.md`).
 
-Implementation: cloud-browser render of the prototype. Initial screen: `../analysis/browser-reference-width-first.jpg`. Normalized combined comparison: `../analysis/comparison-01.jpg`.
+## Metoda
 
-Viewport: a same-origin iframe with a real CSS viewport of 893 × 1536 in Chrome. This provides responsive rendering without browser-specific viewport-control APIs. The outside browser canvas is cropped away for comparison; no app pixels are stretched. Initial capture includes a 15px iframe scrollbar, removed from the QA wrapper for subsequent same-width comparisons. This QA wrapper is not part of the built website.
+Zrzuty headless Chromium (systemowy `/usr/bin/chromium`, `--headless=new`, skala 1, bez pasków przewijania, `--virtual-time-budget=6000`). Pełne strony w oknach 1440, 768 i 390 px; podstrony w 1280 i 390 px. Pliki: `design/qa/before/` (stan z 2026-10-30) i `design/qa/after/` (stan po rewizji z 2026-11-09). Emulacja urządzeń, czytnik ekranu i pomiary Core Web Vitals nie były częścią tego przeglądu.
 
-State: homepage at scroll origin, closed details, empty demonstrative form. Date: 2026-10-30.
+## Przegląd z 2026-11-09 (Fable): stan przed
 
-## Findings in first comparison
+Wnioski z `design/qa/before/`:
 
-- [P2] Display weight and vertical rhythm differ. Headline wraps correctly into the three reference lines but medium weight is heavier and line height pushes the lead and primary CTA down. Fix: Newsreader 400, tighter display line height, shorter header and hero gaps.
-- [P2] Perspective strip wraps its title into three lines, against two in the source. This increases its height and pushes the primary green region down. Fix: regular weight and available width; retain the explicit line break after “Produkt. Proces.”.
-- [P2] Main green service heading is materially too small. Fix: increase display scale while preserving one line at the desktop comparison width.
+- Strona główna poniżej wiersza K składała się z ośmiu sekcji o identycznej anatomii (eyebrow, szeryfowy H2 po lewej, Inter po prawej, cienka linia). Wrażenie szablonu.
+- Brak artefaktu pracy na stronie głównej; próbka standardu schowana za linkiem z trzema zastrzeżeniami.
+- Dziewięć zdań asekuracji na stronie głównej; powtórzone zastrzeżenia przy formularzu (4 noty).
+- Architektura zapętlona: W → K → problem → W → K → R; link z zielonego bloku przeskakiwał sekcję.
+- Defekty detalu: sierota „AI” w H2 konsultacji (1440), „pracy.” samotne w hero (390), brak spacji w „Proces.Technologia.” (mobile), strzałka listy analiz ~700 px od tytułu, puste pół-kolumny pod K i Podejściem, kolumna artykułu (760 px wyśrodkowana) rozjechana z lewym marginesem nagłówka.
 
-## Fidelity surfaces
+## Wykonane zmiany
 
-- Fonts: actual locally hosted Newsreader/Inter with Polish glyphs; regular display weight selected after comparison. Browser computed family inspected. Recheck wrapping after fixes.
-- Spacing/layout: initial comparison identifies the offsets above. Header, hero, perspective and green service are retained in the source order.
-- Colors/tokens: paper #F6F4EE, ink #202823, pine #20594D, muted #5F6862. Generated photographic noise is not interpreted as a required background asset. Flat, accessible surfaces preserve the editorial intent.
-- Image quality: source has no independent raster artwork. Text stays semantic HTML; icon assets come from Phosphor.
-- Copy/content: source hero and visible service text match. Further sections implement the requested DR07-aligned content, not invented clients or outcomes. Prices remain hidden.
+1. Strona główna w jednej osi: Sytuacja + rezultaty + warunki jako sekcja W; eksponat standardu (tablica, 6 wierszy, tło sand); K jako wcięta nota z R w przypisie; Podejście w trzech kolumnach z cyframi; dwie analizy w dwóch kolumnach; O mnie z wierszami ekspertyzy; Kontakt.
+2. Eyebrow all-caps i strzałki przy każdym linku zostają tylko w otwarciu (makieta). Numeracja tylko przy trzech krokach metody.
+3. Jedno zastrzeżenie na kontekst. Marker `Do uzupełnienia` jako jeden konsekwentny element dla faktów od założyciela.
+4. Podstrony: nagłówek i kolumna czytelnicza na wspólnej lewej krawędzi; marginalia ze słownikiem po prawej (sticky); tezy pod nagłówkiem; pull quote; tabela dla przykładu 24 vs 26 min; linia metadanych z czasem czytania.
+5. Detal: `text-wrap: balance` na nagłówkach i `pretty` na akapitach; hero mobile 11,8vw (3 wiersze przy 390 i 320); spacja w „Proces. Technologia.”; płynne otwieranie disclosure (`::details-content`, 220 ms, wyłączone przy reduced-motion); hover linków bez skoku grubości; favicon SVG; `og:title`/`og:description` per strona w prerenderze.
 
-## Comparison history
+## Stan po (weryfikacja na `design/qa/after/`)
 
-1. Opened source and browser implementation together in `comparison-01.jpg`. Three P2 differences recorded. Current fixes are in `src/styles.css`; a fresh capture is required before acceptance.
+- 1440: brak sierot w nagłówkach sekcji; eksponat czytelny jako tablica; nota K wcięta od kolumny 4 z zieloną linią; cyfry metody w zieleni; analizy w dwóch kolumnach z linkiem w polu.
+- 768: siatki trzykolumnowe złożone do jednej kolumny poniżej 900 px; nota K wcięta o jedną kolumnę; marginalia pod tekstem.
+- 390: hero w trzech wierszach; tablica eksponatu jako lista z etykietą nad opisem; przycisk W w jednym wierszu; stopka bez przepełnienia.
+- Podstrony 1280: tezy w trzech kolumnach; marginalia sticky; tabela z wyrównaniem liczb do prawej i podpisem.
+- Build: `npm run build` generuje 5 stron; CSS 6,8 kB gzip; testy workera 3/3.
 
-2. Second comparison: `../analysis/comparison-02.jpg` and focused `../analysis/comparison-type-02.jpg`. The earlier headline and perspective issues are corrected. A remaining P2 service-region height and consultation-row wrap were identified. Fixed service spacing, heading scale and teaser column padding; fresh capture required.
+## Do sprawdzenia poza tym przeglądem
 
-3. Responsive pass: 390 px has no horizontal overflow and preserves clear hierarchy. At 320 px the hero orphaned “Od”; reduced only the smallest display scale to 44 px. Article title links received a continuous block hit area, and mobile article-arrow targets were widened to 44 px. Fresh captures and interaction verification follow.
-
-## Completed checks and final evidence
-
-- Final normalized full comparison: `../analysis/comparison-final.jpg`. Both images are 893 × 1536 before the comparison caption. Source and implementation are shown together, with no app-image scaling. Chrome devicePixelRatio was read as 1.
-- Focused type comparison: `../analysis/comparison-type-02.jpg`. This remains valid for the final display typography. Final service/CTA details are readable in the full final comparison. Earlier P2 offsets, wrapping and scale are corrected.
-- Final desktop content capture: `../analysis/desktop-selected-final.jpg`; direct full homepage: `../analysis/browser-desktop-full.jpg`. Reviewed additional crops `review-scope.jpg`, `review-method.jpg`, `review-contact.jpg`.
-- Responsive browser captures: `../analysis/mobile-390.jpg`, `mobile-320-final.jpg`, `tablet-1024.jpg`, `desktop-1440.jpg`. Real iframe body widths and scroll widths were read as equal at 320, 390, 1024 and 1440. Mobile has no supplied reference; judged for readability, hierarchy and operation rather than pixel equality.
-- Menu: open/closed states, Escape and return focus verified. Navigation to contact closes the menu.
-- Main service CTA opens the conditions disclosure. Native details/summary remain keyboard operable.
-- Synthetic standard page and its label opened; both complete articles and their return links opened. Title-link hit areas now include the entire multiline title rectangle.
-- K and R links set contact topics to `decyzja` and `oferta` respectively. Short visible option labels fit small screens.
-- Contact: blank submission shows both errors; valid synthetic input produces a local preview explicitly saying nothing was sent. Keyboard Enter works. Copy reports “Skopiowano opis”. No actual email was sent.
-- Skip link moves actual focus to `main`, tabindex -1.
-- Browser console inspected: no application-origin error/warning messages observed; extension transport messages were identified separately and are not website errors.
-- Final production build completed. Five prerendered HTML documents each have one H1, unique IDs, noindex and valid internal page paths. The contact fieldset is disabled in HTML until the local script is ready. Static copy is present without requiring client rendering.
-- Existing project tests: 4 passed, 0 failed. No new implementation-mirroring unit tests were added.
-
-## Residual limits and follow-up polish
-
-No actionable P0/P1/P2 issue remains in the prototype scope. Small differences in raster glyph rendering, generated-paper noise and a few-pixel section alignment are P3 and are accepted; no extra decorative artwork was introduced to simulate the image-generation artifact.
-
-This is not a full WCAG audit, physical-device test, screen-reader session or field Core Web Vitals measurement. Contact delivery, public identity and a production privacy workflow are intentionally not configured. They are launch tasks, not falsely simulated capabilities.
-
-Browser captures are session review evidence, not included as separate source-package deliverables. The selected reference and the code needed to reproduce the rendering are included.
-
-## Implementation checklist
-
-1. Completed: selected reference implemented, all earlier P2 findings fixed and recaptured.
-2. Completed: core paths, responsive widths, menu, keyboard, error/draft/copy states and article navigation verified.
-3. Completed: build, prerender and required project tests.
-4. Before publication: complete founder data, service terms, real enquiry workflow and accessibility verification as listed in docs/launch-readiness.md.
-
-final result: passed
+Rzeczywiste iOS/Android, czytnik ekranu (kolejność: tezy → treść → marginalia), zoom 200 %, Firefox (brak animacji `::details-content`, zachowanie bez zmian funkcjonalnych), druk podstron z marginaliami ukrytymi.
