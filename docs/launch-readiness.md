@@ -10,7 +10,7 @@ Wybrany Esej autorski odtworzony w responsywnym frontendzie. Strona główna, dw
 
 | Właściciel | Zadanie | Warunek ukończenia |
 |---|---|---|
-| Założyciel | Publiczny zapis nazwiska i opis doświadczenia | Zatwierdzone fakty, realny profil i dozwolony zakres ujawnienia; bez placeholderów |
+| Założyciel | Opis doświadczenia i publiczny profil (nazwisko Piotr Wrotny wprowadzone 2026-11-09) | Zatwierdzone fakty, realny profil i dozwolony zakres ujawnienia; usunięty marker „Do uzupełnienia” w sekcji O mnie |
 | Założyciel | Akceptacja treści oznaczonych `DRAFT` (2026-11-09) | Brzmienie „Czego nie robię” (`site.principles`), słownika (`src/content/glossary.js`), tez analiz (`articles[].theses`) oraz pięciu sytuacji przykładowych (`site.cases`) zatwierdzone lub poprawione; usunięte komentarze `DRAFT` |
 | Założyciel | Dane działalności, kontakt i dostępność | Prawdziwe dane, e-mail oraz wykonalny termin odpowiedzi |
 | Założyciel | Polityka oferty i ceny | Akceptowany zakres, cena kohorty, podatki/VAT, płatności i realny kalendarz; hipotezy DR07 nie są walidowanym cennikiem |

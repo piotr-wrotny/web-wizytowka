@@ -1,7 +1,7 @@
 // Public content. Replace only with founder-approved facts.
 // Prices remain internal hypotheses and are intentionally not public.
 export const site = {
-  name: '[IMIĘ I NAZWISKO]',
+  name: 'Piotr Wrotny',
   descriptor: 'Niezależny doradca AI',
   hero: {
     lines: ['Od odpowiedzi AI', 'do dobrze', 'wykonanej pracy.'],

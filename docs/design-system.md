@@ -77,7 +77,26 @@ Metadane są mniejsze od tekstu głównego. Długie akapity pozostają wyrównan
 
 Kontener treści do 1280 px, rama linii do 1344 px. Margines treści płynny do 88 px, na mobile 22 px i 18 px przy 320. Menu mobilne pojawia się poniżej 768 px. Dalsze sekcje korzystają z dwóch kolumn na desktopie i jednej na mobile.
 
-Sekcje poniżej otwarcia: `.section` z odstępem pionowym płynnie 60–108 px, 56 px na mobile. Siatki trzykolumnowe składają się do jednej kolumny poniżej 900 px; split 5/7 poniżej 768 px. Otwierające sekcje mają osobny rytm dopasowany do źródła. Nie dodajemy sztucznego 100vh ani animacji wejścia. Jedyny ruch: otwieranie Disclosure (220 ms), obrót chevronu, przesunięcie strzałki przy hover; wyłączone przy `prefers-reduced-motion`.
+Sekcje poniżej otwarcia: `.section` z odstępem pionowym płynnie 56–96 px, 52 px na mobile. Siatki trzykolumnowe składają się do jednej kolumny poniżej 900 px; split 5/7 poniżej 768 px. Otwierające sekcje mają osobny rytm dopasowany do źródła.
+
+## Ruch
+
+Decyzja założyciela z 2026-11-09: strona jest przewijanym doświadczeniem. Jeden język ruchu: **atrament pojawiający się na papierze**. Żaden efekt nie jest potrzebny do czytania; bez JS i przy `prefers-reduced-motion` strona jest statyczna i w pełni widoczna. Bramka: klasa `js-motion` na `<html>`, dodawana przed pierwszym malowaniem w `index.html`.
+
+| Element | Mechanizm | Zakres |
+|---|---|---|
+| Sekwencja otwarcia | CSS `@keyframes` przy wczytaniu: linia eyebrow rysuje się (scaleX), trzy wiersze hero wychodzą spod maski (`.hero-line` overflow + `rise`), lead, przyciski i pasek perspektywy dochodzą | 0–1,9 s, easing `cubic-bezier(.2,.7,.2,1)` |
+| Cofanie hero | `animation-timeline: scroll(root)`, `translateY(72px)` + opacity 0 | 0–90vh przewinięcia |
+| Nagłówek sticky | `position: sticky`, papier 88 % + `backdrop-filter: blur(14px)`; padding i sygnatura kurczą się przez `scroll(root)` | 0–220 px |
+| Zielony blok „wlewa się” | `::before` z `clip-path: inset(0 0 100% 0 → 0)` przez `view()`; treść dochodzi później | entry 0–80 % / 30–100 % |
+| Słowa rozświetlane | `motion.js` ustawia `--p` na `.words`; każde słowo: `opacity: clamp(.28, .28 + p·n − i, 1)` | offer intro, lista „Czego nie robię” |
+| Odsłanianie sekcji | `[data-reveal]` przez `view()`: opacity i `translateY(26px)`; `--s` w px przesuwa start rodzeństwa (60 px na element) | entry 40–400 px |
+| Tablica 1 | `[data-reveal-rows] > div` przez `view()`, wiersz po wierszu; tło sekcji tonuje się z papieru do sand | entry 20–260 px |
+| Scena metody (≥ 900 px) | `.method-stage` 260vh z `view-timeline`, `.method-sticky` 100vh; trzy kroki w jednym polu siatki przełączane keyframes `step-1/2/3`; pasek postępu `scaleY` | contain 0–100 % |
+| Ziarno papieru | `body::before` fixed, SVG `feTurbulence`, `mix-blend-mode: multiply`, opacity .16; wyłączone ≤ 767 px | stałe |
+| Disclosure, hover | `::details-content` 220 ms, strzałka 4 px, podkreślenie 1→2 px | reakcja na działanie |
+
+Nie dodajemy: animacji na każdym akapicie, parallaxu obrazów (nie ma obrazów), efektów myszy, auto-odtwarzanych pętli. Każdy nowy ruch musi dać się opisać jako atrament, papier albo kartka.
 
 Przyciski mają radius 3 px, pola 2 px. Karty nie są domyślną jednostką. Dowód, analiza i standard są dokumentami, a usługi i metoda — układem treści.
 

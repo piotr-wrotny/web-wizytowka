@@ -3,6 +3,7 @@ import { ArrowRight, ArrowLeft, CaretDown, Copy, Check } from '@phosphor-icons/r
 import { site as rawSite } from './content/site';
 import { articles as rawArticles, formatDate, readingMinutes } from './content/articles';
 import { glossary as rawGlossary } from './content/glossary';
+import { initMotion } from './motion';
 
 const samplePath = '/materialy/przyklad-standardu/';
 
@@ -32,6 +33,17 @@ function Eyebrow({ children, line = false, className = '' }) {
 
 function TextLink({ href, children, className = '', onClick, arrow = true }) {
   return <a className={`text-link ${className}`} href={href} onClick={onClick}><span>{children}</span>{arrow && <ArrowRight weight="light" aria-hidden="true" />}</a>;
+}
+
+/* Reveal-on-enter attributes (CSS scroll-driven). `step` staggers siblings by 60px of scroll each. */
+const reveal = (step = 0) => ({ 'data-reveal': '', style: step ? { '--s': `${step * 60}px` } : undefined });
+
+/* Text whose words light up with scroll progress (motion.js sets --p on the wrapper). */
+function Words({ text }) {
+  const tokens = text.split(/(\s+)/);
+  const n = tokens.filter(t => t.trim()).length;
+  let i = 0;
+  return <span className="words" data-words style={{ '--n': n }}>{tokens.map((t, k) => t.trim() ? <span key={k} style={{ '--i': i++ }}>{t}</span> : t)}</span>;
 }
 
 /* One consistent marker for every fact the founder still has to supply. */
@@ -72,8 +84,8 @@ function Header() {
   }, [open]);
   return <>
     <a className="skip-link" href="#tresc">Przejdź do treści</a>
-    <header className="site-header outer-frame" id="gora">
-      <div className="header-inner">
+    <header className="site-header" id="gora">
+      <div className="header-inner outer-frame">
         <a className="wordmark" href="/" aria-label={`${site.name} — strona główna`}>{site.name}</a>
         <button className="nav-toggle" ref={toggle} type="button" aria-controls="main-nav" aria-expanded={open} onClick={() => setOpen(!open)}>{open ? 'Zamknij' : 'Menu'}<CaretDown weight="light" aria-hidden="true" /></button>
         <nav ref={navRef} className={`site-nav ${open ? 'is-open' : ''}`} id="main-nav" aria-label="Nawigacja główna">
@@ -92,7 +104,7 @@ function Footer() {
       <TextLink href="/#kontakt">Porozmawiajmy o zadaniu</TextLink>
     </div>
     <div className="footer-bottom content-inset">
-      <p className="colophon">Skład: Newsreader i Inter, fonty lokalne. Bez śledzenia i analityki. Prototyp; dane właściciela i kontakt do uzupełnienia.</p>
+      <p className="colophon">Skład: Newsreader i Inter, fonty lokalne. Bez śledzenia i analityki. Prototyp; kontakt i dane działalności do uzupełnienia.</p>
       <a href="/prywatnosc/">Prywatność</a>
       <a href="/#gora">Na początek</a>
     </div>
@@ -103,8 +115,8 @@ function Disclosure({ title, children, id }) {
   return <details className="disclosure" id={id}><summary><span>{title}</span><CaretDown weight="light" aria-hidden="true" /></summary><div className="disclosure-body">{children}</div></details>;
 }
 
-function StandardTable({ rows, className = '' }) {
-  return <dl className={`standard-table ${className}`}>{rows.map(([title, text]) => <div key={title}><dt>{title}</dt><dd>{pl(text)}</dd></div>)}</dl>;
+function StandardTable({ rows, className = '', animated = false }) {
+  return <dl className={`standard-table ${className}`} {...(animated ? { 'data-reveal': '', 'data-reveal-rows': '' } : {})}>{rows.map(([title, text], i) => <div key={title} style={animated ? { '--i': i } : undefined}><dt>{title}</dt><dd>{pl(text)}</dd></div>)}</dl>;
 }
 
 function Home() {
@@ -113,7 +125,7 @@ function Home() {
     {/* Opening: composition of design/selected-reference.jpeg down to the pointer row, at the mock's native scale. */}
     <section className="hero content-width" aria-labelledby="hero-title">
       <Eyebrow line>{site.descriptor}</Eyebrow>
-      <h1 id="hero-title">{site.hero.lines.map((line, i) => <span className="hero-line" key={line}>{line}{i < 2 ? ' ' : ''}</span>)}</h1>
+      <h1 id="hero-title">{site.hero.lines.map((line, i) => <span className="hero-line" key={line} style={{ '--i': i }}><span className="hero-line-inner">{line}{i < 2 ? ' ' : ''}</span></span>)}</h1>
       <p className="hero-lead">{site.hero.lead}</p>
       <div className="hero-actions"><a className="primary-link" href="#kontakt"><span>Opisz zadanie</span><ArrowRight weight="light" aria-hidden="true" /></a><TextLink href="#standard" arrow={false}>Zobacz próbkę pracy</TextLink></div>
     </section>
@@ -123,35 +135,35 @@ function Home() {
     </section>
 
     <section className="offer-feature" id="wspolpraca" aria-labelledby="offer-heading">
-      <div className="content-width"><Eyebrow line>Współpraca</Eyebrow><h2 id="offer-heading">{offer.name}</h2><p className="offer-subtitle">{offer.subtitle}</p><p className="offer-intro">{offer.intro}</p><TextLink href="#zakres">{offer.link}</TextLink></div>
+      <div className="content-width"><Eyebrow line>Współpraca</Eyebrow><h2 id="offer-heading">{offer.name}</h2><p className="offer-subtitle">{offer.subtitle}</p><p className="offer-intro"><Words text={offer.intro} /></p><TextLink href="#zakres">{offer.link}</TextLink></div>
     </section>
 
-    <section className="pointer-row content-width" aria-labelledby="pointer-title">
+    <section className="pointer-row content-width" aria-labelledby="pointer-title" {...reveal()}>
       <div><h2 id="pointer-title"><a href={pointer.href}>{pointer.title}</a></h2><p>{pointer.subtitle}</p></div>
       <TextLink href="#standard" arrow={false}>{pointer.link}</TextLink>
     </section>
 
     {/* One axis: situations, formats, exhibit, method, analyses, person, contact. */}
     <section className="section cases-section content-width" id="sytuacje" aria-labelledby="cases-title">
-      <div className="split-intro">
+      <div className="split-intro" {...reveal()}>
         <h2 id="cases-title">{cases.title}</h2>
         <div className="body-copy"><p>{cases.intro}</p></div>
       </div>
-      <ul className="case-list">{cases.items.map(c => <li key={c.role}>
+      <ul className="case-list">{cases.items.map((c, i) => <li key={c.role} {...reveal(i)}>
         <h3>{c.role}</h3>
         <div className="case-text"><p>{c.situation}</p><p className="case-question">{c.question}</p></div>
         <p className="case-format"><span>Format</span>{c.format}</p>
       </li>)}</ul>
-      <p className="boundary-note">{cases.note}</p>
+      <p className="boundary-note" {...reveal()}>{cases.note}</p>
     </section>
 
     <section className="section formats-section content-width" id="zakres" aria-labelledby="formats-title">
-      <div className="split-intro">
+      <div className="split-intro" {...reveal()}>
         <h2 id="formats-title">{formats.title}</h2>
         <div className="body-copy"><p>{formats.lead}</p></div>
       </div>
       <div className="format-list">
-        <article className="format format-primary" id="standard-dla-zespolu" aria-labelledby="format-w">
+        <article className="format format-primary" id="standard-dla-zespolu" aria-labelledby="format-w" {...reveal()}>
           <div className="format-head"><h3 id="format-w">{workflow.name}</h3><p>{workflow.subtitle}</p></div>
           <div className="format-body">
             <p>{workflow.text}</p>
@@ -164,7 +176,7 @@ function Home() {
             <TextLink href="/?temat=zadanie#kontakt">Opisz zadanie zespołu</TextLink>
           </div>
         </article>
-        <article className="format" id="konsultacja" aria-labelledby="format-k">
+        <article className="format" id="konsultacja" aria-labelledby="format-k" {...reveal()}>
           <div className="format-head"><h3 id="format-k">{consultation.name}</h3><p>{consultation.subtitle}</p></div>
           <div className="format-body">
             <p>{consultation.text}</p>
@@ -173,7 +185,7 @@ function Home() {
             <TextLink href="/?temat=decyzja#kontakt">Opisz decyzję</TextLink>
           </div>
         </article>
-        <article className="format format-footnote" id="przeglad-oferty" aria-labelledby="format-r">
+        <article className="format format-footnote" id="przeglad-oferty" aria-labelledby="format-r" {...reveal()}>
           <div className="format-head"><h3 id="format-r">{review.name}</h3><p>{review.subtitle}</p></div>
           <div className="format-body">
             <p>{review.text}</p>
@@ -181,34 +193,39 @@ function Home() {
           </div>
         </article>
       </div>
-      <p className="boundary-note">{formats.boundaryNote}</p>
+      <p className="boundary-note" {...reveal()}>{formats.boundaryNote}</p>
     </section>
 
     <section className="exhibit-section" id="standard" aria-labelledby="exhibit-title">
       <div className="section content-width exhibit-grid">
-        <div className="exhibit-side">
+        <div className="exhibit-side" {...reveal()}>
           <p className="exhibit-label">Tablica 1</p>
           <h2 id="exhibit-title">{standard.title}</h2>
           <p className="exhibit-caption">{pl('Przykład standardu na materiale syntetycznym, przed próbą. Pełny zapis z instrukcją roboczą, wzorcem wyniku i kryteriami oceny jest na osobnej stronie.')}</p>
           <TextLink href={samplePath}>Otwórz pełny przykład</TextLink>
         </div>
-        <StandardTable rows={standard.rows.slice(0, standard.exhibitRows)} className="exhibit-table" />
+        <StandardTable rows={standard.rows.slice(0, standard.exhibitRows)} className="exhibit-table" animated />
       </div>
     </section>
 
     <section className="section method-section content-width" id="podejscie" aria-labelledby="method-title">
-      <h2 id="method-title">Najpierw zadanie. Potem wybór narzędzia.</h2>
-      <ol className="method-steps">{site.method.map((step, i) => <li key={step.title}><span className="step-numeral" aria-hidden="true">{i + 1}</span><h3>{step.title}</h3><p>{step.text}</p></li>)}</ol>
-      <p className="method-closing">{site.methodClosing}</p>
-      <div className="principles">
+      <h2 id="method-title" {...reveal()}>Najpierw zadanie. Potem wybór narzędzia.</h2>
+      <div className="method-stage">
+        <div className="method-sticky">
+          <span className="method-progress" aria-hidden="true"></span>
+          <ol className="method-steps">{site.method.map((step, i) => <li key={step.title} style={{ '--i': i }}><span className="step-numeral" aria-hidden="true">{i + 1}</span><div className="step-text"><h3>{step.title}</h3><p>{step.text}</p></div></li>)}</ol>
+        </div>
+      </div>
+      <p className="method-closing" {...reveal()}>{site.methodClosing}</p>
+      <div className="principles" {...reveal()}>
         <h3 className="subheading">Czego nie robię</h3>
-        <ul>{site.principles.map(p => <li key={p}>{p}</li>)}</ul>
+        <ul>{site.principles.map(p => <li key={p}><Words text={p} /></li>)}</ul>
       </div>
     </section>
 
     <section className="section analyses-section content-width" id="analizy" aria-labelledby="analyses-title">
-      <h2 id="analyses-title">Kilka decyzji, którym warto przyjrzeć się bliżej.</h2>
-      <div className="article-grid">{articles.map(article => <article key={article.slug}>
+      <h2 id="analyses-title" {...reveal()}>Kilka decyzji, którym warto przyjrzeć się bliżej.</h2>
+      <div className="article-grid">{articles.map((article, i) => <article key={article.slug} {...reveal(i)}>
         <p className="article-meta"><span>{article.kind}</span><span>{formatDate(article.date)}</span><span>{readingMinutes(article.blocks)} min czytania</span></p>
         <h3><a href={`/analizy/${article.slug}/`}>{article.title}</a></h3>
         <p>{article.lead}</p>
@@ -217,7 +234,7 @@ function Home() {
     </section>
 
     <section className="section about-section content-width" id="o-mnie" aria-labelledby="about-title">
-      <div className="split-intro">
+      <div className="split-intro" {...reveal()}>
         <h2 id="about-title">Perspektywa produktowa. Techniczna ocena. Zrozumiały wniosek.</h2>
         <div className="body-copy">
           <p>{pl(`Jestem ${site.name}. Pracuję jako Technical Product Manager. Łączę analizę procesów, architekturę i integrację systemów z wiedzą o modelach językowych, agentach oraz automatyzacji.`)}</p>
@@ -225,7 +242,7 @@ function Home() {
           <Pending>zweryfikowane doświadczenie i publiczny profil zawodowy.</Pending>
         </div>
       </div>
-      <dl className="expertise-rows">{site.expertise.map(item => <div key={item.title}><dt>{item.title}</dt><dd>{item.text}</dd></div>)}</dl>
+      <dl className="expertise-rows">{site.expertise.map((item, i) => <div key={item.title} {...reveal(i)}><dt>{item.title}</dt><dd>{item.text}</dd></div>)}</dl>
     </section>
 
     <Contact />
@@ -268,7 +285,7 @@ function Contact() {
     catch { setCopyError(true); }
   }
   return <section className="contact-section" id="kontakt" aria-labelledby="contact-title">
-    <div className="contact-grid content-width section">
+    <div className="contact-grid content-width section" {...reveal()}>
       <div className="contact-intro">
         <h2 id="contact-title">Opisz jedno zadanie lub decyzję.</h2>
         <p>{pl('Napisz, co chcesz usprawnić, z jakiego narzędzia korzystasz i na czym polega trudność. Jeśli możesz, dodaj częstotliwość zadania oraz termin.')}</p>
@@ -324,12 +341,12 @@ function ArticleFrame({ kind, title, lead, meta, theses, terms, children, backHr
         <p className="article-lead">{lead}</p>
         {meta && <p className="article-meta">{meta.map(m => <span key={m}>{m}</span>)}</p>}
       </header>
-      {theses && <ul className="theses" aria-label="W skrócie">{theses.map(t => <li key={t}>{t}</li>)}</ul>}
+      {theses && <ul className="theses" aria-label="W skrócie">{theses.map((t, i) => <li key={t} {...reveal(i)}>{t}</li>)}</ul>}
       <div className="article-body">
         <div className={`article-reading ${dropcap ? 'has-dropcap' : ''}`}>{children}</div>
         <Marginalia terms={terms} />
       </div>
-      <aside className="article-contact"><h2>Masz podobne pytanie w swoim zespole?</h2><TextLink href="/#kontakt">Opisz zadanie lub decyzję</TextLink></aside>
+      <aside className="article-contact" {...reveal()}><h2>Masz podobne pytanie w swoim zespole?</h2><TextLink href="/#kontakt">Opisz zadanie lub decyzję</TextLink></aside>
     </div>
   </main>;
 }
@@ -395,6 +412,7 @@ export function App({ path: suppliedPath }) {
       const target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
       target?.scrollIntoView({ behavior: 'instant' });
     });
+    return initMotion();
   }, [normalizedPath]);
   const article = articles.find(a => normalizedPath === `/analizy/${a.slug}/`);
   const page = normalizedPath === '/' ? <Home /> : article ? <ArticlePage article={article} /> : normalizedPath === samplePath ? <SamplePage /> : normalizedPath === '/prywatnosc/' ? <PrivacyPage /> : <NotFound />;

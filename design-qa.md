@@ -45,6 +45,14 @@ Założyciel: strona główna „samym skalowaniem odstaje” od jakości podstr
 - W/K/R jako trzy formaty w jednej sekcji; W zachowuje rezultaty i warunki, R jest przypisem.
 - Zweryfikowane na 1440, 768 i 390: brak sierot w nagłówkach, hero w trzech wierszach na mobile, wiersze sytuacji i formatów składają się do jednej kolumny poniżej 900 px.
 
+## Czwarte przejście (2026-11-09, przewijane doświadczenie)
+
+Założyciel: „wodotryski animacji, efekt wow, który pasuje do klimatu, przewijane doświadczenie jak Apple”. Wprowadzone: sekwencja otwarcia, cofanie hero, sticky kurczący się nagłówek, wlewający się zielony blok, słowa rozświetlane przewijaniem, odsłanianie sekcji i wierszy tablicy sterowane przewijaniem, przypięta scena metody (desktop), ziarno papieru. Szczegóły w `docs/design-system.md`, sekcja „Ruch”.
+
+Weryfikacja przez `qa-views/scroll.html` (iframe tej samej domeny przewinięty do elementu): hero po sekwencji, przewinięcie 260 px (nagłówek skompaktowany, hero wygaszone), zielony blok w połowie wejścia i po wejściu (słowa częściowo rozświetlone), scena metody przy 9 % i 73 % postępu (krok 1 i 3, pasek rośnie). Pierwsza wersja odsłaniania opierała się na IntersectionObserver i w headless nie odpalała; zastąpiona przez `animation-timeline: view()`, co usuwa ryzyko niewidocznej treści w razie braku callbacku.
+
+Nazwisko założyciela (Piotr Wrotny) wprowadzone do sygnatury, tytułów, bio i podpisów.
+
 ## Stan po (weryfikacja na `design/qa/after/`)
 
 - 1440: brak sierot w nagłówkach sekcji; eksponat czytelny jako tablica; nota K wcięta od kolumny 4 z zieloną linią; cyfry metody w zieleni; analizy w dwóch kolumnach z linkiem w polu.

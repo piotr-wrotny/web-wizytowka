@@ -4,7 +4,9 @@ Responsywny prototyp w wybranym kierunku Esej autorski / Editorial Expert. Wersj
 
 ## Co zawiera projekt
 
-Stronę główną, dwie analizy, syntetyczny standard pracy i opis prywatności prototypu. Formularz przygotowuje wyłącznie lokalny podgląd; nie ma endpointu, wysyłki, kalendarza ani zapisu danych. Dane osoby i kontakt pozostają placeholderami. W cenach publicznych nie ma kwot.
+Stronę główną, dwie analizy, syntetyczny standard pracy i opis prywatności prototypu. Formularz przygotowuje wyłącznie lokalny podgląd; nie ma endpointu, wysyłki, kalendarza ani zapisu danych. Nazwisko (Piotr Wrotny) jest prawdziwe; opis doświadczenia, kontakt i dane działalności pozostają placeholderami. W cenach publicznych nie ma kwot.
+
+Strona jest przewijanym doświadczeniem: sekwencja otwarcia, kurczący się nagłówek, zielony blok wlewający się jak atrament, słowa rozświetlane przewijaniem, składająca się tablica i przypięta scena metody na desktopie. Ruch jest wyłączony przy `prefers-reduced-motion` i nie jest potrzebny do czytania. Podgląd dowolnej pozycji przewinięcia: `qa-views/scroll.html?to=podejscie&dy=400` (tylko dev; `&notrans=1` wyłącza przejścia CSS do zrzutów). Dopisek `?nomotion` do adresu strony wyłącza cały ruch, co przydaje się do statycznych zrzutów całej strony.
 
 ## Edycja
 
