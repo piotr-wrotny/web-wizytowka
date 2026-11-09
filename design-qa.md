@@ -24,6 +24,17 @@ Wnioski z `design/qa/before/`:
 4. Podstrony: nagłówek i kolumna czytelnicza na wspólnej lewej krawędzi; marginalia ze słownikiem po prawej (sticky); tezy pod nagłówkiem; pull quote; tabela dla przykładu 24 vs 26 min; linia metadanych z czasem czytania.
 5. Detal: `text-wrap: balance` na nagłówkach i `pretty` na akapitach; hero mobile 11,8vw (3 wiersze przy 390 i 320); spacja w „Proces. Technologia.”; płynne otwieranie disclosure (`::details-content`, 220 ms, wyłączone przy reduced-motion); hover linków bez skoku grubości; favicon SVG; `og:title`/`og:description` per strona w prerenderze.
 
+## Drugie przejście (2026-11-09, warstwa wizualna)
+
+- Newsreader italic (latin + latin-ext, woff2 z Google Fonts, OFL) dla cytatu wyciągniętego, cytowanego materiału, puenty metody i leadu noty K.
+- Niełamliwe spacje po jednoliterowych spójnikach i przyimkach (`pl()`), zastosowane do całej treści.
+- Inicjał na początku analiz (float, Newsreader, zieleń).
+- Podkreślenie linków jako gradient tła: pogrubienie przy hover bez skoku układu. Fokus klawiatury w kolorze ink (na zieleni paper) zamiast niebieskiego. Zaznaczenie tekstu w zieleni.
+- Nawigacja śledzi bieżącą sekcję (`aria-current`, podkreślenie w zieleni).
+- Kontakt na papierze zamiast drugiego odcienia sand; pola o ton jaśniejsze (`--field-bg`). Eksponat jest jedynym tonowanym pasmem poniżej zieleni.
+- Kolofon w stopce: skład, brak śledzenia, status prototypu.
+- `@view-transition` między stronami przy braku preferencji reduced-motion.
+
 ## Stan po (weryfikacja na `design/qa/after/`)
 
 - 1440: brak sierot w nagłówkach sekcji; eksponat czytelny jako tablica; nota K wcięta od kolumny 4 z zieloną linią; cyfry metody w zieleni; analizy w dwóch kolumnach z linkiem w polu.

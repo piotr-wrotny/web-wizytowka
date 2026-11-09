@@ -30,14 +30,17 @@ Na desktopie hero zachowuje trzy wiersze makiety. Na mobile hero łamie się na 
 | --sand | #E7E3D8 | Sekcja metody i przykłady |
 | --line | #C5C9BF | Separatory |
 | --field-line | #758077 | Granice pól i menu |
-| --focus | #254FC0 | Widoczny focus na jasnym tle |
+| --focus | = --ink | Fokus klawiatury (2 px, offset 5 px); na zieleni paper. Od 2026-11-09 w palecie zamiast niebieskiego |
+| --field-bg | #FBFAF6 | Tło pól formularza, o ton jaśniejsze od papieru |
 | --error | #9D302C | Tekst i oznaczenie błędu |
 
 Obliczone kontrasty: ink/paper 13,74:1; muted/paper 5,24:1; paper/green 7,35:1. Nie są pełnym audytem dostępności. Błędy mają również opis tekstowy. Na ciemnej sekcji focus jest jasny.
 
 ## Typografia
 
-Newsreader 400 dla głównych nagłówków, sygnatury i redakcyjnych akcentów. Inter 400/500/600 dla tekstu, nawigacji i kontrolek. Pliki są lokalne, z polskimi znakami i dołączonymi licencjami OFL. Odmiana Newsreader 500 pozostaje dostępna w zestawie, lecz otwarcie wykorzystuje 400, dobrane po porównaniu z makietą.
+Newsreader 400 dla głównych nagłówków, sygnatury i redakcyjnych akcentów. Newsreader 400 italic (woff2, latin + latin-ext, dodana 2026-11-09) wyłącznie dla: cytatu wyciągniętego, cytowanego materiału, puenty metody i leadu noty K. Inter 400/500/600 dla tekstu, nawigacji i kontrolek. Pliki są lokalne, z polskimi znakami i dołączonymi licencjami OFL. Odmiana Newsreader 500 pozostaje dostępna w zestawie, lecz otwarcie wykorzystuje 400, dobrane po porównaniu z makietą.
+
+Skład polski: jednoliterowe spójniki i przyimki (i, w, z, o, a, u oraz wersaliki) nie kończą wiersza. Funkcja `pl()` w `src/App.jsx` wstawia niełamliwą spację po nich na granicy treści (`site`, `articles`, `glossary`) i w tekstach inline. Analizy otwiera inicjał (pierwsza litera pierwszego akapitu, Newsreader, zieleń, trzy wiersze); próbka i prywatność jako dokumenty go nie mają. Zaznaczenie tekstu: zieleń z papierowym tekstem, na zieleni odwrotnie.
 
 | Rola | Szeroki ekran | Mobile |
 |---|---|---|
@@ -73,7 +76,7 @@ Strzałki i chevrony pochodzą z Phosphor Light. Nie są odręcznie rysowanymi s
 
 ## Zachowanie i dostępność
 
-Menu ma aria-expanded, zamknięcie Escape oraz powrót fokusu. Nawigacja działa zwykłymi linkami. Szczegóły wykorzystują natywne details/summary. Skip link przenosi fokus do main. Pola mają zewnętrzne etykiety, wymagania, opisy i komunikaty błędów; treść zostaje po błędzie. Przy szerokościach 320, 390, 1024 i 1440 px nie stwierdzono poziomego przepełnienia.
+Menu ma aria-expanded, zamknięcie Escape oraz powrót fokusu. Nawigacja działa zwykłymi linkami; na stronie głównej IntersectionObserver oznacza bieżącą sekcję (`aria-current`, podkreślenie w zieleni). Podkreślenie TextLink jest gradientem tła, więc pogrubienie przy hover nie przesuwa układu. Przejście między stronami: `@view-transition{navigation:auto}` tylko przy `prefers-reduced-motion: no-preference`. Szczegóły wykorzystują natywne details/summary. Skip link przenosi fokus do main. Pola mają zewnętrzne etykiety, wymagania, opisy i komunikaty błędów; treść zostaje po błędzie. Przy szerokościach 320, 390, 1024 i 1440 px nie stwierdzono poziomego przepełnienia.
 
 Formularz nie wysyła wiadomości. Poprawny wynik prowadzi do lokalnego podglądu i świadomego kopiowania. Nie ma udawanego sukcesu wysyłki ani rezerwacji. Przy braku JavaScript formularz pozostaje nieaktywny; treści stron są wygenerowane w HTML.
 

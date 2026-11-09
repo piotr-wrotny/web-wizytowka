@@ -30,6 +30,6 @@ React/Vite wykorzystano dla wspólnych komponentów, stanów i podglądu w Work.
 
 To materiał do przeglądu. Przed publiczną ofertą uzupełnij wskazane dane i proces kontaktu zgodnie z `docs/launch-readiness.md`. Zachowaj etykiety syntetycznego materiału, granice zakresów i informację demonstracyjnego formularza. Nie umieszczaj poufnych danych ani sekretów w kodzie.
 
-Licencje fontów są w `public/fonts`. Ikony: Phosphor, MIT. W projekcie nie ma wygenerowanego portretu ani fikcyjnego dowodu klientowskiego.
+Licencje fontów są w `public/fonts`; Newsreader italic (woff2, latin i latin-ext) pochodzi z Google Fonts na tej samej licencji OFL. Ikony: Phosphor, MIT. W projekcie nie ma wygenerowanego portretu ani fikcyjnego dowodu klientowskiego.
 
 `qa-views` jest pomocniczym widokiem do kontroli różnych szerokości w przeglądarce; nie trafia do `dist/client`.

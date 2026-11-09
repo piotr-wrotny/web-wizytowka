@@ -1,10 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, ArrowLeft, CaretDown, Copy, Check } from '@phosphor-icons/react';
-import { site } from './content/site';
-import { articles, formatDate, readingMinutes } from './content/articles';
-import { glossary } from './content/glossary';
+import { site as rawSite } from './content/site';
+import { articles as rawArticles, formatDate, readingMinutes } from './content/articles';
+import { glossary as rawGlossary } from './content/glossary';
 
 const samplePath = '/materialy/przyklad-standardu/';
+
+/* Polish typesetting: a one-letter word never ends a line. Binds i, w, z, o, a, u (and capitals) to the next word. */
+export function pl(text) {
+  return typeof text === 'string' ? text.replace(/(^|[\s(„])([aiouwzAIOUWZ])\s(?=\S)/g, '$1$2 ') : text;
+}
+const plDeep = v => typeof v === 'string' ? pl(v) : Array.isArray(v) ? v.map(plDeep) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, plDeep(x)])) : v;
+const site = plDeep(rawSite);
+const articles = plDeep(rawArticles);
+const glossary = plDeep(rawGlossary);
+
+const navSections = { '/#wspolpraca': ['wspolpraca', 'zakres', 'standard', 'konsultacja'], '/#podejscie': ['podejscie', 'analizy'], '/#o-mnie': ['o-mnie'], '/#kontakt': ['kontakt'] };
 
 export function getPageMeta(path) {
   const article = articles.find(a => path === `/analizy/${a.slug}/`);
@@ -30,8 +41,23 @@ function Pending({ children }) {
 
 function Header() {
   const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(null);
   const toggle = useRef(null);
   const navRef = useRef(null);
+  useEffect(() => {
+    if (window.location.pathname !== '/' || !('IntersectionObserver' in window)) return;
+    const lookup = {};
+    for (const [href, ids] of Object.entries(navSections)) ids.forEach(id => { lookup[id] = href; });
+    const els = Object.keys(lookup).map(id => document.getElementById(id)).filter(Boolean);
+    const visible = new Set();
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) visible.add(e.target.id); else visible.delete(e.target.id); });
+      const top = els.filter(el => visible.has(el.id)).map(el => [el.id, el.getBoundingClientRect().top]).sort((a, b) => a[1] - b[1])[0];
+      setActive(top ? lookup[top[0]] : null);
+    }, { rootMargin: '-15% 0px -65% 0px' });
+    els.forEach(el => io.observe(el));
+    return () => io.disconnect();
+  }, []);
   useEffect(() => {
     if (!open) return;
     function keyDown(event) {
@@ -51,7 +77,7 @@ function Header() {
         <a className="wordmark" href="/" aria-label={`${site.name} — strona główna`}>{site.name}</a>
         <button className="nav-toggle" ref={toggle} type="button" aria-controls="main-nav" aria-expanded={open} onClick={() => setOpen(!open)}>{open ? 'Zamknij' : 'Menu'}<CaretDown weight="light" aria-hidden="true" /></button>
         <nav ref={navRef} className={`site-nav ${open ? 'is-open' : ''}`} id="main-nav" aria-label="Nawigacja główna">
-          {site.nav.map(item => <a key={item.href} href={item.href} onClick={() => setOpen(false)}>{item.label}</a>)}
+          {site.nav.map(item => <a key={item.href} href={item.href} aria-current={active === item.href ? 'true' : undefined} onClick={() => setOpen(false)}>{item.label}</a>)}
         </nav>
       </div>
     </header>
@@ -66,7 +92,7 @@ function Footer() {
       <TextLink href="/#kontakt">Porozmawiajmy o zadaniu</TextLink>
     </div>
     <div className="footer-bottom content-inset">
-      <p>Prototyp. Dane właściciela i kontakt do uzupełnienia.</p>
+      <p className="colophon">Skład: Newsreader i Inter, fonty lokalne. Bez śledzenia i analityki. Prototyp; dane właściciela i kontakt do uzupełnienia.</p>
       <a href="/prywatnosc/">Prywatność</a>
       <a href="/#gora">Na początek</a>
     </div>
@@ -78,7 +104,7 @@ function Disclosure({ title, children, id }) {
 }
 
 function StandardTable({ rows, className = '' }) {
-  return <dl className={`standard-table ${className}`}>{rows.map(([title, text]) => <div key={title}><dt>{title}</dt><dd>{text}</dd></div>)}</dl>;
+  return <dl className={`standard-table ${className}`}>{rows.map(([title, text]) => <div key={title}><dt>{title}</dt><dd>{pl(text)}</dd></div>)}</dl>;
 }
 
 function Home() {
@@ -127,7 +153,7 @@ function Home() {
         <div className="exhibit-side">
           <p className="exhibit-label">Tablica 1</p>
           <h2 id="exhibit-title">{standard.title}</h2>
-          <p className="exhibit-caption">Przykład standardu na materiale syntetycznym, przed próbą. Pełny zapis z instrukcją roboczą, wzorcem wyniku i kryteriami oceny jest na osobnej stronie.</p>
+          <p className="exhibit-caption">{pl('Przykład standardu na materiale syntetycznym, przed próbą. Pełny zapis z instrukcją roboczą, wzorcem wyniku i kryteriami oceny jest na osobnej stronie.')}</p>
           <TextLink href={samplePath}>Otwórz pełny przykład</TextLink>
         </div>
         <StandardTable rows={standard.rows.slice(0, standard.exhibitRows)} className="exhibit-table" />
@@ -170,8 +196,8 @@ function Home() {
       <div className="split-intro">
         <h2 id="about-title">Perspektywa produktowa. Techniczna ocena. Zrozumiały wniosek.</h2>
         <div className="body-copy">
-          <p>Jestem {site.name}. Pracuję jako Technical Product Manager. Łączę analizę procesów, architekturę i integrację systemów z wiedzą o modelach językowych, agentach oraz automatyzacji.</p>
-          <p>W doradztwie wykorzystuję tę perspektywę do oceny, która zmiana ma sens i jak sprawdzić jej rezultat.</p>
+          <p>{pl(`Jestem ${site.name}. Pracuję jako Technical Product Manager. Łączę analizę procesów, architekturę i integrację systemów z wiedzą o modelach językowych, agentach oraz automatyzacji.`)}</p>
+          <p>{pl('W doradztwie wykorzystuję tę perspektywę do oceny, która zmiana ma sens i jak sprawdzić jej rezultat.')}</p>
           <Pending>zweryfikowane doświadczenie i publiczny profil zawodowy.</Pending>
         </div>
       </div>
@@ -221,9 +247,9 @@ function Contact() {
     <div className="contact-grid content-width section">
       <div className="contact-intro">
         <h2 id="contact-title">Opisz jedno zadanie lub decyzję.</h2>
-        <p>Napisz, co chcesz usprawnić, z jakiego narzędzia korzystasz i na czym polega trudność. Jeśli możesz, dodaj częstotliwość zadania oraz termin.</p>
-        <p>Najpierw sprawdzę dopasowanie zakresu. Jeśli temat mieści się w mojej roli, ustalimy następny krok, cenę i terminy.</p>
-        <p className="contact-caution">Na początek wystarczy ogólny opis. Nie wpisuj danych klientów, haseł ani poufnych dokumentów.</p>
+        <p>{pl('Napisz, co chcesz usprawnić, z jakiego narzędzia korzystasz i na czym polega trudność. Jeśli możesz, dodaj częstotliwość zadania oraz termin.')}</p>
+        <p>{pl('Najpierw sprawdzę dopasowanie zakresu. Jeśli temat mieści się w mojej roli, ustalimy następny krok, cenę i terminy.')}</p>
+        <p className="contact-caution">{pl('Na początek wystarczy ogólny opis. Nie wpisuj danych klientów, haseł ani poufnych dokumentów.')}</p>
         <Pending>adres e-mail i termin odpowiedzi.</Pending>
       </div>
       <div className="contact-form-area">
@@ -264,7 +290,7 @@ function Marginalia({ terms }) {
   </aside>;
 }
 
-function ArticleFrame({ kind, title, lead, meta, theses, terms, children, backHref, backLabel }) {
+function ArticleFrame({ kind, title, lead, meta, theses, terms, children, backHref, backLabel, dropcap = false }) {
   return <main id="tresc" tabIndex="-1" className="article-page">
     <div className="content-width">
       <a className="back-link" href={backHref}><ArrowLeft weight="light" aria-hidden="true" />{backLabel}</a>
@@ -276,7 +302,7 @@ function ArticleFrame({ kind, title, lead, meta, theses, terms, children, backHr
       </header>
       {theses && <ul className="theses" aria-label="W skrócie">{theses.map(t => <li key={t}>{t}</li>)}</ul>}
       <div className="article-body">
-        <div className="article-reading">{children}</div>
+        <div className={`article-reading ${dropcap ? 'has-dropcap' : ''}`}>{children}</div>
         <Marginalia terms={terms} />
       </div>
       <aside className="article-contact"><h2>Masz podobne pytanie w swoim zespole?</h2><TextLink href="/#kontakt">Opisz zadanie lub decyzję</TextLink></aside>
@@ -294,7 +320,7 @@ function DataTable({ block }) {
 
 function ArticlePage({ article }) {
   const meta = [article.kind, formatDate(article.date), `${readingMinutes(article.blocks)} min czytania`, `Opracowanie: ${site.name}`];
-  return <ArticleFrame kind="Analiza" title={article.title} lead={article.lead} meta={meta} theses={article.theses} terms={article.terms} backHref="/#analizy" backLabel="Wróć do analiz">
+  return <ArticleFrame kind="Analiza" title={article.title} lead={article.lead} meta={meta} theses={article.theses} terms={article.terms} backHref="/#analizy" backLabel="Wróć do analiz" dropcap>
     {article.blocks.map((block, i) => {
       if (block.type === 'heading') return <h2 key={i}>{block.text}</h2>;
       if (block.type === 'pull') return <p key={i} className="pull" aria-hidden="true">{block.text}</p>;
