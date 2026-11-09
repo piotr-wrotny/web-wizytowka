@@ -1,0 +1,4 @@
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Wewnętrzny podgląd responsywności</title><style>*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fff}iframe{display:block;border:0;margin:0}</style></head><body><iframe id="qa-frame" scrolling="no" title="Prototyp w wybranej szerokości"></iframe><script>
+const q=new URLSearchParams(location.search);const w=Math.max(320,Math.min(1600,Number(q.get('w'))||893));const h=Math.max(600,Math.min(1800,Number(q.get('h'))||1536));const requested=q.get('page')||'/';const safePath=requested.startsWith('/')&&!requested.startsWith('//')?requested:'/';const frame=document.getElementById('qa-frame');frame.width=w;frame.height=h;frame.src=safePath;document.body.style.width=w+'px';document.body.style.height=h+'px';
+</script></body></html>

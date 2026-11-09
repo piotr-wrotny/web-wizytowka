@@ -1,0 +1,299 @@
+TREŚCI FINALNE PROTOTYPU / ESEJ AUTORSKI
+30.10.2026
+Placeholdery i demonstracyjny kontakt pozostają do uzupełnienia przed publikacją.
+
+
+
+STRONA: /
+
+Przejdź do treści[IMIĘ I NAZWISKO]MenuWspółpracaPodejścieO mnieKontakt
+Niezależny doradca AI
+Od odpowiedzi AI do dobrze wykonanej pracy.
+Pomagam zespołom uporządkować pracę z AI.
+Łączę ocenę technologii, kryteria jakości
+i praktyczną próbę jednego zadania.
+Opisz zadanieZobacz próbkę pracy
+Perspektywa
+Produkt. Proces.
+Technologia.
+Doświadczenie Technical Product Managera. Jasne pytanie, uzasadniony wybór, sprawdzalny rezultat.
+Współpraca
+Jeden sposób pracy z AI
+Standard, próba i przekazanie zespołowi.
+Jedno powtarzalne zadanie w zatwierdzonym narzędziu.
+Jasne zasady, kontrola jakości i właściciel procesu.
+Poznaj zakres współpracy
+Konsultacja jednej decyzji AI
+Rozmowa i pisemna rekomendacja.
+Przykład standardu — dane syntetyczne
+Sytuacja, od której zaczynamy
+AI już jest w zespole.
+Czas uporządkować
+sposób pracy.
+Pierwsza wersja jest gotowa, ale senior nadal poprawia fakty, dopowiada kontekst i porządkuje wynik. Każda osoba pracuje inaczej. Trudno powiedzieć, kiedy rezultat jest dobry i kto go zatwierdza.
+Jeśli rozpoznajesz taką sytuację, zacznijmy od jednego zadania. Ustalimy, co przeszkadza w jego wykonaniu i jaką zmianę warto sprawdzić.
+Jeden sposób pracy z AI
+Co zostaje po współpracy.
+Metoda do samodzielnego użycia, kryteria dobrego wyniku i jasna odpowiedzialność.
+01
+Jasne wejście i przebieg
+Karta celu, mapa obecnej i proponowanej pracy oraz edytowalny szablon wejścia.
+02
+Standard i kontrola jakości
+Instrukcja z rolami i wyjątkami, kryteria oceny oraz przypadki do próby.
+03
+Próba i przekazanie
+Zapis wyników, ograniczenia, samodzielne odtworzenie przez operatora i decyzja po użyciu.
+Dla kogo, jak długo i czego potrzebujemy
+Dla 2–4 osób wykonujących podobne zadanie, z właścicielem procesu i osobą oceniającą wynik. Jeden workflow 5–7 kroków w jednym zatwierdzonym narzędziu.
+Na początek trzy reprezentatywne próbki, do 20 stron łącznie, oraz baseline zadań lub jawnie oznaczone estymacje. Zwykle 10 nowych prób w ciągu 14 dni; inny plan uzgadniamy przed rozpoczęciem.
+Rozpoczęcie 60 min, warsztat 90 min, próba i przekazanie 90 min, ocena po użyciu 30 min. Konfiguracja wykonywana przez klienta na jego koncie: maksymalnie 45 minut w całej wspólnej pracy.
+Zwykle około 3–4 tygodni od kompletu wejść. Terminy zależą od dostępności zespołu i materiałów; potwierdzamy je wcześniej. Licencje i czas uczestników pozostają po stronie klienta.
+Ważne jest również zaangażowanie uczestników. Czas zespołu ustalamy przed zakupem; spotkanie kilku osób oznacza nakład każdej z nich.
+Granice zakresu i odpowiedzialności
+Nowe integracje i API, kod produkcyjny, automatyczne wysyłki lub zapis w systemach, migracja i administracja wymagają osobnego zakresu.
+Usługa nie obejmuje RAG, całofirmowej polityki, formalnej certyfikacji, incydentów, utrzymania ani otwartego czatu po zakończeniu.
+Przekazuję uzgodniony standard, próbę i ocenę. Wynik może prowadzić także do zmiany metody, pozostania przy obecnej lub rezygnacji z AI w tym zadaniu.
+Jedna zbiorcza runda doprecyzowań dotyczy uzgodnionego wyniku. Moje własne błędy koryguję niezależnie od tej puli; nowy przedmiot pracy wymaga osobnego ustalenia.
+Opisz zadanie, które chcesz usprawnić
+Zakres, cenę i terminy potwierdzam przed rozpoczęciem współpracy.
+Jedno pytanie do rozstrzygnięcia
+Konsultacja jednej decyzji AI
+Rozważasz dwa rozwiązania, nie wiesz, co sprawdzić przed zakupem, albo chcesz zrozumieć nieudaną próbę? Porządkujemy jedno pytanie, dostępne fakty i kompromisy.
+Po 60-minutowej sesji otrzymujesz krótką rekomendację z uzasadnieniem, niewiadomymi i następnym krokiem.
+Opisz decyzję do konsultacji
+Format i rezultat konsultacji
+Sesja 60 minut, maksymalnie dwóch uczestników i do pięciu stron materiału. Dopasowanie sprawdzamy przed rezerwacją.
+Memo 1–2 strony do dwóch dni roboczych: rekomendacja, uzasadnienie, niewiadome i następny krok. Jedna zbiorcza odpowiedź do tego samego pytania w ciągu pięciu dni roboczych.
+Rozległy research, ocena dużej oferty, konfiguracja zespołu i test działającego systemu wymagają osobnego ustalenia. Konsultacja jest samodzielną usługą; nie trzeba jej kupować przed pracą z zespołem.
+Masz już ofertę rozwiązania AI?
+Na zapytanie wykonuję niezależny przegląd jednej oferty: jej założeń, kosztów, dowodów i warunków decyzji. To ocena dokumentów; test działającego systemu wymaga osobnego ustalenia.
+Zapytaj o przegląd oferty
+Podejście
+Najpierw zadanie.
+Potem wybór narzędzia.
+01
+Zrozumienie pracy
+Ustalamy, jaki wynik ma zostać zaakceptowany, skąd pochodzą informacje, co wymaga poprawiania i kto odpowiada za zadanie.
+02
+Projekt i próba
+Porównujemy sensowne alternatywy. Projektujemy wejście, instrukcję i kontrolę jakości. Sprawdzamy uzgodnione przypadki; błąd krytyczny zatrzymuje daną ścieżkę.
+03
+Przekazanie i decyzja
+Operator odtwarza metodę, a właściciel przejmuje standard. Po użyciu decydujemy: stosować, zmienić, odrzucić albo zebrać brakujące dane.
+Dobra rekomendacja może oznaczać także wykorzystanie obecnego narzędzia lub rezygnację ze zmiany.
+O mnie
+Perspektywa produktowa.
+Techniczna ocena.
+Zrozumiały wniosek.
+Jestem [IMIĘ I NAZWISKO]. Pracuję jako Technical Product Manager. Łączę analizę procesów, architekturę i integrację systemów z wiedzą o modelach językowych, agentach oraz automatyzacji.
+W doradztwie wykorzystuję tę perspektywę do oceny, która zmiana ma sens i jak sprawdzić jej rezultat.
+[Zweryfikowane doświadczenie i publiczny profil zawodowy — do uzupełnienia.]
+Praca i jakość
+Analiza zadań, wymagania, kryteria oceny, standardy i odpowiedzialność za wynik.
+Narzędzia i modele
+LLM, kontekst, dobór narzędzi i ocena tego, co da się zrobić w istniejącym środowisku.
+Architektura i decyzje
+Agenci, automatyzacja, integracje i wiedza firmowa jako zaplecze oceny możliwości, kosztów oraz ograniczeń.
+To zaplecze mojej pracy. Aktualne formy współpracy opisuję w sekcji usług.
+Próbka pracy
+Zobacz, jak porządkuję problem.
+Przykład standardu dla zadania: z notatki po rozmowie do roboczego podsumowania. Pokazuje wymagane wejście, kontrolę faktów, rolę człowieka i warunki przerwania pracy.
+Demonstracja na danych syntetycznych. Nie jest opisem zlecenia ani dowodem osiągniętej oszczędności.
+Otwórz przykład standardu
+Analizy
+Kilka decyzji, którym
+warto przyjrzeć się bliżej.
+01
+Analiza · 29.10.2026
+Szybsza odpowiedź AI nie oznacza krótszej pracy
+Liczy się droga do zaakceptowanego wyniku: przygotowanie, kontrola, poprawki i wyjątki.
+02
+Analiza · 29.10.2026
+Kiedy obecne narzędzie wystarczy
+Nowy zakup ma sens, gdy wiadomo, czego brakuje i jak sprawdzić tę różnicę.
+Kontakt
+Opisz jedno zadanie
+lub decyzję.
+Napisz, co chcesz usprawnić, z jakiego narzędzia korzystasz i na czym polega trudność. Jeśli możesz, dodaj częstotliwość zadania oraz termin.
+Najpierw sprawdzę dopasowanie zakresu. Jeśli temat mieści się w mojej roli, ustalimy następny krok, cenę i terminy.
+Na początek wystarczy ogólny opis. Nie wpisuj danych klientów, haseł ani poufnych dokumentów.
+Formularz demonstracyjny — wiadomość nie zostanie wysłana.
+Dane do przygotowania opisu
+E-mail (wymagany)
+Imię (opcjonalne)
+Firma / rola (opcjonalne)
+Temat
+Jedno zadanie zespołu
+Jedna decyzja AI
+Przegląd oferty AI
+Inny temat / jeszcze nie wiem
+Krótki opis (wymagany)
+Zadanie lub decyzja, obecne narzędzie i główna trudność. Bez poufnych materiałów.
+Sprawdź opis
+Ten podgląd wymaga JavaScript do sprawdzenia opisu. Formularz nie wysyła wiadomości.
+Opis jest sprawdzany tylko w tej karcie i nie jest wysyłany do serwera ani modelu AI. Prywatność prototypu.
+[Adres e-mail i termin odpowiedzi — do uzupełnienia.]
+[IMIĘ I NAZWISKO]
+Niezależny doradca AI
+Procesy, jakość i decyzje technologiczne.
+Porozmawiajmy o zadaniu
+Prototyp · dane właściciela i kontakt do uzupełnienia.
+PrywatnośćNa początek
+
+
+STRONA: /materialy/przyklad-standardu/
+
+Przejdź do treści[IMIĘ I NAZWISKO]MenuWspółpracaPodejścieO mnieKontaktWróć do próbki pracy
+Próbka metody · dane syntetyczne
+Z notatki po rozmowie do roboczego podsumowania.
+Projekt standardu: wymagane wejście, kontrola faktów, rola człowieka i warunki przerwania pracy.
+Opracowanie: [IMIĘ I NAZWISKO] · 29.10.2026
+Demonstracja metody. Nieprzeprowadzony test.
+Cały materiał jest syntetyczny. Nie opisuje zlecenia, rzeczywistego klienta ani wyniku działania modelu.
+Pytanie
+Jak przygotować podsumowanie dla opiekuna projektu tak, aby nie dopisywać ustaleń, których nie ma w notatce? Ten przykład pokazuje strukturę sposobu pracy, a nie skuteczność całego procesu w firmie.
+Materiał syntetyczny
+Rozmowa o etapowym uruchomieniu obsługi. Klient chce najpierw ustalić zakres źródeł danych i liczbę użytkowników. Budżet wymaga potwierdzenia. Termin wdrożenia nie został uzgodniony. Opiekun ma przygotować pytania do kolejnej rozmowy. Nie ustalono terminu następnego spotkania.
+To całość źródła przykładu. Nie istnieje tu rzeczywisty klient ani wykonana rozmowa handlowa.
+Projekt standardu
+Początek
+Zatwierdzona do użycia notatka; fakty oddzielone od niewiadomych.
+Koniec
+Sprawdzone robocze podsumowanie dla opiekuna. Bez automatycznej wysyłki do klienta.
+Wejście
+Notatka, odbiorca, cel, wymagany format i dozwolone źródła.
+AI
+Porządkuje informacje: ustalenia, braki, pytania i następny krok.
+Operator
+Sprawdza każdą tezę względem źródła, usuwa niepoparte zdania i zapisuje poprawki.
+Właściciel
+Utrzymuje instrukcję, zatwierdza zmiany i rozstrzyga wyjątki.
+Wykluczenia
+Dopisywanie oferty, ceny, terminu lub zobowiązania handlowego; automatyczna wysyłka.
+Stop
+Niepoparte zobowiązanie, niedozwolone dane lub niepewność krytycznego faktu. Powrót do źródła i oceny człowieka.
+Instrukcja robocza
+Na podstawie wyłącznie podanej notatki przygotuj robocze podsumowanie dla opiekuna projektu. Oddziel ustalenia, informacje do potwierdzenia, pytania i następny krok.
+Nie uzupełniaj brakujących kwot, dat ani zobowiązań. Przy braku informacji wpisz „nie ustalono” albo „do potwierdzenia”. Dla każdej pozycji ustaleń przytocz krótki fragment źródła. Nie wysyłaj wiadomości i nie wykonuj działań w innych systemach.
+To projekt instrukcji wymagający próby. Sam jej zapis nie gwarantuje, że model będzie przestrzegał ograniczeń.
+Oczekiwany wzorzec redakcyjny
+Ustalenia: rozmowa dotyczy etapowego uruchomienia obsługi; przed następnym etapem trzeba określić zakres źródeł i liczbę użytkowników.
+Do potwierdzenia: budżet. Nie ustalono: terminu wdrożenia i kolejnego spotkania. Następny krok: opiekun przygotowuje pytania o źródła danych oraz użytkowników.
+Wzorzec został napisany przez autora materiału. Nie jest wynikiem uruchomienia modelu.
+Kryteria przed próbą
+Zgodność ze źródłem · krytyczne
+Każde ustalenie ma podstawę w notatce.
+Brak dopisanych zobowiązań · krytyczne
+Nieustalona data, cena lub obietnica nie jest przedstawiona jako fakt.
+Jawne braki
+Budżet, termin wdrożenia i spotkania zachowują status niewiadomej.
+Użyteczność
+Opiekun wie, o co zapytać i co zrobić dalej.
+Zakres działania · krytyczne
+Materiał pozostaje roboczy. Bez wysyłki lub zmiany w systemie.
+Do przyszłej próby potrzebne są przypadki typowe, niepełne, sprzeczne, z niejasną odpowiedzialnością i z żądaniem działania poza zakresem. Przykłady projektowe należy oddzielić od pozostawionych do oceny.
+Decyzja i ograniczenia
+Standard nadaje się do sprawdzenia na dozwolonym materiale. Nie można jeszcze stwierdzić, że poprawił jakość, skrócił czas ani może być użyty bez recenzenta. Nie przeprowadzono testu narzędzia i nie zebrano logu nowych zadań.
+Wariant negatywny: jeśli każda notatka ma inny cel lub brakuje źródeł, wspólna instrukcja może nie rozwiązać problemu. Najpierw trzeba uporządkować materiał i odpowiedzialność. Przy małym koszcie ręcznego podsumowania wprowadzenie AI może być zbędne.
+Następny krok: wskazać właściciela, uzgodnić miary pełnej pracy i przeprowadzić ograniczoną próbę. To osobna czynność, nie wynik tej demonstracji.
+Następny krok
+Masz podobne pytanie
+w swoim zespole?
+Opisz zadanie lub decyzję[IMIĘ I NAZWISKO]
+Niezależny doradca AI
+Procesy, jakość i decyzje technologiczne.
+Porozmawiajmy o zadaniu
+Prototyp · dane właściciela i kontakt do uzupełnienia.
+PrywatnośćNa początek
+
+
+STRONA: /analizy/od-odpowiedzi-do-wyniku/
+
+Przejdź do treści[IMIĘ I NAZWISKO]MenuWspółpracaPodejścieO mnieKontaktWróć do analiz
+Analiza
+Szybsza odpowiedź AI nie oznacza krótszej pracy
+Liczy się droga do zaakceptowanego wyniku: przygotowanie, kontrola, poprawki i wyjątki.
+Opracowanie: [IMIĘ I NAZWISKO] · 29.10.2026
+Najłatwiej zobaczyć czas, w którym AI tworzy pierwszą wersję. Trudniej zauważyć pracę, która zaczyna się chwilę później: sprawdzanie faktów, uzupełnianie kontekstu, poprawianie liczb i dopasowanie materiału do odbiorcy. Właśnie tam może przenieść się koszt zadania.
+Dlatego pytanie „jak szybko powstała odpowiedź?” jest za wąskie. Użyteczniejsze brzmi: „ile pracy potrzebowaliśmy, żeby zaakceptować wynik?”. Odpowiedź powinna obejmować przygotowanie wejścia, wykonanie, kontrolę, poprawki oraz wyjątki. Gdy w procesie uczestniczą trzy osoby, ich czas liczymy osobno. Oczekiwanie na odpowiedź zapisujemy jako czas kalendarzowy, nie jako godziny pracy ludzi.
+Najpierw określ zakończenie zadania
+„Powstało podsumowanie” i „opiekun może użyć podsumowania” to dwa różne stany. W pierwszym wystarczy tekst. W drugim potrzebna jest zgodność ze źródłem, kompletność ustaleń i brak dopisanych zobowiązań. Bez takiej definicji łatwo porównać ręcznie sprawdzony dokument z niesprawdzoną generacją.
+Warto więc przed próbą zapisać kilka obserwowalnych kryteriów. Czy każda liczba ma źródło? Czy niewiadome pozostają niewiadomymi? Kto akceptuje treść? Który błąd blokuje dalsze użycie niezależnie od tego, jak dobrze napisano pozostałe akapity?
+Zmierz drogę do akceptacji
+Załóżmy, wyłącznie na potrzeby przykładu, że ręczne przygotowanie i sprawdzenie materiału zajmuje łącznie 24 minuty. Z AI przygotowanie wejścia zajmuje 4 minuty, wykonanie 2, kontrola 8, a poprawki 12. Łącznie to 26 minut. Zapisanie samego czasu wykonania dałoby przekonujący, ale mylący obraz poprawy.
+Ten przykład nie dowodzi, że AI spowalnia pracę. Pokazuje, jak wybór granicy pomiaru może zmienić wniosek. Ten sam proces może działać lepiej po poprawie wejścia, ograniczeniu zakresu albo ustaleniu, czego narzędzie nie powinno robić. Potrzebujemy porównywalnych zadań i jawnego zapisu, a nie z góry przyjętego kierunku efektu.
+Jeśli kontrola obejmuje już poprawki, nie dodawaj ich ponownie. Nie pomijaj nieudanych prób. Zachowaj informację o wersji narzędzia i trudności zadania. Dobry wynik po intensywnej korekcie nie oznacza dobrego wyniku pierwszej generacji.
+Sprawdź, komu zmieniła się praca
+Możliwe, że operator kończy wcześniej, ale senior spędza więcej czasu na recenzji. Możliwe też, że wynik jest lepszy, choć czas pozostaje podobny. Obie sytuacje mogą mieć znaczenie dla firmy, jeśli zostaną opisane uczciwie. Sama liczba wygenerowanych dokumentów nie pozwoli ich rozróżnić.
+Przy małej próbie zapisuj liczebność, zakres zadań i wyjątki. Brak błędu krytycznego w kilku przykładach nie jest dowodem niezawodności całego rozwiązania. Odzyskany czas oznacza potencjalną zdolność do innej pracy; nie staje się automatycznie oszczędnością gotówki.
+Decyzja może dotyczyć sposobu pracy
+Pierwszym krokiem nie musi być zmiana modelu. Czasem potrzebne jest lepsze źródło, krótsze zadanie, jasne wejście lub wcześniejsza kontrola. Czasem najrozsądniejsza będzie praca ręczna. Właściwa decyzja wynika z jakości zaakceptowanego wyniku i całego nakładu, który był potrzebny do jego uzyskania.
+Przed kolejną próbą wybierz jedno zadanie, nazwij koniec procesu i zapisz kryteria. Dopiero potem porównaj metody. To skromniejszy początek niż deklaracja transformacji, ale daje podstawę do rzeczywistego wniosku.
+Następny krok
+Masz podobne pytanie
+w swoim zespole?
+Opisz zadanie lub decyzję[IMIĘ I NAZWISKO]
+Niezależny doradca AI
+Procesy, jakość i decyzje technologiczne.
+Porozmawiajmy o zadaniu
+Prototyp · dane właściciela i kontakt do uzupełnienia.
+PrywatnośćNa początek
+
+
+STRONA: /analizy/kiedy-obecne-narzedzie-wystarczy/
+
+Przejdź do treści[IMIĘ I NAZWISKO]MenuWspółpracaPodejścieO mnieKontaktWróć do analiz
+Analiza
+Kiedy obecne narzędzie wystarczy
+Nowy zakup ma sens, gdy wiadomo, czego brakuje i jak sprawdzić tę różnicę.
+Opracowanie: [IMIĘ I NAZWISKO] · 29.10.2026
+Pomysł na nowe narzędzie często pojawia się wcześniej niż opis zadania. „Potrzebujemy asystenta” brzmi konkretnie, ale może oznaczać kilka różnych potrzeb: uporządkowanie wejścia, dostęp do źródeł, przygotowanie pierwszej wersji albo wykonanie działania w systemie. Każda z nich wymaga innej oceny.
+Zanim porównasz produkty, zapisz, od czego zaczyna się praca i jaki wynik ktoś ma zaakceptować. Wskaż materiały, częstotliwość, osobę odpowiedzialną i koszt błędu. Wtedy łatwiej sprawdzić, czy posiadane środowisko ma rzeczywistą lukę.
+Oddziel brak funkcji od braku sposobu pracy
+Wyobraźmy sobie zespół, który chce nowego asystenta do przygotowywania roboczych odpowiedzi. Każda osoba korzysta jednak z innych źródeł, a część materiałów jest nieaktualna. Nie ma wspólnego formatu ani reguły, co zrobić przy braku ceny lub terminu.
+Nowe narzędzie może mieć lepsze możliwości. Nie zastąpi jednak decyzji o tym, które źródło jest właściwe i kto zatwierdza zobowiązanie. Przed zakupem warto sprawdzić, ile problemów znika po uporządkowaniu wejścia, wzoru odpowiedzi oraz kontroli w obecnym narzędziu.
+To nie jest założenie, że zawsze należy pozostać przy tym, co już kupiono. Obecne rozwiązanie może nie spełniać wymagań dotyczących dostępu, danych lub potrzebnej czynności. Ważne, aby brak został nazwany i poparty sprawdzeniem, zamiast wynikać tylko z atrakcyjnej demonstracji innego produktu.
+Porównaj trzy sensowne warianty
+Pierwszy wariant to brak nowego zakupu: zmiana organizacji pracy lub sposób ręczny. Drugi to użycie funkcji dostępnej w obecnym środowisku. Trzeci to nowe rozwiązanie o jasno określonej przewadze. Każdy powinien dotyczyć tego samego zadania i tych samych kryteriów jakości.
+Przy obecnym środowisku sprawdź rzeczywisty plan, konfigurację, uprawnienia i dozwolone dane na koncie klienta. Nazwa produktu nie przesądza dostępności funkcji. Deklaracja dostawcy opisuje możliwość; próba na właściwym materiale pomaga ocenić jej przydatność w danym zadaniu.
+W nowym wariancie policz więcej niż abonament. Znaczenie mają przygotowanie materiałów, wdrożenie ludzi, recenzja, obsługa wyjątków, właściciel techniczny i wyjście z rozwiązania. Gdy pojawiają się integracje albo automatyczne działania, rośnie także zakres odpowiedzialności operacyjnej.
+Nazwij powód zmiany
+Dobra decyzja zakupowa powinna dać się zapisać jednym zdaniem: „wybieramy ten wariant, ponieważ usuwa wskazane ograniczenie i spełnił uzgodnione kryteria”. Obok warto dopisać, czego jeszcze nie sprawdzono oraz kiedy wniosek należy odświeżyć.
+Jeżeli obecne narzędzie daje wystarczający, akceptowany wynik w rozsądnym koszcie, zakup może poczekać. Jeśli go nie daje, mamy opis luki, który pomoże porównać oferty i uniknąć szukania całego problemu od początku.
+Niezależna ocena nie musi kończyć się wyborem nowości. Powinna kończyć się jasną decyzją oraz dowodem, na którym ta decyzja się opiera.
+Następny krok
+Masz podobne pytanie
+w swoim zespole?
+Opisz zadanie lub decyzję[IMIĘ I NAZWISKO]
+Niezależny doradca AI
+Procesy, jakość i decyzje technologiczne.
+Porozmawiajmy o zadaniu
+Prototyp · dane właściciela i kontakt do uzupełnienia.
+PrywatnośćNa początek
+
+
+STRONA: /prywatnosc/
+
+Przejdź do treści[IMIĘ I NAZWISKO]MenuWspółpracaPodejścieO mnieKontaktWróć do analiz
+Prywatność prototypu
+Najpierw jasny opis. Poufne materiały później.
+Ten podgląd pozwala zapoznać się ze stroną i sprawdzić opis zadania. Nie uruchamia rzeczywistej obsługi zapytań.
+Opracowanie: [IMIĘ I NAZWISKO] · 29.10.2026
+Jak działa formularz
+Wpisane informacje pozostają w pamięci tej karty przeglądarki. Formularz nie wysyła ich do serwera, poczty ani modelu AI i nie zapisuje ich w cookies lub localStorage. Odświeżenie albo zamknięcie strony usuwa roboczy opis z formularza.
+Przycisk kopiowania przenosi opis do schowka wyłącznie po Twoim kliknięciu. Strona nie odczytuje zawartości schowka.
+Odwiedziny strony
+Strona nie zawiera narzędzi reklamowych, zewnętrznej analityki, osadzonych kalendarzy ani formularzy innych dostawców. Fonty są ładowane z tego samego serwisu. Hosting może przetwarzać techniczne dane żądań; nie oznacza to, że prototyp jest usługą bez jakiegokolwiek przetwarzania danych.
+Przed uruchomieniem kontaktu
+Do uzupełnienia pozostają rzeczywiste dane administratora, adres kontaktowy, dostawcy i odbiorcy, cele oraz podstawy przetwarzania, retencja, zasady transferów i realizacji praw. Dokument musi odpowiadać faktycznej konfiguracji hostingu, poczty i endpointu.
+Ten opis dotyczy prototypu. Nie jest gotową polityką prywatności dla działającej praktyki. Rzeczywista wysyłka zostanie uruchomiona dopiero po ustaleniu tych elementów.
+Następny krok
+Masz podobne pytanie
+w swoim zespole?
+Opisz zadanie lub decyzję[IMIĘ I NAZWISKO]
+Niezależny doradca AI
+Procesy, jakość i decyzje technologiczne.
+Porozmawiajmy o zadaniu
+Prototyp · dane właściciela i kontakt do uzupełnienia.
+PrywatnośćNa początek
