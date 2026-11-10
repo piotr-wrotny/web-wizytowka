@@ -69,11 +69,11 @@ function Button({ href, children, type, compact = false }) {
 }
 
 /* Text whose words light up with scroll progress (motion.js sets --p on the wrapper). */
-function Words({ text }) {
+function Words({ text, manual = false }) {
   const tokens = text.split(/(\s+)/);
   const n = tokens.filter(t => t.trim()).length;
   let i = 0;
-  return <span className="words" data-words style={{ '--n': n }}>{tokens.map((t, k) => t.trim() ? <span key={k} style={{ '--i': i++ }}>{t}</span> : t)}</span>;
+  return <span className="words" data-words={manual ? undefined : ''} style={{ '--n': n }}>{tokens.map((t, k) => t.trim() ? <span key={k} style={{ '--i': i++ }}>{t}</span> : t)}</span>;
 }
 
 function Header() {
@@ -134,6 +134,7 @@ function Footer() {
       </div>
       <div className="footer-bottom">
         <p className="colophon">Skład: Brygada 1918, Archivo i IBM Plex Mono, fonty lokalne. Bez śledzenia i analityki. Prototyp; kontakt i dane działalności do uzupełnienia.</p>
+        <a className="motion-on" href="?motion">Włącz animacje</a>
         <a href="/prywatnosc/">Prywatność</a>
         <a href="#gora">Na początek</a>
       </div>
@@ -282,8 +283,9 @@ function Cases() {
 }
 
 /* The consultation as a scrolled presentation: one stage per screen, and the whole page takes the stage's theme.
-   Each slide carries its own theme, so the page is complete without JS; with motion the theme moves to <html>
-   and cross-fades as slides pass the middle of the screen. */
+   Each slide carries its own theme, so the page is complete without JS. With motion the theme moves to <html> and
+   cross-fades; on a wide screen every stage is pinned while its scene plays, and each slide gets --sp (0 to 1),
+   its progress through the viewport, which the stylesheet turns into the choreography. */
 function DeckPage() {
   const { flow } = site;
   const total = flow.stages.length;
@@ -292,15 +294,28 @@ function DeckPage() {
   useEffect(() => {
     const html = document.documentElement;
     if (!html.classList.contains('js-motion')) return;
-    const slides = Array.from(deck.current.querySelectorAll('.slide'));
+    const root = deck.current;
+    const slides = Array.from(root.querySelectorAll('.slide'));
     let frame = 0;
     const update = () => {
       frame = 0;
-      const middle = window.innerHeight / 2;
-      const slide = slides.find(el => { const r = el.getBoundingClientRect(); return r.top <= middle && r.bottom > middle; });
-      if (!slide) return;
-      if (html.dataset.theme !== slide.dataset.theme) html.dataset.theme = slide.dataset.theme;
-      setActive(Number(slide.dataset.index));
+      const vh = window.innerHeight;
+      const middle = vh / 2;
+      let current = null;
+      for (const el of slides) {
+        const r = el.getBoundingClientRect();
+        if (r.top <= middle && r.bottom > middle) current = el;
+        if (el.dataset.index === '-1') continue;
+        const pinned = r.height > vh * 1.5;
+        const travel = pinned ? vh * 0.85 + (r.height - vh) : vh * 0.95;
+        const sp = Math.min(1, Math.max(0, (vh * 0.85 - r.top) / travel));
+        el.style.setProperty('--sp', sp.toFixed(4));
+      }
+      const scrollable = document.documentElement.scrollHeight - vh;
+      root.style.setProperty('--dp', scrollable > 0 ? Math.min(1, window.scrollY / scrollable).toFixed(4) : '0');
+      if (!current) return;
+      if (html.dataset.theme !== current.dataset.theme) html.dataset.theme = current.dataset.theme;
+      setActive(Number(current.dataset.index));
     };
     const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
     update();
@@ -309,28 +324,35 @@ function DeckPage() {
     return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); cancelAnimationFrame(frame); delete html.dataset.theme; };
   }, []);
   return <main id="tresc" tabIndex="-1" className="deck" ref={deck}>
+    <div className="deck-progress" aria-hidden="true"></div>
     <section className="slide slide-intro" data-theme="paper" data-index="-1" aria-labelledby="deck-title">
       <div className="wrap">
         <a className="back-link" href="/#przebieg"><ArrowLeft aria-hidden="true" />Wróć na stronę główną</a>
-        <h1 id="deck-title">{flow.deck.title}</h1>
+        <h1 id="deck-title">{flow.deck.title.split(', ').map((line, i, all) => <span className="hero-line" key={line} style={{ '--i': i }}><span className="hero-line-inner">{line}{i < all.length - 1 ? ', ' : ''}</span></span>)}</h1>
         <p className="slide-lead">{flow.lead}</p>
-        <ol className="deck-index">{flow.stages.map((stage, i) => <li key={stage.title}><a href={`#etap-${i + 1}`}><span aria-hidden="true">{i + 1}</span>{stage.title}</a></li>)}</ol>
+        <ol className="deck-index">{flow.stages.map((stage, i) => <li key={stage.title} style={{ '--i': i }}><a href={`#etap-${i + 1}`}><span aria-hidden="true">{i + 1}</span>{stage.title}</a></li>)}</ol>
       </div>
     </section>
     {flow.stages.map((stage, i) => <section key={stage.title} className={`slide slide-stage${i % 2 ? ' is-flipped' : ''}`} id={`etap-${i + 1}`} data-theme={flow.deck.themes[i]} data-index={i} aria-labelledby={`etap-${i + 1}-title`}>
-      <div className="wrap slide-grid">
-        <div className="slide-copy">
-          <p className="slide-numeral" aria-hidden="true">{i + 1}</p>
-          <h2 id={`etap-${i + 1}-title`}>{stage.title}</h2>
-          <p className="slide-text">{stage.text}</p>
-          <p className="note slide-value"><Mark kind="tick" /><span>{stage.value}</span></p>
+      <div className="slide-pin">
+        <div className="wrap slide-grid">
+          <div className="slide-copy">
+            <p className="slide-numeral" aria-hidden="true">{i + 1}</p>
+            <h2 id={`etap-${i + 1}-title`}><span className="slide-title-inner">{stage.title}</span></h2>
+            <svg className="slide-underline" viewBox="0 0 320 14" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M3 9.5C42 4 86 3.5 128 6.5s96 5.5 189-2.5" pathLength="1" /></svg>
+            <p className="slide-text"><Words text={stage.text} manual /></p>
+            <p className="note slide-value"><Mark kind="tick" /><span>{stage.value}</span></p>
+          </div>
+          <div className="slide-visual">
+            {i === total - 1 && <div className="slide-stack" aria-hidden="true">{flow.stages.slice(0, -1).map((s, k) => <div className="slide-stack-tab" key={s.title} style={{ '--k': k }}><p>{s.sheet.title}</p><p>{`${k + 1} z ${total}`}</p></div>)}</div>}
+            <FlowSheet sheet={stage.sheet} index={i} total={total} />
+          </div>
         </div>
-        <div className="slide-visual"><FlowSheet sheet={stage.sheet} index={i} total={total} /></div>
       </div>
     </section>)}
     <section className="slide slide-end" data-theme="blue" data-index={total} aria-labelledby="deck-end-title">
       <div className="wrap">
-        <h2 id="deck-end-title">{flow.cta.title}</h2>
+        <h2 id="deck-end-title"><span className="slide-title-inner">{flow.cta.title}</span></h2>
         <p className="slide-lead">{flow.cta.text}</p>
         <div className="slide-end-actions"><Button href="/?temat=inne#kontakt">{flow.cta.button}</Button><TextLink href="/#zakres">Zobacz formaty współpracy</TextLink></div>
         <FlowTerms headingLevel="h3" />
@@ -338,7 +360,7 @@ function DeckPage() {
       </div>
     </section>
     <nav className="deck-rail" aria-label="Etapy konsultacji">
-      <ol>{flow.stages.map((stage, i) => <li key={stage.title}><a href={`#etap-${i + 1}`} aria-current={i === active ? 'step' : undefined}><span className="visually-hidden">{`Etap ${i + 1}: ${stage.title}`}</span></a></li>)}</ol>
+      <ol>{flow.stages.map((stage, i) => <li key={stage.title}><a href={`#etap-${i + 1}`} aria-current={i === active ? 'step' : undefined}><span className="deck-rail-label">{stage.title}</span></a></li>)}</ol>
     </nav>
   </main>;
 }

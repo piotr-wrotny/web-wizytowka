@@ -555,9 +555,10 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
   .js-motion .hero h1{animation:settle 1s var(--ease) .05s both}
 }
 @media(prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-  *,*::before,*::after,.disclosure::details-content{transition:none!important;animation:none!important}
+  html:not(.js-motion){scroll-behavior:auto}
+  html:not(.js-motion) *,html:not(.js-motion) *::before,html:not(.js-motion) *::after,html:not(.js-motion) .disclosure::details-content{transition:none!important;animation:none!important}
 }
+.js-motion .motion-on{display:none}
 
 @media print{
   body{background:#fff;font-size:11pt}
@@ -671,13 +672,79 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 .case-panel .btn{margin-top:clamp(24px,3vw,36px)}
 .js-motion .case-panel-body{animation:appear .45s ease both}
 
-@supports (animation-timeline:view()){
-  .js-motion .slide-visual{animation:slide-visual linear both;animation-timeline:view();animation-range:entry 0% cover 42%}
-  .js-motion .slide-copy>:not(.slide-numeral){animation:slide-copy linear both;animation-timeline:view();animation-range:entry 12% cover 36%}
-  .js-motion .slide-numeral{animation:slide-numeral linear both;animation-timeline:view();animation-range:entry 0% exit 100%}
-  @keyframes slide-visual{from{opacity:0;transform:translateY(96px) scale(.92)}}
-  @keyframes slide-copy{from{opacity:0;transform:translateY(32px)}}
-  @keyframes slide-numeral{from{transform:translateY(56px)}to{transform:translateY(-56px)}}
+/* ------------------------------------------------------------------
+   Deck choreography. Every slide gets --sp from DeckPage: 0 when its top edge enters the lower part of the
+   screen, 1 when its scene is over. Each element derives its own 0-to-1 value from --sp with a clamp, so the
+   scene is scrubbed by the scroll, runs backwards on the way up, and is simply complete when --sp is absent.
+   Order of a stage: the sheet is laid on the desk, the numeral fills with ink, the title rises and is underlined
+   in pencil, the sentence is read word by word, the sheet is filled in line by line, the value is ticked off.
+   ------------------------------------------------------------------ */
+.slide-stage h2,.slide-end h2{overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em}
+.slide-title-inner{display:block}
+.slide-underline{display:block;width:min(19rem,70%);height:14px;margin-top:10px;fill:none;stroke:var(--blue);stroke-width:2.2;stroke-linecap:round;overflow:visible}
+.slide-stack{display:none}
+.deck-progress{display:none}
+.deck-rail a{position:relative}
+.deck-rail-label{position:absolute;right:calc(100% + 6px);top:50%;transform:translate(8px,-50%);padding:5px 10px;border-radius:3px;background:var(--ink);color:var(--paper);font-size:var(--t-meta);font-weight:500;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s ease,transform .4s var(--ease)}
+.deck-rail a:hover .deck-rail-label,.deck-rail a:focus-visible .deck-rail-label{opacity:1;transform:translate(0,-50%)}
+
+.js-motion .deck-progress{display:block;position:fixed;inset:0 0 auto 0;z-index:50;height:3px;background:var(--blue);transform-origin:left;transform:scaleX(var(--dp,0))}
+
+/* Intro: one entrance on load */
+.js-motion .slide-intro .hero-line{display:block;overflow:hidden;padding-bottom:.16em;margin-bottom:-.16em}
+.js-motion .slide-intro .hero-line-inner{display:block;animation:rise 1.1s var(--ease) both;animation-delay:calc(.05s + var(--i,0)*.12s)}
+.js-motion .slide-intro .slide-lead{animation:settle 1s var(--ease) .45s both}
+.js-motion .deck-index li{animation:settle .9s var(--ease) both;animation-delay:calc(.65s + var(--i,0)*.09s)}
+.js-motion .deck-index a{border-top-color:transparent;background:linear-gradient(var(--ink),var(--ink)) 0 0/100% 1px no-repeat;animation:rule 1s var(--ease) both;animation-delay:calc(.7s + var(--i,0)*.09s)}
+@keyframes rule{from{background-size:0 1px}}
+
+/* Derived progress values. --a: sheet arrives, --t: title, --w: words, --v: value, --x: scene leaves (pinned only). */
+.js-motion .slide-stage,.js-motion .slide-end{
+  --a:clamp(0,calc((var(--sp,1) - .04)*3.1),1);
+  --t:clamp(0,calc((var(--sp,1) - .16)*5),1);
+  --u:clamp(0,calc((var(--sp,1) - .3)*5),1);
+  --w:clamp(0,calc((var(--sp,1) - .34)*3.4),1);
+  --v:clamp(0,calc((var(--sp,1) - .74)*7),1);
+}
+.js-motion .slide-numeral{color:color-mix(in srgb,var(--blue) calc(var(--t)*100%),transparent);-webkit-text-stroke:1.5px var(--blue);transform:translateY(calc((.5 - var(--sp,1))*90px));will-change:transform}
+.js-motion .slide-title-inner{transform:translateY(calc((1 - var(--t))*106%))}
+.js-motion .slide-underline path{stroke-dasharray:1;stroke-dashoffset:calc(1 - var(--u))}
+.js-motion .slide-text .words{--p:var(--w)}
+.js-motion .slide-text .words>span{opacity:clamp(.22,calc(.22 + var(--p,1)*var(--n,1) - var(--i,0)),1);transition:none}
+.js-motion .slide-value .mark path{stroke-dasharray:1;stroke-dashoffset:calc(1 - var(--v))}
+.js-motion .slide-value>span{opacity:var(--v);transform:translateX(calc((1 - var(--v))*-10px))}
+.js-motion .slide-visual{opacity:clamp(0,calc(var(--a)*2.5),1);transform:translateY(calc((1 - var(--a))*26vh)) rotate(calc((1 - var(--a))*5deg)) scale(calc(.88 + var(--a)*.12));transform-origin:50% 100%;will-change:transform}
+.js-motion .is-flipped .slide-visual{transform:translateY(calc((1 - var(--a))*26vh)) rotate(calc((1 - var(--a))*-5deg)) scale(calc(.88 + var(--a)*.12))}
+
+/* The sheet is filled in: each line has its own 0-to-1 value --r, later lines start later. */
+.js-motion .slide-visual :is(.fs-card>div,.fs-list>li,.fs-slide li,.fs-contents>li,.fs-slide-title){--r:clamp(0,calc((var(--sp,1) - .46 - var(--i,0)*.07)*13),1);opacity:var(--r);transform:translateY(calc((1 - var(--r))*14px))}
+.js-motion .slide-visual .fs-slide-title{--i:-1}
+.js-motion .slide-visual :is(.fs-card>div,.fs-list>li,.fs-slide li,.fs-contents>li):nth-child(2){--i:1}
+.js-motion .slide-visual :is(.fs-card>div,.fs-list>li,.fs-slide li,.fs-contents>li):nth-child(3){--i:2}
+.js-motion .slide-visual :is(.fs-card>div,.fs-list>li,.fs-slide li,.fs-contents>li):nth-child(4){--i:3}
+.js-motion .slide-visual :is(.fs-card>div,.fs-list>li,.fs-slide li,.fs-contents>li):nth-child(5){--i:4}
+.js-motion .slide-visual .fs-list .mark path,.js-motion .slide-visual .fs-scale .mark path{stroke-dasharray:1;stroke-dashoffset:calc(1 - clamp(0,calc((var(--sp,1) - .5 - var(--i,0)*.07)*13),1))}
+.js-motion .slide-visual .fs-scale .mark path{stroke-dashoffset:calc(1 - clamp(0,calc((var(--sp,1) - .72)*9),1))}
+.js-motion .slide-visual .fs-scale>.is-at{border-color:color-mix(in srgb,var(--blue) calc(clamp(0,calc((var(--sp,1) - .7)*9),1)*100%),var(--line))}
+.js-motion .slide-visual .fs-contents>li::before{transform-origin:left;transform:translateY(-.25em) scaleX(var(--r))}
+
+/* End slide: the terms are ticked off one by one */
+.js-motion .slide-end .slide-lead,.js-motion .slide-end-actions{opacity:var(--w);transform:translateY(calc((1 - var(--w))*20px))}
+.js-motion .slide-end .terms-list>div{--r:clamp(0,calc((var(--sp,1) - .5 - var(--i,0)*.08)*9),1);opacity:var(--r);transform:translateY(calc((1 - var(--r))*18px))}
+.js-motion .slide-end .terms-list>div:nth-child(2){--i:1}
+.js-motion .slide-end .terms-list>div:nth-child(3){--i:2}
+.js-motion .slide-end .terms-list>div:nth-child(4){--i:3}
+.js-motion .slide-end .terms-list .mark path{stroke-dasharray:1;stroke-dashoffset:calc(1 - var(--r))}
+
+/* Wide screens: each stage is pinned while its scene plays, then scrolls away as the next one arrives. */
+@media(min-width:901px) and (min-height:560px){
+  .js-motion .slide-stage{display:block;min-height:0;height:220vh;padding:0}
+  .js-motion .slide-pin{position:sticky;top:0;height:100vh;display:grid;align-items:center;overflow:clip}
+  /* Last stage: the earlier sheets slide out from under the final one, so the dossier is complete. */
+  .js-motion .slide-stack{display:block;position:absolute;left:0;right:0;bottom:100%}
+  .js-motion .slide-visual{position:relative}
+  .js-motion .slide-stack-tab{--r:clamp(0,calc((var(--sp,1) - .62 - (3 - var(--k,0))*.05)*11),1);display:flex;justify-content:space-between;gap:16px;height:44px;align-items:center;margin-inline:calc((3 - var(--k,0))*10px);padding-inline:clamp(18px,2.4vw,32px);border:1px solid #c6ccc7;border-bottom:0;border-radius:3px 3px 0 0;background:#fcfdfb;color:#14161a;font-size:var(--t-meta);font-weight:500;font-stretch:92%;opacity:var(--r);transform:translateY(calc((1 - var(--r))*44px))}
+  .js-motion .slide-stack-tab>p:last-child{font-weight:400;color:#4d5359;font-variant-numeric:tabular-nums}
 }
 
 @media(max-width:900px){
@@ -698,5 +765,5 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
   .cta-actions,.cta .btn,.principles-cta .btn,.slide-end-actions .btn{width:100%}
   .slide-numeral{font-size:6rem}
 }
-@media(prefers-reduced-motion:reduce){html{transition:none!important}}
-@media print{.slide{min-height:0;padding-block:24px}.deck-rail{display:none}.flow-close .cta{background:#fff;color:#14161a;border:1px solid #999}}
+@media(prefers-reduced-motion:reduce){html:not(.js-motion){transition:none!important}}
+@media print{.slide{--sp:1!important;min-height:0!important;height:auto!important;padding-block:24px}.slide-pin{position:static!important;height:auto!important}.deck-rail{display:none}.flow-close .cta{background:#fff;color:#14161a;border:1px solid #999}}

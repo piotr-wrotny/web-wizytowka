@@ -18,7 +18,7 @@ Strona jest złożona jak sprawdzony dokument. Jedynym motywem graficznym jest o
 - Prezentacja `/konsultacja/`: ten sam przebieg jako przewijana prezentacja, jeden etap na ekran. Każdy slajd ma motyw (`site.flow.deck.themes`: paper, desk, ink, blue). Tokeny koloru są zarejestrowane przez `@property`, więc z włączonym ruchem motyw przechodzi płynnie na całą stronę razem z nagłówkiem; bez ruchu każdy slajd nosi swój motyw sam.
 - „Konsultacja w skrócie” (`site.flow.terms`) i wezwania do akcji (`CallToAction`): po przebiegu, po formatach, po zasadach i na końcu prezentacji.
 - „Od czego zaczynają klienci” (`site.cases`): osiem sytuacji. Na szerokim ekranie przeglądarka z pionowymi zakładkami (strzałki, Home, End), na wąskim i bez JS zwykła lista.
-- Ruch: sekwencja otwarcia (nagłówek, rysujące się poprawki), teczka przebiegu, słowa oferty rozświetlane przewijaniem, reakcje na hover. Wszystko za klasą `html.js-motion`, której nie ma przy `prefers-reduced-motion` ani z dopiskiem `?nomotion`.
+- Ruch: sekwencja otwarcia (nagłówek, rysujące się poprawki), teczka przebiegu, słowa oferty rozświetlane przewijaniem, reakcje na hover. Na `/konsultacja/` każdy etap jest na szerokim ekranie przypięty, a jego scena jest sterowana przewijaniem przez zmienną `--sp` (kartka kładziona na biurku, cyfra wypełniana tuszem, tytuł podkreślany ołówkiem, zdanie czytane słowo po słowie, kartka wypełniana wiersz po wierszu). Wszystko za klasą `html.js-motion`. Nie ma jej przy `prefers-reduced-motion`, chyba że odwiedzający sam włączy animacje (link „Włącz animacje” w stopce albo dopisek `?motion`, zapamiętywany w localStorage); `?nomotion` wyłącza ruch i kasuje ten wybór.
 
 ## Edycja
 
