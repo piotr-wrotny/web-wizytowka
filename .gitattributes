@@ -1,0 +1,10 @@
+# Jedna konwencja końców linii niezależnie od systemu (Windows: brak konwersji na CRLF)
+* text=auto eol=lf
+
+# Binaria: bez normalizacji i bez diffów tekstowych
+*.woff binary
+*.woff2 binary
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.zip binary

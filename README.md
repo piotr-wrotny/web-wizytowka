@@ -24,7 +24,7 @@ Strona jest przewijanym doświadczeniem: sekwencja otwarcia, kurczący się nag�
 
 ## Odtworzenie poza bieżącym podglądem
 
-Node.js i npm. `npm ci` odtwarza zależności z lockfile. `npm run dev` uruchamia Vite. `npm run build` tworzy statyczne dokumenty HTML i assety w `dist/client`. Bieżący prototyp jest już uruchomiony w Work; te polecenia służą późniejszemu odtworzeniu.
+Node.js 20 lub nowszy (`.nvmrc`, pole `engines`) i npm. `npm ci` odtwarza zależności z lockfile. `npm run dev` uruchamia Vite. `npm run build` tworzy statyczne dokumenty HTML i assety w `dist/client`. Na Windows nic więcej nie trzeba: `.gitattributes` wymusza końce linii LF, skrypty nie używają poleceń powłoki. Aktualna praca jest na gałęzi `dev`; `main` jest do niej podciągany po akceptacji.
 
 React/Vite wykorzystano dla wspólnych komponentów, stanów i podglądu w Work. Build generuje komplet treści do HTML; odczyt stron nie wymaga oczekiwania na React. JavaScript obsługuje menu i formularz. To większy pakiet niż ręcznie napisany HTML — około 76 kB gzip głównego JS — ale bez osobnego backendu, bazy i CMS.
 
