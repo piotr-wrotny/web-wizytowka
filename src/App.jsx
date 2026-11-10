@@ -77,8 +77,20 @@ function Words({ text, manual = false }) {
   return <span className="words" data-words={manual ? undefined : ''} style={{ '--n': n }}>{tokens.map((t, k) => t.trim() ? <span key={k} style={{ '--i': i++ }}>{t}</span> : t)}</span>;
 }
 
-function Header() {
+function Header({ overHero = false }) {
   const [open, setOpen] = useState(false);
+  const [onHero, setOnHero] = useState(overHero);
+  const bar = useRef(null);
+  useEffect(() => {
+    if (!overHero) { setOnHero(false); return; }
+    const hero = document.querySelector('.hero');
+    if (!hero) return;
+    const update = () => setOnHero(hero.getBoundingClientRect().bottom > (bar.current?.offsetHeight || 0));
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => { window.removeEventListener('scroll', update); window.removeEventListener('resize', update); };
+  }, [overHero]);
   const [active, setActive] = useState(null);
   const toggle = useRef(null);
   const navRef = useRef(null);
@@ -110,7 +122,7 @@ function Header() {
   }, [open]);
   return <>
     <a className="skip-link" href="#tresc">Przejdź do treści</a>
-    <header className="site-header" id="gora">
+    <header className="site-header" id="gora" ref={bar} data-over-hero={onHero ? '' : undefined}>
       <div className="header-inner wrap">
         <a className="wordmark" translate="no" href="/" aria-label={`${site.name}, strona główna`}>{site.name}</a>
         <p className="header-role">{site.descriptor}</p>
@@ -424,9 +436,9 @@ function Home() {
   return <main id="tresc" tabIndex="-1">
     <section className="hero theme-blue" aria-labelledby="hero-title">
       <div className="wrap">
-        <h1 id="hero-title">{site.hero.lines.map((line, i) => <span className="hero-line" key={line} style={{ '--i': i }}><span className="hero-line-inner">{line}{i < site.hero.lines.length - 1 ? ' ' : ''}</span></span>)}</h1>
         <div className="hero-row">
           <div className="hero-copy">
+            <h1 id="hero-title">{site.hero.lines.map((line, i) => <span className="hero-line" key={line} style={{ '--i': i }}><span className="hero-line-inner">{line}{i < site.hero.lines.length - 1 ? ' ' : ''}</span></span>)}</h1>
             <p className="hero-sub">{site.hero.sub}</p>
             <p className="hero-lead">{site.hero.lead}</p>
             <div className="hero-actions">
@@ -698,5 +710,5 @@ export function App({ path: suppliedPath }) {
   }, [normalizedPath]);
   const article = articles.find(a => normalizedPath === `/analizy/${a.slug}/`);
   const page = normalizedPath === '/' ? <Home /> : article ? <ArticlePage article={article} /> : normalizedPath === samplePath ? <SamplePage /> : normalizedPath === deckPath ? <DeckPage /> : normalizedPath === '/prywatnosc/' ? <PrivacyPage /> : <NotFound />;
-  return <><Header />{page}<Footer /></>;
+  return <><Header overHero={normalizedPath === '/'} />{page}<Footer /></>;
 }
