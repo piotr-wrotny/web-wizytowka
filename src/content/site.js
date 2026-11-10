@@ -3,7 +3,8 @@
 export const site = {
   name: 'Piotr Wrotny',
   descriptor: 'Niezależny doradca AI',
-  // DRAFT 2026-11-10: the hero now names the main offer (it absorbed the former blue offer block).
+  // The hero names the main offer (it absorbed the former blue offer block). Headline approved by the founder on 2026-11-10.
+  // DRAFT: `lead` was written by the assistant and still awaits approval.
   // Previous headline, kept for reference: "Od odpowiedzi AI do dobrze wykonanej pracy."
   hero: {
     lines: ['Konsultacje AI', 'szyte na miarę.'],
