@@ -13,7 +13,8 @@ Strona jest złożona jak sprawdzony dokument. Jedynym motywem graficznym jest o
 - Fonty, lokalne, w `public/fonts`: Brygada 1918 (nagłówki i tekst do czytania), Archivo ze zmienną szerokością (interfejs), IBM Plex Mono (tylko surowy tekst: szkic, instrukcja, podgląd opisu). Licencje OFL obok plików.
 - Tokeny koloru, skali i odstępów są na początku `src/styles.css`.
 - Elementy wspólne: `Mark` (znaki ołówka), `Note` (uwaga na marginesie, jedno zastrzeżenie na kontekst), `Pending` (czerwone „Do uzupełnienia”), `.sheet` (kartka na biurku: przykład standardu, formularz, karty przebiegu).
-- Otwarcie: szkic podsumowania sprawdzany względem źródła (`site.proof`), z przełącznikiem „Z poprawkami / Po sprawdzeniu”. To ilustracja na materiale syntetycznym i tak jest podpisana.
+- Układ strony głównej (jedna oś): hero z ofertą na niebieskim polu i gotową teczką pięciu kart, przebieg konsultacji, sytuacje, trzy formaty jako zwarte wiersze, „Czego nie robię”, analizy, o mnie, kontakt. Metoda w trzech krokach i karta przykładowego standardu nie są już osobnymi sekcjami strony głównej; treści zostały w `site.js`, a standard na swojej podstronie.
+- Szkic podsumowania sprawdzany względem źródła (`site.proof`, przełącznik „Z poprawkami / Po sprawdzeniu”) jest na podstronie przykładu standardu. To ilustracja na materiale syntetycznym i tak jest podpisana.
 - Przebieg konsultacji (`site.flow`): pięć etapów, każdy zostawia kartę. Na szerokim ekranie z włączonym ruchem karty układają się w rosnącą teczkę obok tekstu; bez ruchu, bez JS i na wąskich ekranach każda karta stoi przy swoim etapie.
 - Prezentacja `/konsultacja/`: ten sam przebieg jako przewijana prezentacja, jeden etap na ekran. Każdy slajd ma motyw (`site.flow.deck.themes`: paper, desk, ink, blue). Tokeny koloru są zarejestrowane przez `@property`, więc z włączonym ruchem motyw przechodzi płynnie na całą stronę razem z nagłówkiem; bez ruchu każdy slajd nosi swój motyw sam.
 - „Konsultacja w skrócie” (`site.flow.terms`) i wezwania do akcji (`CallToAction`): po przebiegu, po formatach, po zasadach i na końcu prezentacji.
@@ -22,7 +23,7 @@ Strona jest złożona jak sprawdzony dokument. Jedynym motywem graficznym jest o
 
 ## Edycja
 
-- `src/content/site.js`: hero, ilustracja otwarcia (DRAFT), oferta, przebieg konsultacji (DRAFT), sytuacje przykładowe (DRAFT), formaty, przykład standardu, metoda, zasady „Czego nie robię” (DRAFT), ekspertyza.
+- `src/content/site.js`: hero (DRAFT), ilustracja sprawdzania szkicu (DRAFT), przebieg konsultacji (DRAFT), sytuacje przykładowe (DRAFT), formaty, przykład standardu, metoda, zasady „Czego nie robię” (DRAFT), ekspertyza.
 - `src/content/articles.js`, `src/content/glossary.js`: analizy i słownik pokazywany na marginesie.
 - `src/App.jsx`: skład sekcji i komponenty. `src/motion.js`: rozświetlanie słów.
 - `AGENTS.md`: wiążące zasady treści. `docs/launch-readiness.md`: zadania przed publikacją.

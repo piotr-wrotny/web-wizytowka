@@ -3,9 +3,12 @@
 export const site = {
   name: 'Piotr Wrotny',
   descriptor: 'Niezależny doradca AI',
+  // DRAFT 2026-11-10: the hero now names the main offer (it absorbed the former blue offer block).
+  // Previous headline, kept for reference: "Od odpowiedzi AI do dobrze wykonanej pracy."
   hero: {
-    lines: ['Od odpowiedzi AI', 'do dobrze wykonanej pracy.'],
-    lead: 'Konsultacje szyte na miarę zespołu i zadania.\nOcena technologii, kryteria jakości\ni praktyczna próba na Twoim materiale.',
+    lines: ['Konsultacje AI', 'szyte na miarę.'],
+    sub: 'Jedno pytanie, jeden zespół albo jedna decyzja.',
+    lead: 'Zaczynam od rozpoznania: co najbardziej przeszkadza i jaki jest poziom wiedzy. Potem zbieram materiał, wyjaśniam go na spotkaniu i zostawiam dokumenty z całą wiedzą.',
   },
   // DRAFT 2026-11-10: hero illustration written by the assistant from the synthetic note on the sample page.
   // It shows the method (check every statement against the source); it is not a model output and must stay labelled.
@@ -25,12 +28,13 @@ export const site = {
     text: 'Doświadczenie Technical Product Managera. Jasne pytanie, uzasadniony wybór, sprawdzalny rezultat.',
   },
   nav: [
-    { label: 'Współpraca', href: '/#wspolpraca' },
-    { label: 'Podejście', href: '/#podejscie' },
+    { label: 'Konsultacja', href: '/#przebieg' },
+    { label: 'Sytuacje', href: '/#sytuacje' },
+    { label: 'Współpraca', href: '/#zakres' },
     { label: 'O mnie', href: '/#o-mnie' },
     { label: 'Kontakt', href: '/#kontakt' },
   ],
-  // Primary offer: the blue band.
+  // Former blue offer block. Since 2026-11-10 the hero carries the offer; kept as source text, not rendered.
   offer: {
     name: 'Konsultacje AI szyte na miarę',
     subtitle: 'Jedno pytanie, jeden zespół albo jedna decyzja.',
@@ -150,7 +154,7 @@ export const site = {
     subtitle: 'Na zapytanie.',
     text: 'Niezależny przegląd jednej oferty AI: jej założeń, kosztów, dowodów i warunków decyzji. To ocena dokumentów; test działającego systemu wymaga osobnego ustalenia.',
   },
-  // Example standard shown as an exhibit on the home page (first six rows) and in full on the sample page.
+  // Example standard, shown in full on the sample page (linked from the "Standard dla zespołu" format).
   standard: {
     title: 'Z notatki po rozmowie do roboczego podsumowania.',
     rows: [
@@ -165,6 +169,7 @@ export const site = {
     ],
     exhibitRows: 6,
   },
+  // Not rendered on the home page since 2026-11-10: the consultation flow is the one process shown there.
   method: [
     { title: 'Zrozumienie pracy', text: 'Ustalamy, jaki wynik ma zostać zaakceptowany, skąd pochodzą informacje, co wymaga poprawiania i kto odpowiada za zadanie.' },
     { title: 'Projekt i próba', text: 'Porównujemy sensowne alternatywy. Projektujemy wejście, instrukcję i kontrolę jakości. Sprawdzamy uzgodnione przypadki; błąd krytyczny zatrzymuje daną ścieżkę.' },

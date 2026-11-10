@@ -18,8 +18,9 @@ const articles = plDeep(rawArticles);
 const glossary = plDeep(rawGlossary);
 
 const navSections = {
-  '/#wspolpraca': ['wspolpraca', 'przebieg', 'sytuacje', 'zakres', 'standard'],
-  '/#podejscie': ['podejscie', 'zasady', 'analizy'],
+  '/#przebieg': ['przebieg'],
+  '/#sytuacje': ['sytuacje'],
+  '/#zakres': ['zakres', 'zasady'],
   '/#o-mnie': ['o-mnie'],
   '/#kontakt': ['kontakt'],
 };
@@ -150,7 +151,7 @@ function StandardTable({ rows, className = '' }) {
   return <dl className={`standard-table ${className}`}>{rows.map(([title, text]) => <div key={title} className={title === 'Stop' ? 'is-stop' : undefined}><dt>{title}</dt><dd>{pl(text)}</dd></div>)}</dl>;
 }
 
-/* Hero exhibit: a draft summary being checked against its source. The headline, enacted.
+/* Sample-page exhibit: a draft summary being checked against its source.
    Draft state shows the corrections; final state shows the accepted text with the source fragment behind each statement. */
 function Proof() {
   const { proof } = site;
@@ -176,7 +177,7 @@ function Proof() {
             : <p className="proof-margin is-ok"><Mark kind="tick" /><span>jest w źródle</span></p>}
       </li>)}
     </ol>
-    <figcaption>{proof.caption} <a href={samplePath}>Pełny przykład standardu</a></figcaption>
+    <figcaption>{proof.caption}</figcaption>
   </figure>;
 }
 
@@ -415,42 +416,33 @@ function Flow() {
   </section>;
 }
 
+/* Home: one axis. The consultation is the centre (hero, flow), the situations are the evidence,
+   the three formats, the refusals, the analyses and the person are the background. */
 function Home() {
-  const { offer, cases, formats, workflow, consultation, review, standard, perspective } = site;
+  const { flow, formats, workflow, consultation, review, perspective } = site;
+  const total = flow.stages.length;
   return <main id="tresc" tabIndex="-1">
-    <section className="hero wrap" aria-labelledby="hero-title">
-      <h1 id="hero-title">{site.hero.lines.map((line, i) => <span className="hero-line" key={line} style={{ '--i': i }}><span className="hero-line-inner">{line}{i < site.hero.lines.length - 1 ? ' ' : ''}</span></span>)}</h1>
-      <div className="hero-row">
-        <div className="hero-copy">
-          <p className="hero-lead">{site.hero.lead}</p>
-          <div className="hero-actions">
-            <Button href="#kontakt">Opisz zadanie</Button>
-            <TextLink href="#przebieg">Zobacz, jak przebiega konsultacja</TextLink>
+    <section className="hero theme-blue" aria-labelledby="hero-title">
+      <div className="wrap">
+        <h1 id="hero-title">{site.hero.lines.map((line, i) => <span className="hero-line" key={line} style={{ '--i': i }}><span className="hero-line-inner">{line}{i < site.hero.lines.length - 1 ? ' ' : ''}</span></span>)}</h1>
+        <div className="hero-row">
+          <div className="hero-copy">
+            <p className="hero-sub">{site.hero.sub}</p>
+            <p className="hero-lead">{site.hero.lead}</p>
+            <div className="hero-actions">
+              <Button href="/?temat=inne#kontakt">{flow.cta.button}</Button>
+              <TextLink href={deckPath} arrow>{flow.deck.link}</TextLink>
+            </div>
+            <div className="perspective">
+              <p className="perspective-title">{perspective.title}</p>
+              <p className="perspective-copy">{perspective.text}</p>
+            </div>
           </div>
-          <div className="perspective">
-            <p className="perspective-title">{perspective.title}</p>
-            <p className="perspective-copy">{perspective.text}</p>
+          {/* The finished dossier: the five sheets a consultation leaves behind. Decorative here; the flow below carries the content. */}
+          <div className="hero-pile" aria-hidden="true">
+            {flow.stages.map((stage, i) => <FlowSheet key={stage.title} sheet={stage.sheet} index={i} total={total} />)}
           </div>
         </div>
-        <Proof />
-      </div>
-    </section>
-
-    <section className="offer" id="wspolpraca" aria-labelledby="offer-heading">
-      <div className="wrap offer-grid">
-        <div className="offer-main">
-          <h2 id="offer-heading">{offer.name}</h2>
-          <p className="offer-subtitle">{offer.subtitle}</p>
-          <p className="offer-intro"><Words text={offer.intro} /></p>
-        </div>
-        <nav className="offer-index" aria-label="Formaty współpracy">
-          <p className="offer-index-title">{offer.link}</p>
-          <ul>
-            {[[workflow, '#standard-dla-zespolu'], [consultation, '#konsultacja'], [review, '#przeglad-oferty']].map(([f, href]) => <li key={href}>
-              <a href={href}><span className="offer-index-name">{f.name}</span><span className="offer-index-sub">{f.subtitle}</span><ArrowRight aria-hidden="true" /></a>
-            </li>)}
-          </ul>
-        </nav>
       </div>
     </section>
 
@@ -463,60 +455,37 @@ function Home() {
         <h2 id="formats-title">{formats.title}</h2>
         <p className="section-lead">{formats.lead}</p>
       </div>
-      <div className="format-grid">
-        <article className="format format-primary" id="standard-dla-zespolu" aria-labelledby="format-w">
+      <div className="format-rows">
+        <article className="format-row" id="standard-dla-zespolu" aria-labelledby="format-w">
           <header className="format-head"><h3 id="format-w">{workflow.name}</h3><p>{workflow.subtitle}</p></header>
-          <p className="format-text">{workflow.text}</p>
-          <h4 className="format-sub">{workflow.resultTitle}</h4>
-          <dl className="result-list">{workflow.result.map(item => <div key={item.title}><dt>{item.title}</dt><dd>{item.text}</dd></div>)}</dl>
-          <div className="disclosures">
-            <Disclosure id="warunki-w" title="Dla kogo, jak długo i czego potrzebujemy">{workflow.conditions.map(p => <p key={p}>{p}</p>)}</Disclosure>
-            <Disclosure title="Granice zakresu i odpowiedzialności">{workflow.boundaries.map(p => <p key={p}>{p}</p>)}</Disclosure>
+          <div className="format-body">
+            <p className="format-text">{workflow.text}</p>
+            <div className="disclosures">
+              <Disclosure title={workflow.resultTitle}><dl className="result-list">{workflow.result.map(item => <div key={item.title}><dt>{item.title}</dt><dd>{item.text}</dd></div>)}</dl></Disclosure>
+              <Disclosure id="warunki-w" title="Dla kogo, jak długo i czego potrzebujemy">{workflow.conditions.map(p => <p key={p}>{p}</p>)}</Disclosure>
+              <Disclosure title="Granice zakresu i odpowiedzialności">{workflow.boundaries.map(p => <p key={p}>{p}</p>)}</Disclosure>
+            </div>
+            <div className="format-links"><TextLink href="/?temat=zadanie#kontakt" arrow>Opisz zadanie zespołu</TextLink><TextLink href={samplePath}>Zobacz przykład standardu</TextLink></div>
           </div>
-          <TextLink href="/?temat=zadanie#kontakt" arrow>Opisz zadanie zespołu</TextLink>
         </article>
-        <div className="format-side">
-          <article className="format" id="konsultacja" aria-labelledby="format-k">
-            <header className="format-head"><h3 id="format-k">{consultation.name}</h3><p>{consultation.subtitle}</p></header>
+        <article className="format-row" id="konsultacja" aria-labelledby="format-k">
+          <header className="format-head"><h3 id="format-k">{consultation.name}</h3><p>{consultation.subtitle}</p></header>
+          <div className="format-body">
             <p className="format-text">{consultation.text}</p>
             <p className="format-text">{consultation.outcome}</p>
             <div className="disclosures"><Disclosure title="Format i rezultat konsultacji">{consultation.details.map(p => <p key={p}>{p}</p>)}</Disclosure></div>
-            <TextLink href="/?temat=decyzja#kontakt" arrow>Opisz decyzję</TextLink>
-          </article>
-          <article className="format" id="przeglad-oferty" aria-labelledby="format-r">
-            <header className="format-head"><h3 id="format-r">{review.name}</h3><p>{review.subtitle}</p></header>
+            <div className="format-links"><TextLink href="/?temat=decyzja#kontakt" arrow>Opisz decyzję</TextLink></div>
+          </div>
+        </article>
+        <article className="format-row" id="przeglad-oferty" aria-labelledby="format-r">
+          <header className="format-head"><h3 id="format-r">{review.name}</h3><p>{review.subtitle}</p></header>
+          <div className="format-body">
             <p className="format-text">{review.text}</p>
-            <TextLink href="/?temat=oferta#kontakt" arrow>Zapytaj o przegląd oferty</TextLink>
-          </article>
-        </div>
+            <div className="format-links"><TextLink href="/?temat=oferta#kontakt" arrow>Zapytaj o przegląd oferty</TextLink></div>
+          </div>
+        </article>
       </div>
       <Note className="section-note">{formats.boundaryNote}</Note>
-      <CallToAction title="Nie wiesz, który format pasuje?" text="Opisz sytuację. Format dobiorę do pytania i potwierdzę zakres przed rozpoczęciem." button="Opisz sytuację" />
-    </section>
-
-    <section className="exhibit" id="standard" aria-labelledby="exhibit-title">
-      <div className="wrap exhibit-grid">
-        <div className="exhibit-side">
-          <h2 id="exhibit-title">{standard.title}</h2>
-          <p className="exhibit-caption">{pl('Przykład standardu na materiale syntetycznym, przed próbą. Pełny zapis z instrukcją roboczą, wzorcem wyniku i kryteriami oceny jest na osobnej stronie.')}</p>
-          <TextLink href={samplePath} arrow>Otwórz pełny przykład</TextLink>
-        </div>
-        <div className="sheet exhibit-sheet">
-          <div className="sheet-bar"><p>Standard pracy</p><p>Przykład, materiał syntetyczny</p></div>
-          <StandardTable rows={standard.rows.slice(0, standard.exhibitRows)} />
-          <div className="sheet-foot"><p>{`${standard.exhibitRows} z ${standard.rows.length} pozycji`}</p><a href={samplePath}>Pozostałe: właściciel i wykluczenia</a></div>
-        </div>
-      </div>
-    </section>
-
-    <section className="section method wrap" id="podejscie" aria-labelledby="method-title">
-      <h2 id="method-title">Najpierw zadanie. Potem wybór narzędzia.</h2>
-      <ol className="method-steps">{site.method.map((step, i) => <li key={step.title}>
-        <span className="step-numeral" aria-hidden="true">{i + 1}</span>
-        <h3>{step.title}</h3>
-        <p>{step.text}</p>
-      </li>)}</ol>
-      <p className="method-closing">{site.methodClosing}</p>
     </section>
 
     <section className="principles" id="zasady" aria-labelledby="principles-title">
@@ -683,10 +652,11 @@ function ArticlePage({ article }) {
 
 function SamplePage() {
   const { standard } = site;
-  return <ArticleFrame kind="Przykład standardu, dane syntetyczne" title={standard.title} lead="Projekt standardu: wymagane wejście, kontrola faktów, rola człowieka i warunki przerwania pracy." meta={['Materiał syntetyczny', formatDate('29.10.2026'), `Opracowanie: ${site.name}`]} terms={['standard', 'operator', 'wlasciciel-procesu', 'blad-krytyczny', 'proba']} backHref="/#standard" backLabel="Wróć do przykładu na stronie głównej">
+  return <ArticleFrame kind="Przykład standardu, dane syntetyczne" title={standard.title} lead="Projekt standardu: wymagane wejście, kontrola faktów, rola człowieka i warunki przerwania pracy." meta={['Materiał syntetyczny', formatDate('29.10.2026'), `Opracowanie: ${site.name}`]} terms={['standard', 'operator', 'wlasciciel-procesu', 'blad-krytyczny', 'proba']} backHref="/#standard-dla-zespolu" backLabel="Wróć do formatów współpracy">
     <p className="boundary"><strong>Demonstracja metody, test nieprzeprowadzony.</strong> Cały materiał jest syntetyczny. Nie opisuje zlecenia, rzeczywistego klienta ani wyniku działania modelu.</p>
     <h2>Pytanie</h2><p>Jak przygotować podsumowanie dla opiekuna projektu tak, aby nie dopisywać ustaleń, których nie ma w notatce? Ten przykład pokazuje strukturę sposobu pracy, a nie skuteczność całego procesu w firmie.</p>
     <h2>Materiał syntetyczny</h2><blockquote>Rozmowa o etapowym uruchomieniu obsługi. Klient chce najpierw ustalić zakres źródeł danych i liczbę użytkowników. Budżet wymaga potwierdzenia. Termin wdrożenia nie został uzgodniony. Opiekun ma przygotować pytania do kolejnej rozmowy. Nie ustalono terminu następnego spotkania.</blockquote><p>To całość źródła przykładu.</p>
+    <h2>Sprawdzenie względem źródła</h2><p>Tak wygląda kontrola opisana w standardzie: każde zdanie szkicu dostaje fragment źródła albo poprawkę.</p><Proof />
     <h2>Projekt standardu</h2><div className="sheet"><div className="sheet-bar"><p>Standard pracy</p><p>Przykład, materiał syntetyczny</p></div><StandardTable rows={standard.rows} /></div>
     <h2>Instrukcja robocza</h2><div className="instruction-excerpt"><p>Na podstawie wyłącznie podanej notatki przygotuj robocze podsumowanie dla opiekuna projektu. Oddziel ustalenia, informacje do potwierdzenia, pytania i następny krok.</p><p>Nie uzupełniaj brakujących kwot, dat ani zobowiązań. Przy braku informacji wpisz „nie ustalono” albo „do potwierdzenia”. Dla każdej pozycji ustaleń przytocz krótki fragment źródła. Nie wysyłaj wiadomości i nie wykonuj działań w innych systemach.</p></div><p>To projekt instrukcji wymagający próby. Sam jej zapis nie gwarantuje, że model będzie przestrzegał ograniczeń.</p>
     <h2>Oczekiwany wzorzec redakcyjny</h2><p><strong>Ustalenia:</strong> rozmowa dotyczy etapowego uruchomienia obsługi; przed następnym etapem trzeba określić zakres źródeł i liczbę użytkowników.</p><p><strong>Do potwierdzenia:</strong> budżet. <strong>Nie ustalono:</strong> terminu wdrożenia i kolejnego spotkania. <strong>Następny krok:</strong> opiekun przygotowuje pytania o źródła danych oraz użytkowników.</p><p className="section-remark">Wzorzec napisał autor materiału. Nie jest wynikiem uruchomienia modelu.</p>

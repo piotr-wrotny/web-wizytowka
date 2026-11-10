@@ -51,9 +51,8 @@ p{text-wrap:pretty}
 strong{font-weight:600}
 a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
 ::selection{background:var(--blue);color:var(--on-blue)}
-.offer ::selection{background:var(--on-blue);color:var(--blue)}
 :focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:2px}
-.offer :focus-visible,.principles :focus-visible,.site-footer :focus-visible{outline-color:var(--on-blue)}
+.principles :focus-visible,.site-footer :focus-visible{outline-color:var(--on-blue)}
 [tabindex='-1']:focus{outline:0}
 @media(prefers-reduced-motion:no-preference){@view-transition{navigation:auto}}
 .visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
@@ -115,14 +114,20 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
 .hero-line-inner{display:block}
 .hero-line:nth-child(2){font-style:italic;font-weight:400;letter-spacing:-.028em}
 .hero-row{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gap);margin-top:clamp(36px,4.6vw,68px);align-items:stretch}
-.hero-copy{grid-column:1/span 5;display:flex;flex-direction:column;align-items:flex-start}
-.hero-lead{font-size:var(--t-lead);line-height:1.5;max-width:34ch}
+.hero-copy{grid-column:1/span 6;display:flex;flex-direction:column;align-items:flex-start}
+.hero-lead{font-size:var(--t-lead);line-height:1.5;max-width:40ch}
 .hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 30px;margin-top:clamp(26px,2.8vw,38px)}
 .perspective{margin-top:auto;padding-top:clamp(36px,4vw,56px);width:100%;max-width:27rem}
 .perspective-title{font-family:var(--serif);font-size:var(--t-h3);font-weight:500;line-height:1.15;letter-spacing:-.015em;padding-top:18px;border-top:1px solid var(--ink)}
 .perspective-copy{margin-top:8px;font-size:var(--t-small);line-height:1.55;color:var(--ink-soft)}
 
-.proof{grid-column:7/-1;align-self:start;background:var(--sheet);border:1px solid var(--line);border-radius:3px;box-shadow:var(--shadow-sheet)}
+.hero{background:var(--paper);color:var(--ink)}
+.theme-blue ::selection{background:#fcfdfb;color:#2340c8}
+.hero-sub{font-family:var(--serif);font-style:italic;font-size:var(--t-h3);line-height:1.25;color:var(--ink-soft)}
+.hero-sub+.hero-lead{margin-top:14px}
+.hero-pile{grid-column:8/-1;position:relative;align-self:start;height:calc(4*48px + 21rem)}
+.hero-pile .flow-sheet{position:absolute;left:0;right:0;top:calc(var(--i)*48px);min-height:21rem;box-shadow:0 1px 0 rgba(8,10,30,.08),0 28px 56px -28px rgba(6,10,50,.6)}
+.proof{align-self:start;background:var(--sheet);border:1px solid var(--line);border-radius:3px;box-shadow:var(--shadow-sheet)}
 .proof-bar{display:flex;align-items:center;justify-content:space-between;gap:10px 20px;flex-wrap:wrap;padding:10px 12px 10px clamp(18px,2vw,26px);border-bottom:1px solid var(--line)}
 .proof-title{font-size:var(--t-meta);font-weight:500;font-stretch:92%}
 .proof-switch{display:flex;padding:3px;border-radius:5px;background:var(--desk)}
@@ -147,22 +152,6 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
 /* ------------------------------------------------------------------
    Offer: the one blue field.
    ------------------------------------------------------------------ */
-.offer{background:var(--blue);color:var(--on-blue);padding-block:clamp(64px,8.4vw,128px)}
-.offer-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gap);align-items:end}
-.offer-main{grid-column:1/span 7}
-.offer h2{font-size:clamp(2.6rem,6.2vw,5.5rem);line-height:.98;letter-spacing:-.032em;max-width:11ch}
-.offer-subtitle{margin-top:clamp(18px,2vw,28px);font-family:var(--serif);font-style:italic;font-size:var(--t-h3);line-height:1.25;color:var(--on-blue-soft)}
-.offer-intro{margin-top:clamp(28px,3.4vw,48px);font-size:var(--t-lead);line-height:1.5;max-width:36ch;white-space:pre-line}
-.offer-index{grid-column:9/-1}
-.offer-index-title{font-size:var(--t-meta);font-weight:500;font-stretch:92%;color:var(--on-blue-soft);padding-bottom:12px}
-.offer-index ul{list-style:none;padding:0;margin:0;border-bottom:1px solid color-mix(in srgb,var(--on-blue) 34%,transparent)}
-.offer-index a{display:grid;grid-template-columns:1fr auto;gap:2px 16px;align-items:center;padding:18px 0;border-top:1px solid color-mix(in srgb,var(--on-blue) 34%,transparent);text-decoration:none}
-.offer-index-name{font-family:var(--serif);font-size:1.5rem;font-weight:500;line-height:1.15;letter-spacing:-.015em}
-.offer-index-sub{grid-column:1;font-size:var(--t-small);line-height:1.4;color:var(--on-blue-soft)}
-.offer-index svg{grid-row:1/span 2;grid-column:2;width:24px;height:24px;transition:transform .45s var(--ease)}
-.offer-index-name,.offer-index-sub{transition:transform .45s var(--ease)}
-.offer-index a:hover .offer-index-name,.offer-index a:hover .offer-index-sub{transform:translateX(10px)}
-.offer-index a:hover svg{transform:translateX(-6px) rotate(45deg)}
 
 /* ------------------------------------------------------------------
    Sections on paper
@@ -237,7 +226,19 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
 .case-format{grid-column:11/-1;font-size:var(--t-small);font-weight:500;line-height:1.4}
 .case-format>span{display:block;font-size:var(--t-meta);font-weight:400;color:var(--ink-soft)}
 
-/* Formats: one sheet and two notes beside it */
+/* Formats: three compact rows; details open on demand */
+.format-rows{margin-top:clamp(40px,5vw,72px);border-top:1px solid var(--ink)}
+.format-row{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px var(--gap);padding-block:clamp(26px,3.2vw,44px);border-bottom:1px solid var(--line);align-items:start}
+.format-row .format-head{grid-column:1/span 4}
+.format-row .format-head h3{font-size:clamp(1.625rem,2.4vw,2.125rem)}
+.format-body{grid-column:5/span 7}
+.format-body>.format-text:first-child{margin-top:0}
+.format-links{display:flex;flex-wrap:wrap;gap:4px 32px;margin-top:14px}
+.disclosure-body .result-list{margin-top:0;border-top:0}
+.disclosure-body .result-list dt{color:var(--ink)}
+.format-row .disclosures{border-top:1px solid var(--line)}
+
+/* Formats (earlier layout, still used by shared parts) */
 .format-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gap);margin-top:clamp(40px,5vw,72px);align-items:start}
 .format-primary{grid-column:1/span 7;background:var(--sheet);border:1px solid var(--line);border-radius:3px;box-shadow:var(--shadow-sheet);padding:clamp(24px,3vw,44px)}
 .format-side{grid-column:9/-1;display:grid;gap:clamp(36px,4vw,56px)}
@@ -268,13 +269,6 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
 .format>.link{margin-top:20px}
 
 /* Exhibit: the example standard as a sheet on the desk */
-.exhibit{background:var(--desk);padding-block:var(--section)}
-.exhibit-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gap);align-items:start}
-.exhibit-side{grid-column:1/span 4;position:sticky;top:112px}
-.exhibit-side h2{font-size:var(--t-h2)}
-.exhibit-caption{margin-top:22px;font-size:var(--t-small);line-height:1.6;color:var(--ink-soft);max-width:38ch}
-.exhibit-side .link{margin-top:14px}
-.exhibit-sheet{grid-column:6/-1}
 .standard-table>div{display:grid;grid-template-columns:minmax(6.5rem,2fr) 9fr;gap:6px 24px;padding:17px clamp(18px,2.4vw,32px);border-bottom:1px solid var(--line-soft)}
 .standard-table>div:last-child{border-bottom:0}
 .sheet-bar+.standard-table>div:last-child{border-bottom:1px solid var(--line)}
@@ -285,13 +279,6 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
 .sheet:not(.exhibit-sheet)>.standard-table:last-child>div:last-child{border-bottom:0}
 
 /* Method: a real sequence, so numerals */
-.method{padding-bottom:calc(var(--section)*.8)}
-.method-steps{list-style:none;padding:0;margin-top:clamp(40px,5vw,72px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--gap)}
-.method-steps li{border-top:1px solid var(--ink);padding-top:16px}
-.step-numeral{display:block;font-family:var(--serif);font-size:clamp(3.5rem,6vw,5.5rem);font-weight:400;line-height:1;letter-spacing:-.03em;color:var(--blue);font-variant-numeric:lining-nums}
-.method-steps h3{margin-top:clamp(20px,2.4vw,36px);font-size:var(--t-h3)}
-.method-steps p{margin-top:10px;font-size:var(--t-small);line-height:1.6;color:var(--ink-soft);max-width:42ch}
-.method-closing{margin-top:clamp(48px,6vw,88px);margin-left:calc((100% + var(--gap))/3);font-family:var(--serif);font-style:italic;font-size:var(--t-h2);line-height:1.18;letter-spacing:-.02em;max-width:24ch;text-wrap:balance}
 
 /* Principles: ink ground, the refusals */
 .principles{background:var(--ink);color:var(--paper);padding-block:var(--section)}
@@ -426,9 +413,7 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
    Responsive
    ------------------------------------------------------------------ */
 @media(max-width:1100px){
-  .hero-copy{grid-column:1/span 5}
-  .proof{grid-column:6/-1}
-  .proof-rows li{grid-template-columns:minmax(0,1fr) 40%}
+  .hero-pile{grid-column:7/-1}
   .offer-main{grid-column:1/span 6}
   .offer-index{grid-column:8/-1}
   .format-primary{grid-column:1/span 7}
@@ -443,8 +428,10 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
   .hero-copy{display:contents}
   .hero-lead{max-width:44ch}
   .hero-actions{align-self:flex-start}
-  .proof{order:2;margin-top:48px;align-self:stretch}
+  .hero-pile{order:2;margin-top:48px;align-self:stretch}
   .perspective{order:3;margin-top:0;padding-top:48px;max-width:none}
+  .format-row{display:block}
+  .format-body{margin-top:18px}
   .flow-text{display:block}
   .flow-sheet-inline{margin-top:28px}
   .flow-list>li{padding-bottom:clamp(36px,6vw,56px)}
@@ -533,7 +520,8 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
 .js-motion .hero-line{overflow:hidden;padding-bottom:.16em;margin-bottom:-.16em}
 .js-motion .hero-line-inner{animation:rise 1.1s var(--ease) both;animation-delay:calc(.05s + var(--i,0)*.12s)}
 .js-motion .hero-copy{animation:settle 1s var(--ease) .45s both}
-.js-motion .proof{animation:settle 1.1s var(--ease) .6s both}
+.js-motion .hero-pile .flow-sheet{animation:lay 1s var(--ease) both;animation-delay:calc(.5s + var(--i,0)*.13s)}
+@keyframes lay{from{opacity:0;transform:translateY(-44px) rotate(-2.5deg)}}
 .js-motion .proof:not([data-touched]) del{animation:strike .7s var(--ease) both;animation-delay:calc(1.5s + var(--i,0)*.22s)}
 .js-motion .proof:not([data-touched]) .proof-margin .mark path{stroke-dasharray:1;animation:draw .5s var(--ease) both;animation-delay:calc(1.25s + var(--i,0)*.18s)}
 .js-motion .proof:not([data-touched]) .proof-margin>span{animation:appear .5s ease both;animation-delay:calc(1.4s + var(--i,0)*.18s)}
@@ -589,7 +577,7 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
 @property --on-blue{syntax:'<color>';inherits:true;initial-value:#fcfdfb}
 html[data-theme='desk'],html:not(.js-motion) .slide[data-theme='desk']{--paper:#e2e6e2}
 html[data-theme='ink'],html:not(.js-motion) .slide[data-theme='ink']{--paper:#14161a;--ink:#f0f2ef;--ink-soft:#b6bcbf;--line:#3d4248;--line-soft:#2c3036;--blue:#a9b8ff;--blue-deep:#c9d3ff;--on-blue:#14161a}
-html[data-theme='blue'],html:not(.js-motion) .slide[data-theme='blue']{--paper:#2340c8;--ink:#fcfdfb;--ink-soft:#cdd6ff;--line:#7186e2;--line-soft:#4a62d6;--blue:#fcfdfb;--blue-deep:#dfe5ff;--on-blue:#2340c8}
+html[data-theme='blue'],html:not(.js-motion) .slide[data-theme='blue'],.theme-blue{--paper:#2340c8;--ink:#fcfdfb;--ink-soft:#cdd6ff;--line:#7186e2;--line-soft:#4a62d6;--blue:#fcfdfb;--blue-deep:#dfe5ff;--on-blue:#2340c8}
 html.js-motion{transition:--paper .9s ease,--ink .9s ease,--ink-soft .9s ease,--line .9s ease,--line-soft .9s ease,--blue .9s ease,--blue-deep .9s ease,--on-blue .9s ease}
 html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 /* A sheet is always paper and ink, whatever theme surrounds it. */
@@ -767,3 +755,7 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 }
 @media(prefers-reduced-motion:reduce){html:not(.js-motion){transition:none!important}}
 @media print{.slide{--sp:1!important;min-height:0!important;height:auto!important;padding-block:24px}.slide-pin{position:static!important;height:auto!important}.deck-rail{display:none}.flow-close .cta{background:#fff;color:#14161a;border:1px solid #999}}
+
+/* The draft-and-corrections exhibit inside the sample page's reading column */
+.article-reading .proof{margin-block:1.4em;font-family:var(--sans);font-size:var(--t-body)}
+.article-reading .proof-rows{font-size:1rem}
