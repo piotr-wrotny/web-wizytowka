@@ -26,3 +26,7 @@ Thumbs.db
 
 # tool output
 .playwright-mcp/
+
+# Cloudflare / wrangler
+.wrangler/
+.dev.vars*

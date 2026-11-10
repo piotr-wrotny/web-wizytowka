@@ -8,7 +8,9 @@ export default {
     }
 
     const indexUrl = new URL(request.url);
-    indexUrl.pathname = "/index.html";
+    // "/" rather than "/index.html": with html_handling "auto-trailing-slash" the
+    // assets binding answers "/index.html" with a redirect to "/".
+    indexUrl.pathname = "/";
     indexUrl.search = "";
     return env.ASSETS.fetch(new Request(indexUrl, request));
   },

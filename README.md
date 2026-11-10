@@ -33,3 +33,13 @@ Strona jest złożona jak sprawdzony dokument. Jedynym motywem graficznym jest o
 Node.js 20 lub nowszy. `npm ci`, potem `npm run dev` (Vite) albo `npm run build`, który tworzy statyczne dokumenty HTML sześciu stron w `dist/client`. `npm test` sprawdza worker. Treść jest czytelna bez JavaScript.
 
 `qa-views` to pomocnicze widoki do zrzutów (`scroll.html?to=przebieg&dy=400`); nie trafiają do `dist/client`.
+
+## Cloudflare
+
+Worker (`worker/index.js`) serwuje statyczne pliki z `dist/client` przez binding `ASSETS`; konfiguracja w `wrangler.jsonc`, nagłówki cache i `X-Robots-Tag` w `public/_headers`. Nieznana trasa HTML dostaje stronę główną.
+
+- `npm run preview`: build i lokalny podgląd przez `wrangler dev` (http://127.0.0.1:8787).
+- `npm run deploy:check`: build i `wrangler deploy --dry-run`, bez publikacji.
+- `npm run deploy`: build i publikacja. Wymaga wcześniejszego `npx wrangler login`.
+
+Prototyp publikujemy tylko pod adresem `*.workers.dev`. Domenę `piotrwrotny.com` podpinamy w panelu Cloudflare (Custom Domain) dopiero po decyzji założyciela; `noindex` zostaje do publicznej wersji. Formularz pozostaje lokalną demonstracją. Sekrety nie trafiają do repo.

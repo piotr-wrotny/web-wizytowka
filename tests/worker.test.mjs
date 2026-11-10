@@ -28,8 +28,8 @@ test("falls back to index.html for an unknown app route", async () => {
         fetch: async (request) => {
           const url = new URL(request.url);
           calls.push(url.pathname + url.search);
-          return new Response(url.pathname === "/index.html" ? "app" : "missing", {
-            status: url.pathname === "/index.html" ? 200 : 404,
+          return new Response(url.pathname === "/" ? "app" : "missing", {
+            status: url.pathname === "/" ? 200 : 404,
           });
         },
       },
@@ -37,7 +37,7 @@ test("falls back to index.html for an unknown app route", async () => {
   );
 
   assert.equal(response.status, 200);
-  assert.deepEqual(calls, ["/flow/step-two?source=share", "/index.html"]);
+  assert.deepEqual(calls, ["/flow/step-two?source=share", "/"]);
 });
 
 test("does not turn missing API or write requests into the app shell", async () => {
