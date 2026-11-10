@@ -4,14 +4,14 @@
 
 ## Wykonane
 
-Wybrany Esej autorski odtworzony w responsywnym frontendzie. Strona główna, dwie pełne analizy, syntetyczny standard i opis prywatności prototypu. Działające linki, menu, szczegóły zakresu, wybór tematu kontaktu, walidacja, podgląd i kopiowanie. Pięć stron generowanych statycznie podczas builda. Brak sztucznych referencji i publicznego eksperymentalnego cennika.
+Responsywny frontend. Strona główna, dwie pełne analizy, syntetyczny standard i opis prywatności prototypu. Działające linki, menu, szczegóły zakresu, wybór tematu kontaktu, walidacja, podgląd i kopiowanie. Pięć stron generowanych statycznie podczas builda. Brak sztucznych referencji i publicznego eksperymentalnego cennika.
 
 ## P0 przed publiczną publikacją
 
 | Właściciel | Zadanie | Warunek ukończenia |
 |---|---|---|
 | Założyciel | Opis doświadczenia i publiczny profil (nazwisko Piotr Wrotny wprowadzone 2026-11-09) | Zatwierdzone fakty, realny profil i dozwolony zakres ujawnienia; usunięty marker „Do uzupełnienia” w sekcji O mnie |
-| Założyciel | Akceptacja treści oznaczonych `DRAFT` (2026-11-09) | Brzmienie „Czego nie robię” (`site.principles`), słownika (`src/content/glossary.js`), tez analiz (`articles[].theses`) oraz pięciu sytuacji przykładowych (`site.cases`) zatwierdzone lub poprawione; usunięte komentarze `DRAFT` |
+| Założyciel | Akceptacja treści oznaczonych `DRAFT` (2026-11-09) | Brzmienie „Czego nie robię” (`site.principles`), słownika (`src/content/glossary.js`), tez analiz (`articles[].theses`) pięciu sytuacji przykładowych (`site.cases`), przebiegu konsultacji (`site.flow`) oraz ilustracji otwarcia (`site.proof`) zatwierdzone lub poprawione; usunięte komentarze `DRAFT` |
 | Założyciel | Dane działalności, kontakt i dostępność | Prawdziwe dane, e-mail oraz wykonalny termin odpowiedzi |
 | Założyciel | Polityka oferty i ceny | Akceptowany zakres, cena kohorty, podatki/VAT, płatności i realny kalendarz; hipotezy DR07 nie są walidowanym cennikiem |
 | Założyciel i prawnik | Prywatność i warunki usług | Dokumenty odpowiadają administratorowi, dostawcom, retencji i przepływowi; odpowiednio ocenione obowiązki oraz prawa kupującego |

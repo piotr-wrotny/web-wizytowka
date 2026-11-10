@@ -1,37 +1,31 @@
 # Portfolio niezależnego doradcy AI
 
-Responsywny prototyp w wybranym kierunku Esej autorski / Editorial Expert. Wersja 1.1, 09.11.2026. Oferta główna: konsultacje AI szyte na miarę, w trzech formatach: standard dla zespołu (W), jedna decyzja (K), przegląd oferty (R, na zapytanie).
+Responsywny prototyp strony Piotra Wrotnego. Oferta główna: konsultacje AI szyte na miarę, w trzech formatach: standard dla zespołu, jedna decyzja, przegląd oferty (na zapytanie). Głównym przykładem pracy jest przebieg konsultacji: rozpoznanie problemów i poziomu wiedzy, zebranie materiału, prezentacja, spotkanie i dokumenty końcowe.
 
 ## Co zawiera projekt
 
-Stronę główną, dwie analizy, syntetyczny standard pracy i opis prywatności prototypu. Formularz przygotowuje wyłącznie lokalny podgląd; nie ma endpointu, wysyłki, kalendarza ani zapisu danych. Nazwisko (Piotr Wrotny) jest prawdziwe; opis doświadczenia, kontakt i dane działalności pozostają placeholderami. W cenach publicznych nie ma kwot.
+Stronę główną, dwie analizy, syntetyczny standard pracy i opis prywatności prototypu. Formularz przygotowuje wyłącznie lokalny podgląd; nie ma endpointu, wysyłki, kalendarza ani zapisu danych. Nazwisko jest prawdziwe; opis doświadczenia, kontakt i dane działalności pozostają placeholderami. Nie ma publicznych cen, wymyślonych klientów ani metryk.
 
-Strona jest przewijanym doświadczeniem: sekwencja otwarcia, kurczący się nagłówek, zielony blok wlewający się jak atrament, słowa rozświetlane przewijaniem, składająca się tablica i przypięta scena metody na desktopie. Ruch jest wyłączony przy `prefers-reduced-motion` i nie jest potrzebny do czytania. Podgląd dowolnej pozycji przewinięcia: `qa-views/scroll.html?to=podejscie&dy=400` (tylko dev; `&notrans=1` wyłącza przejścia CSS do zrzutów). Dopisek `?nomotion` do adresu strony wyłącza cały ruch, co przydaje się do statycznych zrzutów całej strony.
+## Kierunek wizualny (2026-11-10)
+
+Strona jest złożona jak sprawdzony dokument. Jedynym motywem graficznym jest ołówek kontrolny: niebieski potwierdza i niesie ofertę, czerwony poprawia, zatrzymuje i oznacza braki. Poza papierem i tuszem nie ma innych kolorów.
+
+- Fonty, lokalne, w `public/fonts`: Brygada 1918 (nagłówki i tekst do czytania), Archivo ze zmienną szerokością (interfejs), IBM Plex Mono (tylko surowy tekst: szkic, instrukcja, podgląd opisu). Licencje OFL obok plików.
+- Tokeny koloru, skali i odstępów są na początku `src/styles.css`.
+- Elementy wspólne: `Mark` (znaki ołówka), `Note` (uwaga na marginesie, jedno zastrzeżenie na kontekst), `Pending` (czerwone „Do uzupełnienia”), `.sheet` (kartka na biurku: przykład standardu, formularz, karty przebiegu).
+- Otwarcie: szkic podsumowania sprawdzany względem źródła (`site.proof`), z przełącznikiem „Z poprawkami / Po sprawdzeniu”. To ilustracja na materiale syntetycznym i tak jest podpisana.
+- Przebieg konsultacji (`site.flow`): pięć etapów, każdy zostawia kartę. Na szerokim ekranie z włączonym ruchem karty układają się w rosnącą teczkę obok tekstu; bez ruchu, bez JS i na wąskich ekranach każda karta stoi przy swoim etapie.
+- Ruch: sekwencja otwarcia (nagłówek, rysujące się poprawki), teczka przebiegu, słowa oferty rozświetlane przewijaniem, reakcje na hover. Wszystko za klasą `html.js-motion`, której nie ma przy `prefers-reduced-motion` ani z dopiskiem `?nomotion`.
 
 ## Edycja
 
-- `src/content/site.js`: hero, nawigacja, oferta główna, sytuacje przykładowe (DRAFT), trzy formaty współpracy, przykład standardu (eksponat i pełna wersja), metoda, zasady „Czego nie robię” (DRAFT) i ekspertyza.
-- `src/content/articles.js`: treści dwóch analiz z tezami, cytatem wyciągniętym i tabelą; pomocnicze `formatDate` i `readingMinutes`.
-- `src/content/glossary.js`: słownik roboczy pokazywany jako marginalia na podstronach (DRAFT).
-- `src/App.jsx`: skład sekcji, profil, kontakt i mikrocopy.
-- `docs/plan-fable.md`: diagnoza i koncepcja rewizji z 2026-11-09; `design/qa/before` i `design/qa/after`: zrzuty przed i po.
-- `src/styles.css`: tokeny, typografia, siatka i zachowania responsive.
-- `design/selected-reference.jpeg`: dokładny obraz wybrany przez założyciela.
-- `docs/design-system.md`: finalny system wizualny.
-- `docs/launch-readiness.md`: zadania przed publikacją i priorytety iteracji.
-- `docs/tresci-finalne.txt`: eksport treści z gotowych stron HTML.
-- `design-qa.md`: wykonany przegląd i jego ograniczenia.
+- `src/content/site.js`: hero, ilustracja otwarcia (DRAFT), oferta, przebieg konsultacji (DRAFT), sytuacje przykładowe (DRAFT), formaty, przykład standardu, metoda, zasady „Czego nie robię” (DRAFT), ekspertyza.
+- `src/content/articles.js`, `src/content/glossary.js`: analizy i słownik pokazywany na marginesie.
+- `src/App.jsx`: skład sekcji i komponenty. `src/motion.js`: rozświetlanie słów.
+- `AGENTS.md`: wiążące zasady treści. `docs/launch-readiness.md`: zadania przed publikacją.
 
-## Odtworzenie poza bieżącym podglądem
+## Uruchomienie
 
-Node.js 20 lub nowszy (`.nvmrc`, pole `engines`) i npm. `npm ci` odtwarza zależności z lockfile. `npm run dev` uruchamia Vite. `npm run build` tworzy statyczne dokumenty HTML i assety w `dist/client`. Na Windows nic więcej nie trzeba: `.gitattributes` wymusza końce linii LF, skrypty nie używają poleceń powłoki. Aktualna praca jest na gałęzi `dev`; `main` jest do niej podciągany po akceptacji.
+Node.js 20 lub nowszy. `npm ci`, potem `npm run dev` (Vite) albo `npm run build`, który tworzy statyczne dokumenty HTML pięciu stron w `dist/client`. `npm test` sprawdza worker. Treść jest czytelna bez JavaScript.
 
-React/Vite wykorzystano dla wspólnych komponentów, stanów i podglądu w Work. Build generuje komplet treści do HTML; odczyt stron nie wymaga oczekiwania na React. JavaScript obsługuje menu i formularz. To większy pakiet niż ręcznie napisany HTML — około 76 kB gzip głównego JS — ale bez osobnego backendu, bazy i CMS.
-
-## Zakres uruchomienia
-
-To materiał do przeglądu. Przed publiczną ofertą uzupełnij wskazane dane i proces kontaktu zgodnie z `docs/launch-readiness.md`. Zachowaj etykiety syntetycznego materiału, granice zakresów i informację demonstracyjnego formularza. Nie umieszczaj poufnych danych ani sekretów w kodzie.
-
-Licencje fontów są w `public/fonts`; Newsreader italic (woff2, latin i latin-ext) pochodzi z Google Fonts na tej samej licencji OFL. Ikony: Phosphor, MIT. W projekcie nie ma wygenerowanego portretu ani fikcyjnego dowodu klientowskiego.
-
-`qa-views` jest pomocniczym widokiem do kontroli różnych szerokości w przeglądarce; nie trafia do `dist/client`.
+`qa-views` to pomocnicze widoki do zrzutów (`scroll.html?to=przebieg&dy=400`); nie trafiają do `dist/client`.

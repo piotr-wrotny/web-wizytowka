@@ -4,8 +4,25 @@ export const site = {
   name: 'Piotr Wrotny',
   descriptor: 'Niezależny doradca AI',
   hero: {
-    lines: ['Od odpowiedzi AI', 'do dobrze', 'wykonanej pracy.'],
+    lines: ['Od odpowiedzi AI', 'do dobrze wykonanej pracy.'],
     lead: 'Konsultacje szyte na miarę zespołu i zadania.\nOcena technologii, kryteria jakości\ni praktyczna próba na Twoim materiale.',
+  },
+  // DRAFT 2026-11-10: hero illustration written by the assistant from the synthetic note on the sample page.
+  // It shows the method (check every statement against the source); it is not a model output and must stay labelled.
+  proof: {
+    titles: { draft: 'Robocze podsumowanie, szkic', final: 'Robocze podsumowanie, po sprawdzeniu' },
+    rows: [
+      { draft: [['t', 'Rozmowa dotyczyła etapowego uruchomienia obsługi.']], final: 'Rozmowa dotyczyła etapowego uruchomienia obsługi.', source: 'Rozmowa o etapowym uruchomieniu obsługi' },
+      { draft: [['t', 'Najpierw trzeba ustalić zakres źródeł danych i liczbę użytkowników.']], final: 'Najpierw trzeba ustalić zakres źródeł danych i liczbę użytkowników.', source: 'ustalić zakres źródeł danych i liczbę użytkowników' },
+      { draft: [['t', 'Budżet '], ['del', 'został zatwierdzony'], ['t', '.']], fix: 'wymaga potwierdzenia', final: 'Budżet wymaga potwierdzenia.', source: 'Budżet wymaga potwierdzenia' },
+      { draft: [['del', 'Wdrożenie rozpocznie się w marcu.']], fix: 'brak w źródle', final: 'Terminu wdrożenia nie uzgodniono.', source: 'Termin wdrożenia nie został uzgodniony' },
+      { draft: [['t', 'Opiekun przygotuje pytania do kolejnej rozmowy.']], final: 'Opiekun przygotuje pytania do kolejnej rozmowy.', source: 'Opiekun ma przygotować pytania' },
+    ],
+    caption: 'Ilustracja metody na materiale syntetycznym. Szkic i poprawki napisał autor strony; to nie jest wynik działania modelu.',
+  },
+  perspective: {
+    title: 'Produkt. Proces. Technologia.',
+    text: 'Doświadczenie Technical Product Managera. Jasne pytanie, uzasadniony wybór, sprawdzalny rezultat.',
   },
   nav: [
     { label: 'Współpraca', href: '/#wspolpraca' },
@@ -13,19 +30,52 @@ export const site = {
     { label: 'O mnie', href: '/#o-mnie' },
     { label: 'Kontakt', href: '/#kontakt' },
   ],
-  // Primary offer: the green block.
+  // Primary offer: the blue band.
   offer: {
     name: 'Konsultacje AI szyte na miarę',
     subtitle: 'Jedno pytanie, jeden zespół albo jedna decyzja.',
     intro: 'Zaczynam od zadania, nie od narzędzia.\nKończę pisemną rekomendacją albo standardem, który zespół utrzyma sam.',
     link: 'Zobacz formaty współpracy',
   },
-  // Row under the green block (the mock's secondary row).
-  pointer: {
-    title: 'Jedna decyzja',
-    subtitle: 'Sesja 60 minut i pisemna rekomendacja.',
-    href: '#konsultacja',
-    link: 'Przykład standardu — dane syntetyczne',
+  // DRAFT 2026-11-10: the main use case, written by the assistant from the founder's description
+  // (recognise problems and knowledge level first, gather material, present, meet, hand over documents).
+  // Sheet contents are illustrative, not a record of an engagement. Wording awaits founder approval.
+  flow: {
+    title: 'Jak przebiega konsultacja.',
+    lead: 'Zanim cokolwiek wyjaśnię, ustalam z klientem, co najbardziej przeszkadza i od jakiego poziomu wiedzy zaczynamy. Wszystko, co dzieje się potem, jest przygotowane pod tę odpowiedź.',
+    note: 'Przebieg poglądowy. Zawartość kart pokazuje rodzaj materiału; zakres i formę ustalamy przed rozpoczęciem.',
+    stages: [
+      {
+        title: 'Rozpoznanie',
+        text: 'Przed konsultacją ustalam z klientem największe problemy i bolączki oraz poziom wiedzy o AI: osoby, zespołu albo całej firmy.',
+        value: 'Rozmawiamy o Twojej sytuacji, nie o AI w ogóle.',
+        sheet: { kind: 'card', title: 'Rozpoznanie', rows: [['Problemy', 'Co dziś nie działa i gdzie ucieka czas.'], ['Bolączki', 'Co najbardziej przeszkadza w codziennej pracy.']], scale: { label: 'Poziom wiedzy', from: 'początki', to: 'praktyka', steps: 5, at: 2 } },
+      },
+      {
+        title: 'Zebranie materiału',
+        text: 'Zbieram dane, przykłady i źródła dobrane do tych problemów i do tego poziomu wiedzy. Bez materiału „na wszelki wypadek”.',
+        value: 'Dostajesz wiedzę dobraną do swoich pytań.',
+        sheet: { kind: 'list', title: 'Zebrany materiał', items: ['Dane i źródła do nazwanych problemów', 'Przykłady zastosowań na właściwym poziomie', 'Narzędzia, które warto porównać', 'Ograniczenia i ryzyka'] },
+      },
+      {
+        title: 'Prezentacja',
+        text: 'Układam materiał w prezentację, która tłumaczy temat krok po kroku, językiem dopasowanym do odbiorców.',
+        value: 'Trudny temat staje się zrozumiały dla całego zespołu.',
+        sheet: { kind: 'slide', title: 'Prezentacja', heading: 'Od czego zacząć i co sprawdzić najpierw', items: ['Gdzie jesteście dziś', 'Co jest możliwe, a co nie', 'Pierwszy rozsądny krok'] },
+      },
+      {
+        title: 'Spotkanie',
+        text: 'Na spotkaniu wyjaśniam, odpowiadam na pytania i razem przechodzimy przez wnioski.',
+        value: 'Jest czas na pytania i wątpliwości, zanim podejmiesz decyzję.',
+        sheet: { kind: 'questions', title: 'Pytania ze spotkania', items: ['Od czego zacząć?', 'Co zostawić bez zmian?', 'Jak sprawdzić rezultat?'] },
+      },
+      {
+        title: 'Dokumenty',
+        text: 'Na koniec przekazuję dokumenty z całą wiedzą: zebrany materiał, prezentację, odpowiedzi na pytania i rekomendację.',
+        value: 'Wiedza zostaje u Ciebie i można do niej wracać.',
+        sheet: { kind: 'contents', title: 'Dokumenty końcowe', items: ['Rozpoznanie', 'Zebrany materiał', 'Prezentacja', 'Odpowiedzi na pytania', 'Rekomendacja i następny krok'] },
+      },
+    ],
   },
   // DRAFT 2026-11-09: illustrative situations. Generic roles, no clients, no outcomes. Wording awaits founder approval.
   cases: {
