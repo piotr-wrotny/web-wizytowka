@@ -6,6 +6,7 @@ import { glossary as rawGlossary } from './content/glossary';
 import { initMotion } from './motion';
 
 const samplePath = '/materialy/przyklad-standardu/';
+const deckPath = '/konsultacja/';
 
 /* Polish typesetting: a one-letter word never ends a line. Binds i, w, z, o, a, u (and capitals) to the next word. */
 export function pl(text) {
@@ -27,6 +28,7 @@ export function getPageMeta(path) {
   const article = articles.find(a => path === `/analizy/${a.slug}/`);
   if (article) return { title: `${article.title} — ${site.descriptor}`, description: article.lead };
   if (path === samplePath) return { title: 'Przykład standardu pracy z AI — dane syntetyczne', description: 'Otwarta demonstracja metody: wejście, kontrola faktów, odpowiedzialność i warunki przerwania pracy.' };
+  if (path === deckPath) return { title: `Jak przebiega konsultacja — ${site.name}`, description: 'Pięć etapów konsultacji AI: rozpoznanie problemów i poziomu wiedzy, zebranie materiału, prezentacja, spotkanie i dokumenty końcowe.' };
   if (path === '/prywatnosc/') return { title: 'Prywatność prototypu — niezależny doradca AI', description: 'Jak działa demonstracyjny kontakt i co wymaga uzupełnienia przed uruchomieniem obsługi zapytań.' };
   return { title: `${site.name} — niezależny doradca AI`, description: 'Konsultacje AI szyte na miarę zespołu i zadania: standard dla zespołu, jedna decyzja albo przegląd oferty. Ocena technologii, kryteria jakości i praktyczna próba.' };
 }
@@ -204,6 +206,143 @@ function FlowSheet({ sheet, index, total, className = '' }) {
   </div>;
 }
 
+/* The consultation in short: the terms that hold for every engagement, then one action. */
+function FlowTerms({ headingLevel: H = 'h3' }) {
+  const { flow } = site;
+  return <div className="terms">
+    <H className="terms-title">{flow.termsTitle}</H>
+    <dl className="terms-list">{flow.terms.map(t => <div key={t.title}><dt><Mark kind="tick" />{t.title}</dt><dd>{t.text}</dd></div>)}</dl>
+  </div>;
+}
+
+/* A call to action that is hard to miss: one sentence, one button, optionally a second link. */
+function CallToAction({ title, text, button, href = '/?temat=inne#kontakt', secondary, headingLevel: H = 'h3' }) {
+  return <div className="cta">
+    <div className="cta-copy"><H className="cta-title">{title}</H>{text && <p>{text}</p>}</div>
+    <div className="cta-actions"><Button href={href}>{button}</Button>{secondary}</div>
+  </div>;
+}
+
+/* Situations. Rendered as a plain list on the server and on narrow screens; on a wide screen with JS it becomes
+   a master-detail view (vertical tabs) so one question at a time gets the full stage. */
+function Cases() {
+  const { cases } = site;
+  const [enhanced, setEnhanced] = useState(false);
+  const [current, setCurrent] = useState(0);
+  const tabs = useRef([]);
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 901px)');
+    const sync = () => setEnhanced(mq.matches);
+    sync();
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
+  function onKeyDown(event) {
+    const last = cases.items.length - 1;
+    const next = event.key === 'ArrowDown' ? (current === last ? 0 : current + 1) : event.key === 'ArrowUp' ? (current === 0 ? last : current - 1) : event.key === 'Home' ? 0 : event.key === 'End' ? last : null;
+    if (next === null) return;
+    event.preventDefault();
+    setCurrent(next);
+    tabs.current[next]?.focus();
+  }
+  const detail = c => <>
+    <p className="case-question">{c.question}</p>
+    <p className="case-situation">{c.situation}</p>
+    <dl className="case-facts">
+      <div><dt>{cases.panelFirst}</dt><dd>{c.first}</dd></div>
+      <div><dt>Format</dt><dd>{c.format}</dd></div>
+    </dl>
+  </>;
+  return <section className="section cases wrap" id="sytuacje" aria-labelledby="cases-title">
+    <div className="section-head">
+      <h2 id="cases-title">{cases.title}</h2>
+      <p className="section-lead">{cases.intro}</p>
+    </div>
+    {enhanced
+      ? <div className="case-browser">
+        <div className="case-tabs" role="tablist" aria-orientation="vertical" aria-labelledby="cases-title" onKeyDown={onKeyDown}>
+          {cases.items.map((c, i) => <button key={c.role} ref={el => { tabs.current[i] = el; }} type="button" role="tab" id={`case-tab-${i}`} aria-selected={i === current} aria-controls="case-panel" tabIndex={i === current ? 0 : -1} onClick={() => setCurrent(i)}>
+            <span className="case-tab-index" aria-hidden="true">{i + 1}</span><span>{c.role}</span>
+          </button>)}
+        </div>
+        <div className="sheet case-panel" role="tabpanel" id="case-panel" aria-labelledby={`case-tab-${current}`} tabIndex="0">
+          <div className="sheet-bar"><p>{cases.items[current].role}</p><p>{`${current + 1} z ${cases.items.length}`}</p></div>
+          <div className="case-panel-body" key={current}>
+            {detail(cases.items[current])}
+            <Button href="/?temat=inne#kontakt" compact>{cases.panelCta}</Button>
+          </div>
+        </div>
+      </div>
+      : <ul className="case-list">{cases.items.map(c => <li key={c.role}>
+        <h3>{c.role}</h3>
+        <div className="case-text">{detail(c)}</div>
+      </li>)}</ul>}
+    <Note className="section-note">{cases.note}</Note>
+  </section>;
+}
+
+/* The consultation as a scrolled presentation: one stage per screen, and the whole page takes the stage's theme.
+   Each slide carries its own theme, so the page is complete without JS; with motion the theme moves to <html>
+   and cross-fades as slides pass the middle of the screen. */
+function DeckPage() {
+  const { flow } = site;
+  const total = flow.stages.length;
+  const [active, setActive] = useState(-1);
+  const deck = useRef(null);
+  useEffect(() => {
+    const html = document.documentElement;
+    if (!html.classList.contains('js-motion')) return;
+    const slides = Array.from(deck.current.querySelectorAll('.slide'));
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const middle = window.innerHeight / 2;
+      const slide = slides.find(el => { const r = el.getBoundingClientRect(); return r.top <= middle && r.bottom > middle; });
+      if (!slide) return;
+      if (html.dataset.theme !== slide.dataset.theme) html.dataset.theme = slide.dataset.theme;
+      setActive(Number(slide.dataset.index));
+    };
+    const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); cancelAnimationFrame(frame); delete html.dataset.theme; };
+  }, []);
+  return <main id="tresc" tabIndex="-1" className="deck" ref={deck}>
+    <section className="slide slide-intro" data-theme="paper" data-index="-1" aria-labelledby="deck-title">
+      <div className="wrap">
+        <a className="back-link" href="/#przebieg"><ArrowLeft aria-hidden="true" />Wróć na stronę główną</a>
+        <h1 id="deck-title">{flow.deck.title}</h1>
+        <p className="slide-lead">{flow.lead}</p>
+        <ol className="deck-index">{flow.stages.map((stage, i) => <li key={stage.title}><a href={`#etap-${i + 1}`}><span aria-hidden="true">{i + 1}</span>{stage.title}</a></li>)}</ol>
+      </div>
+    </section>
+    {flow.stages.map((stage, i) => <section key={stage.title} className={`slide slide-stage${i % 2 ? ' is-flipped' : ''}`} id={`etap-${i + 1}`} data-theme={flow.deck.themes[i]} data-index={i} aria-labelledby={`etap-${i + 1}-title`}>
+      <div className="wrap slide-grid">
+        <div className="slide-copy">
+          <p className="slide-numeral" aria-hidden="true">{i + 1}</p>
+          <h2 id={`etap-${i + 1}-title`}>{stage.title}</h2>
+          <p className="slide-text">{stage.text}</p>
+          <p className="note slide-value"><Mark kind="tick" /><span>{stage.value}</span></p>
+        </div>
+        <div className="slide-visual"><FlowSheet sheet={stage.sheet} index={i} total={total} /></div>
+      </div>
+    </section>)}
+    <section className="slide slide-end" data-theme="blue" data-index={total} aria-labelledby="deck-end-title">
+      <div className="wrap">
+        <h2 id="deck-end-title">{flow.cta.title}</h2>
+        <p className="slide-lead">{flow.cta.text}</p>
+        <div className="slide-end-actions"><Button href="/?temat=inne#kontakt">{flow.cta.button}</Button><TextLink href="/#zakres">Zobacz formaty współpracy</TextLink></div>
+        <FlowTerms headingLevel="h3" />
+        <Note className="section-note">{flow.note}</Note>
+      </div>
+    </section>
+    <nav className="deck-rail" aria-label="Etapy konsultacji">
+      <ol>{flow.stages.map((stage, i) => <li key={stage.title}><a href={`#etap-${i + 1}`} aria-current={i === active ? 'step' : undefined}><span className="visually-hidden">{`Etap ${i + 1}: ${stage.title}`}</span></a></li>)}</ol>
+    </nav>
+  </main>;
+}
+
 /* The main use case: five stages, each leaving a sheet. On wide screens the sheets pile up beside the text as the reader scrolls,
    so the finished dossier is on the desk by the last stage. Without JS or motion the pile is simply complete. */
 function Flow() {
@@ -247,6 +386,10 @@ function Flow() {
       </div>
     </div>
     <Note className="section-note">{flow.note}</Note>
+    <div className="flow-close">
+      <FlowTerms />
+      <CallToAction title={flow.cta.title} text={flow.cta.text} button={flow.cta.button} secondary={<TextLink href={deckPath} arrow>{flow.deck.link}</TextLink>} />
+    </div>
   </section>;
 }
 
@@ -291,18 +434,7 @@ function Home() {
 
     <Flow />
 
-    <section className="section cases wrap" id="sytuacje" aria-labelledby="cases-title">
-      <div className="section-head">
-        <h2 id="cases-title">{cases.title}</h2>
-        <p className="section-lead">{cases.intro}</p>
-      </div>
-      <ul className="case-list">{cases.items.map(c => <li key={c.role}>
-        <h3>{c.role}</h3>
-        <div className="case-text"><p className="case-question">{c.question}</p><p className="case-situation">{c.situation}</p></div>
-        <p className="case-format"><span>Format</span>{c.format}</p>
-      </li>)}</ul>
-      <Note className="section-note">{cases.note}</Note>
-    </section>
+    <Cases />
 
     <section className="section formats wrap" id="zakres" aria-labelledby="formats-title">
       <div className="section-head">
@@ -337,6 +469,7 @@ function Home() {
         </div>
       </div>
       <Note className="section-note">{formats.boundaryNote}</Note>
+      <CallToAction title="Nie wiesz, który format pasuje?" text="Opisz sytuację. Format dobiorę do pytania i potwierdzę zakres przed rozpoczęciem." button="Opisz sytuację" />
     </section>
 
     <section className="exhibit" id="standard" aria-labelledby="exhibit-title">
@@ -371,6 +504,7 @@ function Home() {
           const rest = p.replace(/^Nie\s+/, '');
           return <li key={p}><span className="principle-no">Nie</span><span className="principle-text">{rest}</span></li>;
         })}</ul>
+        <div className="principles-cta"><p>Zamiast tego zaczynam od Twojego zadania.</p><Button href="#kontakt">Opisz zadanie</Button></div>
       </div>
     </section>
 
@@ -571,6 +705,6 @@ export function App({ path: suppliedPath }) {
     return initMotion();
   }, [normalizedPath]);
   const article = articles.find(a => normalizedPath === `/analizy/${a.slug}/`);
-  const page = normalizedPath === '/' ? <Home /> : article ? <ArticlePage article={article} /> : normalizedPath === samplePath ? <SamplePage /> : normalizedPath === '/prywatnosc/' ? <PrivacyPage /> : <NotFound />;
+  const page = normalizedPath === '/' ? <Home /> : article ? <ArticlePage article={article} /> : normalizedPath === samplePath ? <SamplePage /> : normalizedPath === deckPath ? <DeckPage /> : normalizedPath === '/prywatnosc/' ? <PrivacyPage /> : <NotFound />;
   return <><Header />{page}<Footer /></>;
 }

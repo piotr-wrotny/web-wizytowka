@@ -44,6 +44,16 @@ export const site = {
     title: 'Jak przebiega konsultacja.',
     lead: 'Zanim cokolwiek wyjaśnię, ustalam z klientem, co najbardziej przeszkadza i od jakiego poziomu wiedzy zaczynamy. Wszystko, co dzieje się potem, jest przygotowane pod tę odpowiedź.',
     note: 'Przebieg poglądowy. Zawartość kart pokazuje rodzaj materiału; zakres i formę ustalamy przed rozpoczęciem.',
+    // DRAFT 2026-11-10: the consultation in short. "Spotkanie pod potrzeby" and "dowolna liczba uczestników" come from the founder; the rest is derived from the stages.
+    termsTitle: 'Konsultacja w skrócie',
+    terms: [
+      { title: 'Spotkanie pod potrzeby', text: 'Temat, poziom i forma wynikają z rozpoznania, nie z gotowego programu.' },
+      { title: 'Dowolna liczba uczestników', text: 'Jedna osoba, zespół albo kilka działów naraz.' },
+      { title: 'Materiał na właściwym poziomie', text: 'Dobrany do tego, co uczestnicy już wiedzą i czego potrzebują.' },
+      { title: 'Dokumenty na koniec', text: 'Zebrany materiał, prezentacja, odpowiedzi na pytania i rekomendacja.' },
+    ],
+    cta: { title: 'Zacznijmy od rozpoznania.', text: 'Opisz, co dziś najbardziej przeszkadza. Od tego ustalimy temat, poziom i formę konsultacji.', button: 'Opisz swoją sytuację' },
+    deck: { title: 'Konsultacja, krok po kroku.', link: 'Zobacz przebieg jako prezentację', themes: ['desk', 'ink', 'blue', 'paper', 'ink'] },
     stages: [
       {
         title: 'Rozpoznanie',
@@ -82,12 +92,17 @@ export const site = {
     title: 'Od czego zaczynają klienci.',
     intro: 'Pierwsza wersja jest gotowa, ale senior nadal poprawia fakty, dopowiada kontekst i porządkuje wynik. Każda osoba pracuje inaczej. Trudno powiedzieć, kiedy rezultat jest dobry i kto go zatwierdza. Konsultacja zaczyna się od nazwania tej sytuacji.',
     note: 'Sytuacje przykładowe. Pokazują rodzaj pytania i dobór formatu; nie opisują zleceń ani klientów.',
+    panelFirst: 'Od tego zaczynamy rozpoznanie',
+    panelCta: 'Opisz podobną sytuację',
     items: [
-      { role: 'Zespół sprzedaży', situation: 'Notatki po rozmowach z klientami powstają w kilku formach, a podsumowania dla opiekunów wymagają poprawek seniora.', question: 'Czy AI może przygotować robocze podsumowanie bez dopisywania ustaleń, których nie było?', format: 'Standard dla zespołu' },
-      { role: 'Obsługa klienta', situation: 'Odpowiedzi na zgłoszenia korzystają z bazy wiedzy, która jest częściowo nieaktualna. Rozważany jest zakup nowego asystenta.', question: 'Czy luka jest w narzędziu, czy w źródłach i sposobie pracy?', format: 'Jedna decyzja' },
-      { role: 'Zarząd lub właściciel', situation: 'Na stole leży oferta dostawcy rozwiązania AI z obietnicą oszczędności i terminem decyzji.', question: 'Które założenia oferty da się sprawdzić przed podpisaniem i czego w niej brakuje?', format: 'Przegląd oferty' },
-      { role: 'Analizy i raportowanie', situation: 'Miesięczny raport składa się z danych z kilku systemów. AI ma pomóc w opisie, ale nikt nie mierzy, ile czasu faktycznie oszczędza.', question: 'Jak ustawić baseline i próbę, żeby decyzja opierała się na pomiarze?', format: 'Standard dla zespołu' },
-      { role: 'HR i rekrutacja', situation: 'Streszczenia kandydatur i notatki z rozmów mają powstawać z pomocą AI. Pojawia się pytanie o dane osobowe i granice użycia.', question: 'Co wolno przekazać narzędziu, a co musi zostać przy człowieku?', format: 'Jedna decyzja, potem standard' },
+      { role: 'Zespół na początku drogi', situation: 'Firma chce zacząć korzystać z AI, ale poziom wiedzy w zespole jest różny, a oczekiwania niejasne.', question: 'Od czego zacząć, kiedy każdy wie o AI co innego?', format: 'Konsultacja szyta na miarę', first: 'Kto czego już próbował, jakie są obawy i jaki pierwszy rezultat byłby użyteczny.' },
+      { role: 'Zespół sprzedaży', situation: 'Notatki po rozmowach z klientami powstają w kilku formach, a podsumowania dla opiekunów wymagają poprawek seniora.', question: 'Czy AI może przygotować robocze podsumowanie bez dopisywania ustaleń, których nie było?', format: 'Standard dla zespołu', first: 'Jak dziś powstaje podsumowanie, kto je poprawia i który błąd jest niedopuszczalny.' },
+      { role: 'Obsługa klienta', situation: 'Odpowiedzi na zgłoszenia korzystają z bazy wiedzy, która jest częściowo nieaktualna. Rozważany jest zakup nowego asystenta.', question: 'Czy luka jest w narzędziu, czy w źródłach i sposobie pracy?', format: 'Jedna decyzja', first: 'Skąd pochodzą odpowiedzi, kto aktualizuje bazę wiedzy i czego oczekujecie od asystenta.' },
+      { role: 'Zarząd lub właściciel', situation: 'Na stole leży oferta dostawcy rozwiązania AI z obietnicą oszczędności i terminem decyzji.', question: 'Które założenia oferty da się sprawdzić przed podpisaniem i czego w niej brakuje?', format: 'Przegląd oferty', first: 'Jaką decyzję trzeba podjąć, do kiedy i które obietnice oferty są dla niej kluczowe.' },
+      { role: 'Analizy i raportowanie', situation: 'Miesięczny raport składa się z danych z kilku systemów. AI ma pomóc w opisie, ale nikt nie mierzy, ile czasu faktycznie oszczędza.', question: 'Jak ustawić baseline i próbę, żeby decyzja opierała się na pomiarze?', format: 'Standard dla zespołu', first: 'Ile trwa raport dziś, kto go sprawdza i co uznacie za poprawę.' },
+      { role: 'HR i rekrutacja', situation: 'Streszczenia kandydatur i notatki z rozmów mają powstawać z pomocą AI. Pojawia się pytanie o dane osobowe i granice użycia.', question: 'Co wolno przekazać narzędziu, a co musi zostać przy człowieku?', format: 'Jedna decyzja, potem standard', first: 'Jakie dane trafiają do notatek, kto ma do nich dostęp i jakie zasady już obowiązują.' },
+      { role: 'Marketing i treści', situation: 'Teksty powstają szybciej, ale brzmią podobnie i wymagają długiej redakcji przed publikacją.', question: 'Jak ustawić pracę z AI, żeby redakcja była krótsza, a głos marki pozostał własny?', format: 'Standard dla zespołu', first: 'Jak wygląda droga tekstu od briefu do publikacji i gdzie dziś ucieka czas.' },
+      { role: 'IT i bezpieczeństwo', situation: 'Pracownicy korzystają z różnych narzędzi AI na własną rękę. Brakuje wspólnych zasad.', question: 'Od jakich zasad zacząć, żeby nie blokować pracy i nie tracić kontroli nad danymi?', format: 'Jedna decyzja', first: 'Z jakich narzędzi faktycznie korzystają zespoły i jakie dane mogą do nich trafiać.' },
     ],
   },
   formats: {
@@ -171,4 +186,4 @@ export const site = {
   ],
 };
 
-export const pageRoutes = ['/', '/materialy/przyklad-standardu/', '/analizy/od-odpowiedzi-do-wyniku/', '/analizy/kiedy-obecne-narzedzie-wystarczy/', '/prywatnosc/'];
+export const pageRoutes = ['/', '/konsultacja/', '/materialy/przyklad-standardu/', '/analizy/od-odpowiedzi-do-wyniku/', '/analizy/kiedy-obecne-narzedzie-wystarczy/', '/prywatnosc/'];

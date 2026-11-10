@@ -572,3 +572,131 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
   .article-reading h2{break-after:avoid}
   .standard-table>div,.data-table tr,.case-list li,.format{break-inside:avoid}
 }
+
+/* ------------------------------------------------------------------
+   Themes. The colour tokens are registered so a whole-page theme change can cross-fade.
+   Used by the consultation deck: each slide names a theme; without motion the slide wears it itself,
+   with motion the theme moves to <html> and everything on the page (header included) follows.
+   ------------------------------------------------------------------ */
+@property --paper{syntax:'<color>';inherits:true;initial-value:#f0f2ef}
+@property --ink{syntax:'<color>';inherits:true;initial-value:#14161a}
+@property --ink-soft{syntax:'<color>';inherits:true;initial-value:#4d5359}
+@property --line{syntax:'<color>';inherits:true;initial-value:#c6ccc7}
+@property --line-soft{syntax:'<color>';inherits:true;initial-value:#d9ddd9}
+@property --blue{syntax:'<color>';inherits:true;initial-value:#2340c8}
+@property --blue-deep{syntax:'<color>';inherits:true;initial-value:#1a31a3}
+@property --on-blue{syntax:'<color>';inherits:true;initial-value:#fcfdfb}
+html[data-theme='desk'],html:not(.js-motion) .slide[data-theme='desk']{--paper:#e2e6e2}
+html[data-theme='ink'],html:not(.js-motion) .slide[data-theme='ink']{--paper:#14161a;--ink:#f0f2ef;--ink-soft:#b6bcbf;--line:#3d4248;--line-soft:#2c3036;--blue:#a9b8ff;--blue-deep:#c9d3ff;--on-blue:#14161a}
+html[data-theme='blue'],html:not(.js-motion) .slide[data-theme='blue']{--paper:#2340c8;--ink:#fcfdfb;--ink-soft:#cdd6ff;--line:#7186e2;--line-soft:#4a62d6;--blue:#fcfdfb;--blue-deep:#dfe5ff;--on-blue:#2340c8}
+html.js-motion{transition:--paper .9s ease,--ink .9s ease,--ink-soft .9s ease,--line .9s ease,--line-soft .9s ease,--blue .9s ease,--blue-deep .9s ease,--on-blue .9s ease}
+html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
+/* A sheet is always paper and ink, whatever theme surrounds it. */
+.sheet,.proof,.format-primary{--ink:#14161a;--ink-soft:#4d5359;--line:#c6ccc7;--line-soft:#d9ddd9;--blue:#2340c8;--blue-deep:#1a31a3;--on-blue:#fcfdfb;color:var(--ink)}
+
+/* ------------------------------------------------------------------
+   Consultation deck (/konsultacja/): one stage per screen
+   ------------------------------------------------------------------ */
+.slide{min-height:100svh;display:grid;align-items:center;padding-block:clamp(72px,12vh,144px)}
+.slide-intro{align-items:start;padding-top:clamp(20px,3vw,40px)}
+.slide-intro h1{margin-top:clamp(36px,9vh,112px);font-size:var(--t-display);line-height:.98;letter-spacing:-.032em;max-width:11ch}
+.slide-lead{margin-top:clamp(22px,2.6vw,36px);font-size:var(--t-lead);line-height:1.5;color:var(--ink-soft);max-width:42ch}
+.deck-index{list-style:none;padding:0;margin:clamp(48px,9vh,104px) 0 0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--gap)}
+.deck-index a{display:block;min-height:44px;padding-top:14px;border-top:1px solid var(--ink);font-family:var(--serif);font-size:var(--t-h3);font-weight:500;line-height:1.15;letter-spacing:-.015em;text-decoration:none;transition:color .2s ease}
+.deck-index a>span{display:block;margin-bottom:6px;font-size:1.125rem;color:var(--blue);font-variant-numeric:lining-nums}
+.deck-index a:hover{color:var(--blue)}
+.slide-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gap);align-items:center}
+.slide-copy{grid-column:1/span 6;grid-row:1}
+.slide-visual{grid-column:8/-1;grid-row:1}
+.is-flipped .slide-copy{grid-column:7/-1}
+.is-flipped .slide-visual{grid-column:1/span 5}
+.slide-numeral{font-family:var(--serif);font-size:clamp(6.5rem,17vw,15rem);line-height:.78;letter-spacing:-.05em;color:var(--blue);font-variant-numeric:lining-nums}
+.slide-stage h2{margin-top:.18em;font-size:var(--t-display);line-height:.98;letter-spacing:-.032em}
+.slide-text{margin-top:clamp(18px,2.4vw,30px);font-size:clamp(1.1875rem,1.7vw,1.5rem);line-height:1.42;max-width:30ch}
+.slide-value{margin-top:clamp(18px,2.2vw,28px);font-size:clamp(1.1875rem,1.6vw,1.4375rem);max-width:30ch}
+.slide-visual .flow-sheet{font-size:1.125rem;box-shadow:0 1px 0 rgba(20,22,26,.05),0 40px 72px -32px rgba(8,10,20,.5)}
+.slide-end h2{font-size:var(--t-display);line-height:.98;letter-spacing:-.032em;max-width:12ch}
+.slide-end-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 32px;margin-top:clamp(28px,3.4vw,44px)}
+.slide-end .terms{margin-top:clamp(56px,10vh,120px)}
+.deck-rail{display:none;position:fixed;right:clamp(6px,1.4vw,22px);top:50%;transform:translateY(-50%);z-index:30}
+.deck-rail ol{list-style:none;padding:0;margin:0}
+.deck-rail a{display:grid;place-items:center;width:32px;height:32px}
+.deck-rail a::before{content:'';width:8px;height:8px;border-radius:50%;border:1.5px solid var(--ink);transition:transform .4s var(--ease),background-color .3s ease}
+.deck-rail a:hover::before,.deck-rail a[aria-current]::before{background:var(--ink);transform:scale(1.5)}
+@media(min-width:901px){.js-motion .deck-rail{display:block}}
+
+/* The consultation in short, and calls to action */
+.flow-close{margin-top:clamp(56px,7vw,104px)}
+.terms-title{font-family:var(--sans);font-size:var(--t-small);font-weight:600;font-stretch:94%;letter-spacing:0;line-height:1.4}
+.terms-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--gap);margin-top:14px}
+.terms-list>div{padding-top:16px;border-top:1px solid var(--ink)}
+.terms-list dt{display:flex;align-items:baseline;gap:.5em;font-family:var(--serif);font-size:1.3125rem;font-weight:500;line-height:1.2;letter-spacing:-.012em}
+.terms-list dt .mark{color:var(--blue);transform:translateY(.14em)}
+.terms-list dd{margin-top:8px;font-size:var(--t-small);line-height:1.55;color:var(--ink-soft)}
+.cta{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:28px 48px;margin-top:clamp(48px,6vw,88px);padding-top:clamp(24px,3vw,36px);border-top:1px solid var(--ink)}
+.cta-title{font-size:var(--t-h2);line-height:1.06;letter-spacing:-.022em;max-width:16ch}
+.cta-copy>p{margin-top:14px;line-height:1.6;color:var(--ink-soft);max-width:46ch}
+.cta-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px 28px}
+/* The strong variant closes the main use case: a full blue field. */
+.flow-close .cta{--ink-soft:#cdd6ff;margin-top:clamp(40px,5vw,72px);padding:clamp(28px,4vw,60px);border:0;border-radius:4px;background:#2340c8;color:#fcfdfb}
+.flow-close .cta-title{font-size:var(--t-title);max-width:12ch}
+.flow-close .cta .btn{background:#fcfdfb;color:#2340c8}
+.flow-close .cta .btn:hover{background:#dfe5ff}
+.flow-close .cta .link{color:#fcfdfb}
+.flow-close .cta :focus-visible{outline-color:#fcfdfb}
+.principles-cta{grid-column:5/-1;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px 40px;margin-top:clamp(32px,4vw,56px)}
+.principles-cta>p{font-family:var(--serif);font-style:italic;font-size:var(--t-h3);line-height:1.25;max-width:22ch}
+
+/* Situations, extended: a list by default, a browser on wide screens */
+.case-list li{grid-template-columns:repeat(12,minmax(0,1fr))}
+.case-list .case-text{grid-column:4/-1}
+.case-facts{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:8px var(--gap);margin-top:18px;padding-top:14px;border-top:1px solid var(--line-soft);max-width:60rem}
+.case-facts dt{font-size:var(--t-meta);color:var(--ink-soft);line-height:1.5}
+.case-facts dd{margin-top:2px;font-size:var(--t-small);font-weight:500;line-height:1.5}
+.case-browser{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gap);margin-top:clamp(40px,5vw,72px);align-items:start}
+.case-tabs{grid-column:1/span 4;display:flex;flex-direction:column;border-top:1px solid var(--ink)}
+.case-tabs button{display:grid;grid-template-columns:2.4rem minmax(0,1fr);align-items:baseline;min-height:58px;padding:14px 0;border-bottom:1px solid var(--line);text-align:left;font-family:var(--serif);font-size:1.3125rem;line-height:1.2;letter-spacing:-.012em;color:var(--ink-soft);transition:color .2s ease}
+.case-tabs button>span:last-child{transition:transform .45s var(--ease)}
+.case-tab-index{font-family:var(--sans);font-size:var(--t-meta);font-variant-numeric:tabular-nums}
+.case-tabs button:hover{color:var(--ink)}
+.case-tabs button[aria-selected='true']{color:var(--ink)}
+.case-tabs button[aria-selected='true'] .case-tab-index{color:var(--blue);font-weight:600}
+.case-tabs button[aria-selected='true']>span:last-child{transform:translateX(8px)}
+.case-panel{grid-column:5/-1;min-height:31rem}
+.case-panel-body{padding:clamp(24px,3.4vw,48px)}
+.case-panel .case-question{font-size:clamp(1.9rem,3.3vw,2.875rem);line-height:1.08;letter-spacing:-.022em;max-width:20ch}
+.case-panel .case-situation{margin-top:clamp(16px,2vw,24px);font-size:var(--t-lead);line-height:1.5;max-width:44ch}
+.case-panel .case-facts{margin-top:clamp(22px,2.6vw,32px);padding-top:18px;border-top-color:var(--ink)}
+.case-panel .case-facts dd{font-size:var(--t-body)}
+.case-panel .btn{margin-top:clamp(24px,3vw,36px)}
+.js-motion .case-panel-body{animation:appear .45s ease both}
+
+@supports (animation-timeline:view()){
+  .js-motion .slide-visual{animation:slide-visual linear both;animation-timeline:view();animation-range:entry 0% cover 42%}
+  .js-motion .slide-copy>:not(.slide-numeral){animation:slide-copy linear both;animation-timeline:view();animation-range:entry 12% cover 36%}
+  .js-motion .slide-numeral{animation:slide-numeral linear both;animation-timeline:view();animation-range:entry 0% exit 100%}
+  @keyframes slide-visual{from{opacity:0;transform:translateY(96px) scale(.92)}}
+  @keyframes slide-copy{from{opacity:0;transform:translateY(32px)}}
+  @keyframes slide-numeral{from{transform:translateY(56px)}to{transform:translateY(-56px)}}
+}
+
+@media(max-width:900px){
+  .slide{min-height:0;padding-block:clamp(64px,10vw,96px)}
+  .slide-intro{padding-top:clamp(20px,3vw,40px)}
+  .slide-grid{display:block}
+  .slide-visual{margin-top:36px}
+  .deck-index{grid-template-columns:1fr;gap:0}
+  .deck-index a{display:flex;align-items:baseline;gap:14px;padding-block:14px}
+  .deck-index a>span{margin:0}
+  .terms-list{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:28px}
+  .principles-cta{margin-top:32px}
+  .case-list .case-text{grid-column:auto}
+}
+@media(max-width:767px){
+  .terms-list{grid-template-columns:1fr}
+  .case-facts{grid-template-columns:1fr}
+  .cta-actions,.cta .btn,.principles-cta .btn,.slide-end-actions .btn{width:100%}
+  .slide-numeral{font-size:6rem}
+}
+@media(prefers-reduced-motion:reduce){html{transition:none!important}}
+@media print{.slide{min-height:0;padding-block:24px}.deck-rail{display:none}.flow-close .cta{background:#fff;color:#14161a;border:1px solid #999}}

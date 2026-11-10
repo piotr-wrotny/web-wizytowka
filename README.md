@@ -15,6 +15,9 @@ Strona jest złożona jak sprawdzony dokument. Jedynym motywem graficznym jest o
 - Elementy wspólne: `Mark` (znaki ołówka), `Note` (uwaga na marginesie, jedno zastrzeżenie na kontekst), `Pending` (czerwone „Do uzupełnienia”), `.sheet` (kartka na biurku: przykład standardu, formularz, karty przebiegu).
 - Otwarcie: szkic podsumowania sprawdzany względem źródła (`site.proof`), z przełącznikiem „Z poprawkami / Po sprawdzeniu”. To ilustracja na materiale syntetycznym i tak jest podpisana.
 - Przebieg konsultacji (`site.flow`): pięć etapów, każdy zostawia kartę. Na szerokim ekranie z włączonym ruchem karty układają się w rosnącą teczkę obok tekstu; bez ruchu, bez JS i na wąskich ekranach każda karta stoi przy swoim etapie.
+- Prezentacja `/konsultacja/`: ten sam przebieg jako przewijana prezentacja, jeden etap na ekran. Każdy slajd ma motyw (`site.flow.deck.themes`: paper, desk, ink, blue). Tokeny koloru są zarejestrowane przez `@property`, więc z włączonym ruchem motyw przechodzi płynnie na całą stronę razem z nagłówkiem; bez ruchu każdy slajd nosi swój motyw sam.
+- „Konsultacja w skrócie” (`site.flow.terms`) i wezwania do akcji (`CallToAction`): po przebiegu, po formatach, po zasadach i na końcu prezentacji.
+- „Od czego zaczynają klienci” (`site.cases`): osiem sytuacji. Na szerokim ekranie przeglądarka z pionowymi zakładkami (strzałki, Home, End), na wąskim i bez JS zwykła lista.
 - Ruch: sekwencja otwarcia (nagłówek, rysujące się poprawki), teczka przebiegu, słowa oferty rozświetlane przewijaniem, reakcje na hover. Wszystko za klasą `html.js-motion`, której nie ma przy `prefers-reduced-motion` ani z dopiskiem `?nomotion`.
 
 ## Edycja
@@ -26,6 +29,6 @@ Strona jest złożona jak sprawdzony dokument. Jedynym motywem graficznym jest o
 
 ## Uruchomienie
 
-Node.js 20 lub nowszy. `npm ci`, potem `npm run dev` (Vite) albo `npm run build`, który tworzy statyczne dokumenty HTML pięciu stron w `dist/client`. `npm test` sprawdza worker. Treść jest czytelna bez JavaScript.
+Node.js 20 lub nowszy. `npm ci`, potem `npm run dev` (Vite) albo `npm run build`, który tworzy statyczne dokumenty HTML sześciu stron w `dist/client`. `npm test` sprawdza worker. Treść jest czytelna bez JavaScript.
 
 `qa-views` to pomocnicze widoki do zrzutów (`scroll.html?to=przebieg&dy=400`); nie trafiają do `dist/client`.
