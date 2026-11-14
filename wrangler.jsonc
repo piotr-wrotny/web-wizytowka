@@ -1,11 +1,14 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  // Prototyp: pierwszy deploy tylko pod adresem workers.dev.
-  // Domena piotrwrotny.com zostanie dopięta jako Custom Domain dopiero po decyzji założyciela.
+  // Custom Domain: Cloudflare sam tworzy rekord DNS i certyfikat w strefie piotrwrotny.pl.
   "name": "piotrwrotny-com",
   "main": "worker/index.js",
   "compatibility_date": "2026-11-01",
   "workers_dev": true,
+  "routes": [
+    { "pattern": "piotrwrotny.pl", "custom_domain": true },
+    { "pattern": "www.piotrwrotny.pl", "custom_domain": true }
+  ],
   "preview_urls": false,
   "assets": {
     "directory": "./dist/client",

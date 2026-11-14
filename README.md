@@ -42,4 +42,4 @@ Worker (`worker/index.js`) serwuje statyczne pliki z `dist/client` przez binding
 - `npm run deploy:check`: build i `wrangler deploy --dry-run`, bez publikacji.
 - `npm run deploy`: build i publikacja. Wymaga wcześniejszego `npx wrangler login`.
 
-Prototyp publikujemy tylko pod adresem `*.workers.dev`. Domenę `piotrwrotny.com` podpinamy w panelu Cloudflare (Custom Domain) dopiero po decyzji założyciela; `noindex` zostaje do publicznej wersji. Formularz pozostaje lokalną demonstracją. Sekrety nie trafiają do repo.
+Strona jest publikowana pod `piotrwrotny.pl` i `www.piotrwrotny.pl` (Custom Domain w `wrangler.jsonc`) oraz pod adresem `*.workers.dev`; `noindex` zostaje do publicznej wersji. Formularz pozostaje lokalną demonstracją. Sekrety nie trafiają do repo.
