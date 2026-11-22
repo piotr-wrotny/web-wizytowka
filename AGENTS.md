@@ -4,6 +4,8 @@ Visual direction, typography, colour, layout and motion are deliberately not pre
 
 ## Content and business rules
 
+- 2026-11-22, founder: the visual standard (colour, type, elements, layout, motion) is documented in `docs/standard-wizualny.md`. It describes the approved `redesign/reimagined` direction as built; keep it in sync with `src/styles.css` when the look changes.
+- 2026-11-22, founder: the substantive knowledge (offer, methodology, glossary, analyses, situations, client work) lives in `~/Work/ai-ekspert`, which is the source of truth. `src/content` holds published copies; take new or changed content from there, never from client folders.
 - Founder name is **Piotr Wrotny** (confirmed 2026-11-09). Public biography, contact, domain and real client evidence remain placeholders. No invented clients, metrics, testimonials or certifications. No public prices in this prototype.
 - 2026-11-09, founder: the primary service is **bespoke AI consulting** ("konsultacje AI szyte na miarę"). Standard dla zespołu (W), Jedna decyzja (K) and Przegląd oferty (R, enquiry-only) are the three delivery formats under that umbrella, with W the most elaborate. Do not turn expertise domains into additional services.
 - 2026-11-10, founder: the **main use case and main example of work** on the site is the consultation itself: before the consultation the client's biggest problems, pain points and knowledge level are established; material is gathered for them; it is presented and explained; there is a meeting; at the end the client receives documents with all the knowledge. Each stage is shown with its value for the client. Content lives in `site.flow`; the sheet contents are illustrative and the wording is `DRAFT` until approved.
