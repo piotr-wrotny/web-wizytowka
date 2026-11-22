@@ -345,10 +345,20 @@ function Path() {
       setActive(current ? Number(current.dataset.index) : -1);
     };
     const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
+    // Keyboard focus must never land on something the scene has not shown yet: bring the stage to the end of its scene first.
+    const onFocus = event => {
+      const slide = event.target.closest?.('.slide-stage');
+      if (!slide || !event.target.matches(':focus-visible')) return;
+      const r = slide.getBoundingClientRect();
+      const end = r.top + window.scrollY + Math.max(0, r.height - window.innerHeight);
+      if (Math.abs(window.scrollY - end) > 4) window.scrollTo({ top: end, behavior: 'instant' });
+    };
+    const root = deck.current;
     update();
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
-    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); cancelAnimationFrame(frame); delete html.dataset.theme; };
+    root.addEventListener('focusin', onFocus);
+    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); root.removeEventListener('focusin', onFocus); cancelAnimationFrame(frame); delete html.dataset.theme; };
   }, []);
   return <div className="deck" id="przebieg" ref={deck} data-on={active >= 0 ? '' : undefined}>
     {stages.map((stage, i) => <section key={stage.title} className="slide slide-stage" id={`etap-${i}`} data-theme={flow.themes[i]} data-index={i} aria-labelledby={`etap-${i}-title`}>
