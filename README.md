@@ -4,7 +4,7 @@ Responsywny prototyp strony Piotra Wrotnego. Oferta główna: konsultacje AI szy
 
 ## Co zawiera projekt
 
-Stronę główną, prezentację przebiegu konsultacji, stronę przewodnika, dwie analizy, syntetyczny standard pracy, syntetyczne przykładowe kompendium i opis prywatności prototypu. Oba formularze (opis zadania i przewodnik) przygotowują wyłącznie lokalny podgląd; nie ma endpointu, wysyłki, kalendarza ani zapisu danych. Nazwisko jest prawdziwe; opis doświadczenia, kontakt i dane działalności pozostają placeholderami. Nie ma publicznych cen, wymyślonych klientów ani metryk.
+Stronę główną ze ścieżką klienta, stronę przewodnika, stronę „Czego nie robię”, dwie analizy, syntetyczny standard pracy, syntetyczne przykładowe kompendium i opis prywatności prototypu. Oba formularze (karta pierwszej rozmowy i przewodnik) przygotowują wyłącznie lokalny podgląd; nie ma endpointu, wysyłki, kalendarza ani zapisu danych. Nazwisko jest prawdziwe; opis doświadczenia, kontakt i dane działalności pozostają placeholderami. Nie ma publicznych cen, wymyślonych klientów ani metryk.
 
 ## Kierunek wizualny (2026-11-10)
 
@@ -13,20 +13,19 @@ Strona jest złożona jak sprawdzony dokument. Jedynym motywem graficznym jest o
 - Fonty, lokalne, w `public/fonts`: Brygada 1918 (nagłówki i tekst do czytania), Archivo ze zmienną szerokością (interfejs), IBM Plex Mono (tylko surowy tekst: szkic, instrukcja, podgląd opisu). Licencje OFL obok plików.
 - Tokeny koloru, skali i odstępów są na początku `src/styles.css`.
 - Elementy wspólne: `Mark` (znaki ołówka), `Note` (uwaga na marginesie, jedno zastrzeżenie na kontekst), `Pending` (czerwone „Do uzupełnienia”), `.sheet` (kartka na biurku: przykład standardu, formularz, karty przebiegu).
-- Układ strony głównej (jedna oś): hero z ofertą na niebieskim polu i gotową teczką czterech kart (kompendium na wierzchu), przebieg konsultacji, sytuacje, trzy formaty jako zwarte wiersze, „Czego nie robię”, wiedza otwarta (przewodnik, analizy, przykładowe kompendium), o mnie, kontakt. Metoda w trzech krokach i karta przykładowego standardu nie są już osobnymi sekcjami strony głównej; treści zostały w `site.js`, a standard na swojej podstronie.
+- Układ strony głównej: ścieżka klienta czytana ekran po ekranie. Hero (oferta w jednym zdaniu, jeden przycisk, teczka czterech kart i mapa etapów), etapy 0–5 po jednym na ekran w tym samym układzie (`Path`, treść w `site.flow.stages`), ekran zamykający z „Konsultacją w skrócie”, potem sytuacje, formaty, o mnie i kontakt. „Czego nie robię” ma własną stronę `/czego-nie-robie/`; metoda w trzech krokach i przykład standardu żyją poza stroną główną.
+- Etap 0 „Wiedza otwarta” prowadzi do przewodnika i analiz (jego kartka to prawdziwy spis z linkami); kartki etapów 1–5 są poglądowe. Każdy slajd ma motyw (`site.flow.themes`: paper, desk, ink). Tokeny koloru są zarejestrowane przez `@property`, więc z włączonym ruchem motyw przechodzi płynnie na całą stronę razem z nagłówkiem; bez ruchu każdy slajd nosi swój motyw sam. Dawny adres `/konsultacja/` otwiera ścieżkę na stronie głównej.
 - Szkic podsumowania sprawdzany względem źródła (`site.proof`, przełącznik „Z poprawkami / Po sprawdzeniu”) jest na podstronie przykładu standardu. To ilustracja na materiale syntetycznym i tak jest podpisana.
-- Przebieg konsultacji (`site.flow`): pięć etapów, każdy zostawia kartę. Na szerokim ekranie z włączonym ruchem karty układają się w rosnącą teczkę obok tekstu; bez ruchu, bez JS i na wąskich ekranach każda karta stoi przy swoim etapie.
-- Prezentacja `/konsultacja/`: ten sam przebieg jako przewijana prezentacja, jeden etap na ekran. Każdy slajd ma motyw (`site.flow.deck.themes`: paper, desk, ink, blue). Tokeny koloru są zarejestrowane przez `@property`, więc z włączonym ruchem motyw przechodzi płynnie na całą stronę razem z nagłówkiem; bez ruchu każdy slajd nosi swój motyw sam.
-- „Konsultacja w skrócie” (`site.flow.terms`) i wezwania do akcji (`CallToAction`): po przebiegu, po formatach, po zasadach i na końcu prezentacji.
-- „Od czego zaczynają klienci” (`site.cases`): osiem sytuacji. Na szerokim ekranie przeglądarka z pionowymi zakładkami (strzałki, Home, End), na wąskim i bez JS zwykła lista.
-- Ruch: sekwencja otwarcia (nagłówek, rysujące się poprawki), teczka przebiegu, słowa oferty rozświetlane przewijaniem, reakcje na hover. Na `/konsultacja/` każdy etap jest na szerokim ekranie przypięty, a jego scena jest sterowana przewijaniem przez zmienną `--sp` (kartka kładziona na biurku, cyfra wypełniana tuszem, tytuł podkreślany ołówkiem, zdanie czytane słowo po słowie, kartka wypełniana wiersz po wierszu). Wszystko za klasą `html.js-motion`. Nie ma jej przy `prefers-reduced-motion`, chyba że odwiedzający sam włączy animacje (link „Włącz animacje” w stopce albo dopisek `?motion`, zapamiętywany w localStorage); `?nomotion` wyłącza ruch i kasuje ten wybór.
+- „Od czego zaczynają klienci” (`site.cases`): osiem sytuacji. Na szerokim ekranie przeglądarka z pionowymi zakładkami (strzałki, Home, End), na wąskim i bez JS rozwijane pytania.
+- Kontakt (`site.contact`): formularz jest kartą pierwszej rozmowy, czyli trzema pytaniami z etapu 1. Otwarte pytanie ma znak zapytania ołówkiem, który po odpowiedzi zmienia się w ✓. Demonstracja; niczego nie wysyła.
+- Ruch: sekwencja otwarcia (nagłówek, teczka, mapa etapów) i sceny etapów. Na szerokim ekranie każdy etap jest przypięty (170vh), a jego scena jest sterowana przewijaniem przez zmienną `--sp` (kartka kładziona na biurku, cyfra wypełniana tuszem, tytuł podkreślany ołówkiem, zdanie czytane słowo po słowie, kartka wypełniana wiersz po wierszu). Poza tym rusza się tylko to, co odpowiada na działanie czytelnika (odhaczenia, wiersze listu). Wszystko za klasą `html.js-motion`. Nie ma jej przy `prefers-reduced-motion`, chyba że odwiedzający sam włączy animacje (link „Włącz animacje” w stopce albo dopisek `?motion`, zapamiętywany w localStorage); `?nomotion` wyłącza ruch i kasuje ten wybór.
 
 ## Edycja
 
 - Przewodnik (`site.guide`, `/przewodnik/`): trzy ekrany czytane z góry na dół (co to jest, co jest w środku, jak to dostać). Formularz jest mailem, który składa się na oczach odwiedzającego: odhaczone narzędzie dopisuje swoje omówienie, przy dwóch pojawia się oznaczony dopisek, adres wpisuje się w linii „Do:”. Demonstracja; niczego nie wysyła. Przykładowe kompendium (`site.compendium`) jest w całości syntetyczne.
 - `src/content/site.js`: hero (DRAFT), ilustracja sprawdzania szkicu (DRAFT), przebieg konsultacji (DRAFT), przewodnik, wiedza otwarta i przykładowe kompendium (DRAFT), sytuacje przykładowe (DRAFT), formaty, przykład standardu, metoda, zasady „Czego nie robię” (DRAFT), ekspertyza.
 - `src/content/articles.js`, `src/content/glossary.js`: analizy i słownik pokazywany na marginesie.
-- `src/App.jsx`: skład sekcji i komponenty. `src/motion.js`: rozświetlanie słów.
+- `src/App.jsx`: skład stron i komponenty (`Path`, `Cases`, `Contact`, `GuideForm`, `Pick`). `src/motion.js`: rozświetlanie słów.
 - `AGENTS.md`: wiążące zasady treści. `docs/launch-readiness.md`: zadania przed publikacją.
 
 ## Uruchomienie
