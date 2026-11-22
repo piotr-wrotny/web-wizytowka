@@ -6,7 +6,9 @@ import { glossary as rawGlossary } from './content/glossary';
 import { initMotion } from './motion';
 
 const samplePath = '/materialy/przyklad-standardu/';
-const deckPath = '/konsultacja/';
+const pathHref = '/#przebieg';
+// The former presentation page. Since 2026-11-22 the home page carries the path itself; the old address opens it there.
+const legacyDeckPath = '/konsultacja/';
 const guidePath = rawSite.guide.path;
 const compendiumPath = rawSite.compendium.path;
 
@@ -22,7 +24,7 @@ const glossary = plDeep(rawGlossary);
 const navSections = {
   '/#przebieg': ['przebieg'],
   '/#sytuacje': ['sytuacje'],
-  '/#zakres': ['zakres', 'zasady'],
+  '/#zakres': ['zakres'],
   '/#o-mnie': ['o-mnie'],
   '/#kontakt': ['kontakt'],
 };
@@ -31,11 +33,11 @@ export function getPageMeta(path) {
   const article = articles.find(a => path === `/analizy/${a.slug}/`);
   if (article) return { title: `${article.title} — ${site.descriptor}`, description: article.lead };
   if (path === samplePath) return { title: 'Przykład standardu pracy z AI — dane syntetyczne', description: 'Otwarta demonstracja metody: wejście, kontrola faktów, odpowiedzialność i warunki przerwania pracy.' };
-  if (path === deckPath) return { title: `Jak przebiega konsultacja — ${site.name}`, description: 'Pięć etapów konsultacji AI: rozmowa, rozpoznanie i program spotkania, konsultacja w firmie, kompendium i możliwe dalsze kroki.' };
+  if (path === site.principlesPath) return { title: `${site.principlesTitle} — ${site.name}`, description: site.principlesLead };
   if (path === guidePath) return { title: `Przewodnik po AI i narzędziach — ${site.name}`, description: site.guide.lead };
   if (path === compendiumPath) return { title: 'Przykładowe kompendium po konsultacji — dane syntetyczne', description: 'Jak wygląda dokument, który zostaje po konsultacji: moduły ogólne i rozdziały napisane dla jednej firmy. Przykład w całości syntetyczny.' };
   if (path === '/prywatnosc/') return { title: 'Prywatność prototypu — niezależny doradca AI', description: 'Jak działają demonstracyjne formularze i co wymaga uzupełnienia przed uruchomieniem obsługi zapytań.' };
-  return { title: `${site.name} — niezależny doradca AI`, description: 'Konsultacje AI szyte na miarę zespołu i zadania: od rozmowy i rozpoznania, przez spotkanie na Waszych zastosowaniach, do kompendium. Bezpłatny przewodnik po AI i narzędziach.' };
+  return { title: `${site.name} — niezależny doradca AI`, description: 'Konsultacje AI szyte na miarę: od pierwszej rozmowy do kompendium, które zostaje w firmie. Doradzam, nie wdrażam. Bezpłatny przewodnik po AI i narzędziach.' };
 }
 
 /* ------------------------------------------------------------------
@@ -151,6 +153,7 @@ function Footer() {
       </div>
       <div className="footer-bottom">
         <p className="colophon">Skład: Brygada 1918, Archivo i IBM Plex Mono, fonty lokalne. Bez śledzenia i analityki. Prototyp; kontakt i dane działalności do uzupełnienia.</p>
+        <a href={site.principlesPath}>{site.principlesTitle}</a>
         <a className="motion-on" href="?motion">Włącz animacje</a>
         <a href="/prywatnosc/">Prywatność</a>
         <a href="#gora">Na początek</a>
@@ -197,8 +200,14 @@ function Proof() {
   </figure>;
 }
 
+/* Stage 0 keeps what can be read without talking to anyone: the guide and the analyses. Its sheet is a real index. */
+const openLinks = [
+  { label: site.guide.form.subject, meta: 'PDF', href: guidePath },
+  ...articles.map(a => ({ label: a.title, meta: `${readingMinutes(a.blocks)} min`, href: `/analizy/${a.slug}/` })),
+];
+
 /* One sheet of the consultation dossier. Contents are illustrative and say what kind of material the stage produces. */
-function FlowSheet({ sheet, index, total, className = '' }) {
+function FlowSheet({ sheet, index = 0, label, className = '' }) {
   let body;
   if (sheet.kind === 'card') {
     const { scale } = sheet;
@@ -215,11 +224,13 @@ function FlowSheet({ sheet, index, total, className = '' }) {
     body = <div className="fs-slide"><p className="fs-slide-title">{sheet.heading}</p><ol>{sheet.items.map(item => <li key={item}>{item}</li>)}</ol></div>;
   } else if (sheet.kind === 'contents') {
     body = <ol className="fs-contents">{sheet.items.map(item => <li key={item}><span>{item}</span></li>)}</ol>;
+  } else if (sheet.kind === 'links') {
+    body = <ul className="fs-list fs-links">{openLinks.map(link => <li key={link.href}><a href={link.href}>{link.label}</a><span>{link.meta}</span></li>)}</ul>;
   } else {
     body = <ul className={`fs-list fs-${sheet.kind}`}>{sheet.items.map(item => <li key={item}><Mark kind={sheet.kind === 'questions' ? 'tick' : 'bar'} /><span>{item}</span></li>)}</ul>;
   }
   return <div className={`sheet flow-sheet ${className}`} style={{ '--i': index }}>
-    <div className="sheet-bar"><p>{sheet.title}</p><p>{`${index + 1} z ${total}`}</p></div>
+    <div className="sheet-bar"><p>{sheet.title}</p><p>{label}</p></div>
     {body}
   </div>;
 }
@@ -299,20 +310,21 @@ function Cases() {
   </section>;
 }
 
-/* The consultation as a scrolled presentation: one stage per screen, and the whole page takes the stage's theme.
-   Each slide carries its own theme, so the page is complete without JS. With motion the theme moves to <html> and
-   cross-fades; on a wide screen every stage is pinned while its scene plays, and each slide gets --sp (0 to 1),
-   its progress through the viewport, which the stylesheet turns into the choreography. */
-function DeckPage() {
+/* The client path, one stage per screen: open knowledge (0), then the five stages of the consultation, then one closing screen.
+   Every screen has the same composition (number, name, one sentence, what it gives, one sheet, at most one link), so the reader
+   only ever moves down. Each slide carries its own theme, so the page is complete without JS. With motion the theme moves to <html>
+   and cross-fades; on a wide screen every stage is pinned while its scene plays, and each slide gets --sp (0 to 1), its progress
+   through the viewport, which the stylesheet turns into the choreography. */
+function Path() {
   const { flow } = site;
-  const total = flow.stages.length;
+  const stages = flow.stages;
+  const sheets = stages.length - 1;
   const [active, setActive] = useState(-1);
   const deck = useRef(null);
   useEffect(() => {
     const html = document.documentElement;
     if (!html.classList.contains('js-motion')) return;
-    const root = deck.current;
-    const slides = Array.from(root.querySelectorAll('.slide'));
+    const slides = Array.from(deck.current.querySelectorAll('.slide'));
     let frame = 0;
     const update = () => {
       frame = 0;
@@ -322,17 +334,14 @@ function DeckPage() {
       for (const el of slides) {
         const r = el.getBoundingClientRect();
         if (r.top <= middle && r.bottom > middle) current = el;
-        if (el.dataset.index === '-1') continue;
-        const pinned = r.height > vh * 1.5;
+        const pinned = r.height > vh * 1.3;
         const travel = pinned ? vh * 0.85 + (r.height - vh) : vh * 0.95;
-        const sp = Math.min(1, Math.max(0, (vh * 0.85 - r.top) / travel));
-        el.style.setProperty('--sp', sp.toFixed(4));
+        el.style.setProperty('--sp', Math.min(1, Math.max(0, (vh * 0.85 - r.top) / travel)).toFixed(4));
       }
-      const scrollable = document.documentElement.scrollHeight - vh;
-      root.style.setProperty('--dp', scrollable > 0 ? Math.min(1, window.scrollY / scrollable).toFixed(4) : '0');
-      if (!current) return;
-      if (html.dataset.theme !== current.dataset.theme) html.dataset.theme = current.dataset.theme;
-      setActive(Number(current.dataset.index));
+      const theme = current?.dataset.theme;
+      if (theme && html.dataset.theme !== theme) html.dataset.theme = theme;
+      if (!theme && html.dataset.theme) delete html.dataset.theme;
+      setActive(current ? Number(current.dataset.index) : -1);
     };
     const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
     update();
@@ -340,136 +349,68 @@ function DeckPage() {
     window.addEventListener('resize', onScroll);
     return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); cancelAnimationFrame(frame); delete html.dataset.theme; };
   }, []);
-  return <main id="tresc" tabIndex="-1" className="deck" ref={deck}>
-    <div className="deck-progress" aria-hidden="true"></div>
-    <section className="slide slide-intro" data-theme="paper" data-index="-1" aria-labelledby="deck-title">
-      <div className="wrap">
-        <a className="back-link" href="/#przebieg"><ArrowLeft aria-hidden="true" />Wróć na stronę główną</a>
-        <h1 id="deck-title">{flow.deck.title.split(', ').map((line, i, all) => <span className="hero-line" key={line} style={{ '--i': i }}><span className="hero-line-inner">{line}{i < all.length - 1 ? ', ' : ''}</span></span>)}</h1>
-        <p className="slide-lead">{flow.lead}</p>
-        <ol className="deck-index">{flow.stages.map((stage, i) => <li key={stage.title} style={{ '--i': i }}><a href={`#etap-${i + 1}`}><span aria-hidden="true">{i + 1}</span>{stage.title}</a></li>)}</ol>
-      </div>
-    </section>
-    {flow.stages.map((stage, i) => <section key={stage.title} className={`slide slide-stage${i % 2 ? ' is-flipped' : ''}`} id={`etap-${i + 1}`} data-theme={flow.deck.themes[i]} data-index={i} aria-labelledby={`etap-${i + 1}-title`}>
+  return <div className="deck" id="przebieg" ref={deck} data-on={active >= 0 ? '' : undefined}>
+    {stages.map((stage, i) => <section key={stage.title} className="slide slide-stage" id={`etap-${i}`} data-theme={flow.themes[i]} data-index={i} aria-labelledby={`etap-${i}-title`}>
       <div className="slide-pin">
         <div className="wrap slide-grid">
           <div className="slide-copy">
-            <p className="slide-numeral" aria-hidden="true">{i + 1}</p>
-            <h2 id={`etap-${i + 1}-title`}><span className="slide-title-inner">{stage.title}</span></h2>
+            <p className="slide-numeral" aria-hidden="true">{i}</p>
+            <h2 id={`etap-${i}-title`}><span className="visually-hidden">{`Etap ${i}: `}</span><span className="slide-title-inner">{stage.title}</span></h2>
             <svg className="slide-underline" viewBox="0 0 320 14" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M3 9.5C42 4 86 3.5 128 6.5s96 5.5 189-2.5" pathLength="1" /></svg>
             <p className="slide-text"><Words text={stage.text} manual /></p>
             <p className="note slide-value"><Mark kind="tick" /><span>{stage.value}</span></p>
+            {stage.action && <p className="slide-action"><TextLink href={stage.action.href} arrow>{stage.action.label}</TextLink></p>}
           </div>
           <div className="slide-visual">
-            {i === total - 1 && <div className="slide-stack" aria-hidden="true">{flow.stages.slice(0, -1).map((s, k) => <div className="slide-stack-tab" key={s.title} style={{ '--k': k }}><p>{s.sheet.title}</p><p>{`${k + 1} z ${total}`}</p></div>)}</div>}
-            <FlowSheet sheet={stage.sheet} index={i} total={total} />
+            {i === sheets && <div className="slide-stack" aria-hidden="true">{stages.slice(1, -1).map((s, k) => <div className="slide-stack-tab" key={s.title} style={{ '--k': k }}><p>{s.sheet.title}</p><p>{`${k + 1} z ${sheets}`}</p></div>)}</div>}
+            <FlowSheet sheet={stage.sheet} index={i} label={i ? `${i} z ${sheets}` : stage.sheet.label} />
           </div>
         </div>
       </div>
     </section>)}
-    <section className="slide slide-end" data-theme="blue" data-index={total} aria-labelledby="deck-end-title">
+    <section className="slide slide-end" data-theme="blue" data-index={stages.length} aria-labelledby="path-end-title">
       <div className="wrap">
-        <h2 id="deck-end-title"><span className="slide-title-inner">{flow.cta.title}</span></h2>
+        <h2 id="path-end-title"><span className="slide-title-inner">{flow.cta.title}</span></h2>
         <p className="slide-lead">{flow.cta.text}</p>
-        <div className="slide-end-actions"><Button href="/?temat=inne#kontakt">{flow.cta.button}</Button><TextLink href="/#zakres">Zobacz formaty współpracy</TextLink></div>
+        <div className="slide-end-actions"><Button href="/?temat=inne#kontakt">{flow.cta.button}</Button></div>
         <FlowTerms headingLevel="h3" />
         <Note className="section-note">{flow.note}</Note>
       </div>
     </section>
-    <nav className="deck-rail" aria-label="Etapy konsultacji">
-      <ol>{flow.stages.map((stage, i) => <li key={stage.title}><a href={`#etap-${i + 1}`} aria-current={i === active ? 'step' : undefined}><span className="deck-rail-label">{stage.title}</span></a></li>)}</ol>
+    <nav className="deck-rail" aria-label={flow.indexLabel}>
+      <ol>{stages.map((stage, i) => <li key={stage.title}><a href={`#etap-${i}`} aria-current={i === active ? 'step' : undefined}><span className="deck-rail-label">{`${i}. ${stage.title}`}</span></a></li>)}</ol>
     </nav>
-  </main>;
+  </div>;
 }
 
-/* The main use case: five stages, each leaving a sheet. On wide screens the sheets pile up beside the text as the reader scrolls,
-   so the finished dossier is on the desk by the last stage. Without JS or motion the pile is simply complete. */
-function Flow() {
-  const { flow } = site;
-  const total = flow.stages.length;
-  const [active, setActive] = useState(total - 1);
-  const [live, setLive] = useState(false);
-  const list = useRef(null);
-  useEffect(() => {
-    if (!document.documentElement.classList.contains('js-motion') || !('IntersectionObserver' in window) || !window.matchMedia('(min-width: 901px)').matches) return;
-    const items = Array.from(list.current.children);
-    const seen = new Set();
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => { const i = items.indexOf(e.target); if (e.isIntersecting) seen.add(i); else seen.delete(i); });
-      if (seen.size) setActive(Math.max(...seen));
-      else if (items[0].getBoundingClientRect().top > window.innerHeight * 0.5) setActive(0);
-    }, { rootMargin: '-10% 0px -50% 0px' });
-    items.forEach(el => io.observe(el));
-    setActive(0); setLive(true);
-    return () => io.disconnect();
-  }, []);
-  return <section className="section flow wrap" id="przebieg" aria-labelledby="flow-title" data-live={live ? '' : undefined}>
-    <div className="section-head">
-      <h2 id="flow-title">{flow.title}</h2>
-      <p className="section-lead">{flow.lead}</p>
-    </div>
-    <div className="flow-grid">
-      <ol className="flow-list" ref={list}>
-        {flow.stages.map((stage, i) => <li key={stage.title} className={i === active ? 'is-active' : undefined}>
-          <span className="flow-numeral" aria-hidden="true">{i + 1}</span>
-          <div className="flow-text">
-            <h3>{stage.title}</h3>
-            <p>{stage.text}</p>
-            <p className="note flow-value"><Mark kind="tick" /><span>{stage.value}</span></p>
-            <FlowSheet sheet={stage.sheet} index={i} total={total} className="flow-sheet-inline" />
-          </div>
-        </li>)}
-      </ol>
-      <div className="flow-pile" aria-hidden="true">
-        {flow.stages.map((stage, i) => <FlowSheet key={stage.title} sheet={stage.sheet} index={i} total={total} className={`flow-sheet-piled${i > active ? ' is-ahead' : ''}${i === active ? ' is-top' : ''}`} />)}
-      </div>
-    </div>
-    <Note className="section-note">{flow.note}</Note>
-    <div className="flow-close">
-      <FlowTerms />
-      <CallToAction title={flow.cta.title} text={flow.cta.text} button={flow.cta.button} secondary={<TextLink href={deckPath} arrow>{flow.deck.link}</TextLink>} />
-    </div>
-  </section>;
-}
-
-/* Home: one axis. The consultation is the centre (hero, flow), the situations are the evidence,
-   the three formats, the refusals, the analyses and the person are the background. */
+/* Home is the client path, read screen by screen: the offer in one sentence, the path (stages 0 to 5 and its closing screen),
+   then the evidence and the background: situations, formats, the person, and the card that starts the first conversation. */
 function Home() {
-  const { flow, formats, workflow, consultation, review, perspective } = site;
-  const total = flow.stages.length;
-  /* Open knowledge (stage 0 of the client path): the guide first, then the analyses, then the sample compendium. */
-  const openRows = [
-    { ...site.open.guide, href: guidePath },
-    ...articles.map(a => ({ meta: [formatDate(a.date), `${readingMinutes(a.blocks)} min czytania`], title: a.title, lead: a.lead, href: `/analizy/${a.slug}/` })),
-    { ...site.open.compendium, href: compendiumPath },
-  ];
+  const { flow, formats, workflow, consultation, review } = site;
+  const sheets = flow.stages.length - 1;
   return <main id="tresc" tabIndex="-1">
     <section className="hero theme-blue" aria-labelledby="hero-title">
       <div className="wrap">
         <div className="hero-row">
           <div className="hero-copy">
             <h1 id="hero-title">{site.hero.lines.map((line, i) => <span className="hero-line" key={line} style={{ '--i': i }}><span className="hero-line-inner">{line}{i < site.hero.lines.length - 1 ? ' ' : ''}</span></span>)}</h1>
-            <p className="hero-sub">{site.hero.sub}</p>
             <p className="hero-lead">{site.hero.lead}</p>
-            <div className="hero-actions">
-              <Button href="/?temat=inne#kontakt">{flow.cta.button}</Button>
-              <TextLink href={guidePath} arrow>{site.guide.heroLink}</TextLink>
-            </div>
-            <div className="perspective">
-              <p className="perspective-title">{perspective.title}</p>
-              <p className="perspective-copy">{perspective.text}</p>
-            </div>
+            <div className="hero-actions"><Button href="/?temat=inne#kontakt">{flow.cta.button}</Button></div>
           </div>
-          {/* The finished dossier: the four sheets a consultation leaves behind, the compendium on top. The fifth stage is optional
-              and leaves no document, so it is not in the pile. Decorative here; the flow below carries the content. */}
+          {/* The finished dossier: the four sheets a consultation leaves behind, the compendium on top. Stage 0 and the optional
+              fifth stage leave no document, so they are not in the pile. Decorative here; the path below carries the content. */}
           <div className="hero-pile" aria-hidden="true">
-            {flow.stages.slice(0, -1).map((stage, i) => <FlowSheet key={stage.title} sheet={stage.sheet} index={i} total={total} />)}
+            {flow.stages.slice(1, -1).map((stage, i) => <FlowSheet key={stage.title} sheet={stage.sheet} index={i} label={`${i + 1} z ${sheets}`} />)}
           </div>
         </div>
+        {/* The map of the path: what the next screens walk through, in order. */}
+        <nav className="path-index" aria-label={flow.indexLabel}>
+          <ol>{flow.stages.map((stage, i) => <li key={stage.title} style={{ '--i': i }}><a href={`#etap-${i}`}><span aria-hidden="true">{i}</span>{stage.title}</a></li>)}</ol>
+        </nav>
       </div>
     </section>
 
-    <Flow />
+    <Path />
 
     <Cases />
 
@@ -511,36 +452,13 @@ function Home() {
       <Note className="section-note">{formats.boundaryNote}</Note>
     </section>
 
-    <section className="principles" id="zasady" aria-labelledby="principles-title">
-      <div className="wrap principles-grid">
-        <h2 id="principles-title">Czego nie robię</h2>
-        <ul>{site.principles.map(p => {
-          const rest = p.replace(/^Nie\s+/, '');
-          return <li key={p}><span className="principle-no">Nie</span><span className="principle-text">{rest}</span></li>;
-        })}</ul>
-        <div className="principles-cta"><p>Zamiast tego zaczynam od Twojego zadania.</p><Button href="#kontakt">Opisz zadanie</Button></div>
-      </div>
-    </section>
-
-    <section className="section analyses wrap" id="analizy" aria-labelledby="analyses-title">
-      <div className="section-head">
-        <h2 id="analyses-title">{site.open.title}</h2>
-        <p className="section-lead">{site.open.lead}</p>
-      </div>
-      <div className="analysis-list">{openRows.map(row => <article key={row.href}>
-        <p className="meta">{row.meta.map(m => <span key={m}>{m}</span>)}</p>
-        <h3><a href={row.href}>{row.title}</a></h3>
-        <p className="analysis-lead">{row.lead}</p>
-        <ArrowRight className="analysis-arrow" aria-hidden="true" />
-      </article>)}</div>
-    </section>
-
     <section className="section about wrap" id="o-mnie" aria-labelledby="about-title">
       <h2 id="about-title">Perspektywa produktowa. Techniczna ocena. Zrozumiały wniosek.</h2>
       <div className="about-grid">
         <div className="about-bio">
           <p>{pl(`Jestem ${site.name}. Pracuję jako Technical Product Manager. Łączę analizę procesów, architekturę i integrację systemów z wiedzą o modelach językowych, agentach oraz automatyzacji.`)}</p>
           <p>{pl('W doradztwie wykorzystuję tę perspektywę do oceny, która zmiana ma sens i jak sprawdzić jej rezultat.')}</p>
+          <p className="about-link"><TextLink href={site.principlesPath} arrow>{site.principlesTitle}</TextLink></p>
           <Pending>zweryfikowane doświadczenie i publiczny profil zawodowy.</Pending>
         </div>
         <dl className="expertise">{site.expertise.map(item => <div key={item.title}><dt>{item.title}</dt><dd>{item.text}</dd></div>)}</dl>
@@ -551,79 +469,91 @@ function Home() {
   </main>;
 }
 
+/* The contact form is the card of the first conversation: the three questions of stage 1, answered in writing.
+   An open question carries a pencil query; once it has an answer the query becomes a tick.
+   A local demonstration: it validates and shows a draft; nothing is sent. */
 function Contact() {
+  const { contact } = site;
+  const questions = site.flow.stages[1].sheet.items;
   const [ready, setReady] = useState(false);
-  const [values, setValues] = useState({ email: '', name: '', company: '', topic: 'zadanie', message: '' });
+  const [answers, setAnswers] = useState(() => questions.map(() => ''));
+  const [email, setEmail] = useState('');
+  const [topic, setTopic] = useState(null);
   const [errors, setErrors] = useState({});
   const [preview, setPreview] = useState(null);
   const [copied, setCopied] = useState(false);
   const [copyError, setCopyError] = useState(false);
   const errorBox = useRef(null);
   const previewBox = useRef(null);
+  const focusSummary = useRef(false);
   useEffect(() => {
     setReady(true);
-    const topic = new URLSearchParams(window.location.search).get('temat');
-    if (['zadanie', 'decyzja', 'oferta'].includes(topic)) setValues(v => ({ ...v, topic }));
+    const requested = new URLSearchParams(window.location.search).get('temat');
+    if (contact.topics[requested]) setTopic(requested);
   }, []);
-  useEffect(() => { if (Object.keys(errors).length) errorBox.current?.focus(); }, [errors]);
+  useEffect(() => { if (focusSummary.current) { focusSummary.current = false; errorBox.current?.focus(); } }, [errors]);
   useEffect(() => { if (preview) previewBox.current?.focus(); }, [preview]);
-  function change(event) {
-    setValues(v => ({ ...v, [event.target.name]: event.target.value }));
-    setPreview(null); setCopied(false); setCopyError(false);
-    if (errors[event.target.name]) setErrors(e => { const next = { ...e }; delete next[event.target.name]; return next; });
-  }
+  const emailOk = value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+  const messages = { answer: 'Odpowiedz krótko na pierwsze pytanie; od niego zaczniemy.', email: 'Wpisz adres e-mail w poprawnym formacie.' };
+  const clear = key => setErrors(e => { if (!e[key]) return e; const next = { ...e }; delete next[key]; return next; });
+  const reset = () => { setPreview(null); setCopied(false); setCopyError(false); };
+  function answer(i, value) { reset(); setAnswers(list => list.map((x, k) => k === i ? value : x)); if (i === 0) clear('answer'); }
+  function checkEmail() { if (email.trim() && !emailOk(email)) setErrors(e => ({ ...e, email: messages.email })); }
   function submit(event) {
     event.preventDefault();
     const next = {};
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) next.email = 'Wpisz adres e-mail w poprawnym formacie.';
-    if (!values.message.trim()) next.message = 'Opisz krótko zadanie lub decyzję, w której potrzebujesz pomocy.';
-    setErrors(next); setCopied(false); setCopyError(false);
-    if (Object.keys(next).length) { setPreview(null); return; }
-    const topics = { zadanie: 'Jedno zadanie', decyzja: 'Jedna decyzja AI', oferta: 'Przegląd oferty', inne: 'Inny temat' };
-    setPreview(`Temat: ${topics[values.topic]}\n${values.name.trim() ? `Imię: ${values.name.trim()}\n` : ''}${values.company.trim() ? `Firma / rola: ${values.company.trim()}\n` : ''}E-mail: ${values.email.trim()}\n\n${values.message.trim()}`);
+    if (!answers[0].trim()) next.answer = messages.answer;
+    if (!emailOk(email)) next.email = messages.email;
+    reset();
+    if (Object.keys(next).length) { focusSummary.current = true; setErrors(next); return; }
+    setErrors({});
+    const parts = questions.map((q, i) => answers[i].trim() ? `${q}\n${answers[i].trim()}` : null).filter(Boolean);
+    setPreview(`${topic ? `Temat: ${contact.topics[topic]}\n\n` : ''}${parts.join('\n\n')}\n\n${contact.replyLabel} ${email.trim()}`);
   }
   async function copyDraft() {
     try { await navigator.clipboard.writeText(preview); setCopied(true); setCopyError(false); }
     catch { setCopyError(true); }
   }
+  const errorTargets = { answer: 'card-q0', email: 'contact-email' };
   return <section className="contact" id="kontakt" aria-labelledby="contact-title">
     <div className="wrap contact-grid">
       <div className="contact-intro">
-        <h2 id="contact-title">Opisz jedno zadanie lub decyzję.</h2>
-        <p>{pl('Napisz, co chcesz usprawnić, z jakiego narzędzia korzystasz i na czym polega trudność. Jeśli możesz, dodaj częstotliwość zadania oraz termin.')}</p>
-        <p>{pl('Odpowiem propozycją krótkiej, bezpłatnej rozmowy. Jeśli temat mieści się w mojej roli, ustalimy zakres, cenę i terminy.')}</p>
-        <p className="contact-alt">{site.guide.contactLine} <TextLink href={guidePath} arrow>{site.guide.contactLink}</TextLink></p>
-        <Note>{pl('Na początek wystarczy ogólny opis. Nie wpisuj danych klientów, haseł ani poufnych dokumentów.')}</Note>
-        <Pending>adres e-mail i termin odpowiedzi.</Pending>
+        <h2 id="contact-title">{contact.title}</h2>
+        <p>{contact.text}</p>
+        <Note>{contact.note}</Note>
+        <Pending>{contact.pending}</Pending>
       </div>
-      <div className="sheet contact-sheet">
-        <div className="sheet-bar"><p>Opis zadania</p><p>Formularz demonstracyjny</p></div>
-        <div className="contact-form-area">
-          <p className="demo-notice">Opis jest sprawdzany tylko w tej karcie; nic nie jest wysyłane do serwera ani modelu AI. <a href="/prywatnosc/">Prywatność prototypu</a>.</p>
-          <form noValidate onSubmit={submit} aria-label="Opis zadania lub decyzji">
-            <fieldset disabled={!ready}>
-              <legend className="visually-hidden">Dane do przygotowania opisu</legend>
-              {Object.keys(errors).length > 0 && <div className="error-summary" ref={errorBox} tabIndex="-1" role="alert"><p>Sprawdź oznaczone pola.</p>{Object.entries(errors).map(([id, text]) => <a key={id} href={`#contact-${id}`}>{text}</a>)}</div>}
-              <div className="form-row"><label htmlFor="contact-email">E-mail <span>(wymagany)</span></label><input id="contact-email" name="email" type="email" autoComplete="email" spellCheck="false" maxLength="254" value={values.email} onChange={change} required aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? 'error-email' : undefined} />{errors.email && <p className="field-error" id="error-email">{errors.email}</p>}</div>
-              <div className="optional-fields">
-                <div className="form-row"><label htmlFor="contact-name">Imię <span>(opcjonalne)</span></label><input id="contact-name" name="name" autoComplete="given-name" maxLength="100" value={values.name} onChange={change} /></div>
-                <div className="form-row"><label htmlFor="contact-company">Firma / rola <span>(opcjonalne)</span></label><input id="contact-company" name="company" autoComplete="organization" maxLength="150" value={values.company} onChange={change} /></div>
-              </div>
-              <div className="form-row"><label htmlFor="contact-topic">Temat</label><div className="select-wrap"><select id="contact-topic" name="topic" value={values.topic} onChange={change}><option value="zadanie">Jedno zadanie zespołu</option><option value="decyzja">Jedna decyzja AI</option><option value="oferta">Przegląd oferty AI</option><option value="inne">Inny temat / jeszcze nie wiem</option></select><CaretDown aria-hidden="true" /></div></div>
-              <div className="form-row"><label htmlFor="contact-message">Krótki opis <span>(wymagany)</span></label><p className="field-hint" id="message-hint">Zadanie lub decyzja, obecne narzędzie i główna trudność.</p><textarea id="contact-message" name="message" rows="6" maxLength="4000" value={values.message} onChange={change} required aria-invalid={Boolean(errors.message)} aria-describedby={`message-hint${errors.message ? ' error-message' : ''}`} />{errors.message && <p className="field-error" id="error-message">{errors.message}</p>}</div>
-              <Button type="submit" compact>Sprawdź opis</Button>
-            </fieldset>
-            <noscript><p>Ten podgląd wymaga JavaScript do sprawdzenia opisu. Formularz nie wysyła wiadomości.</p></noscript>
-          </form>
-          {preview && <div className="draft-preview" ref={previewBox} tabIndex="-1" role="region" aria-label="Podgląd opisu">
-            <p className="draft-title"><Mark kind="tick" />Opis jest gotowy.</p>
-            <p>To podgląd; niczego nie wysłano.</p>
-            <pre>{preview}</pre>
-            <button type="button" className="link" onClick={copyDraft}>{copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}<span>{copied ? 'Skopiowano opis' : 'Kopiuj opis'}</span></button>
-            <p className="visually-hidden" role="status">{copied ? 'Opis skopiowano do schowka.' : ''}</p>
-            {copyError && <p role="status">Przeglądarka nie pozwoliła skopiować opisu. Możesz zaznaczyć go powyżej i skopiować ręcznie.</p>}
-          </div>}
-        </div>
+      <div className="sheet contact-sheet card">
+        <div className="sheet-bar"><p>{contact.sheetTitle}{topic ? `: ${contact.topics[topic]}` : ''}</p><p>Formularz demonstracyjny</p></div>
+        <form noValidate onSubmit={submit} aria-label="Karta pierwszej rozmowy">
+          <fieldset disabled={!ready}>
+            <legend className="visually-hidden">Trzy pytania i adres do odpowiedzi</legend>
+            {Object.keys(errors).length > 0 && <div className="error-summary" ref={errorBox} tabIndex="-1" role="alert"><p>Dwie rzeczy są potrzebne, żeby karta była gotowa.</p>{Object.entries(errors).map(([key, text]) => <a key={key} href={`#${errorTargets[key]}`}>{text}</a>)}</div>}
+            {questions.map((question, i) => <div className="card-q" key={question} data-answered={answers[i].trim() ? '' : undefined}>
+              <label htmlFor={`card-q${i}`}><span className="card-q-mark" aria-hidden="true"><Mark kind="query" /><Mark kind="tick" /></span><span>{question}</span>{i > 0 && <span className="card-q-opt">(opcjonalne)</span>}</label>
+              {i === 0 && <p className="field-hint" id="card-hint">{contact.hint}</p>}
+              <textarea id={`card-q${i}`} name={`q${i}`} rows="2" maxLength="1500" value={answers[i]} onChange={e => answer(i, e.target.value)} required={i === 0} aria-invalid={i === 0 && Boolean(errors.answer)} aria-describedby={i === 0 ? `card-hint${errors.answer ? ' card-error' : ''}` : undefined} />
+              {i === 0 && errors.answer && <p className="field-error" id="card-error">{errors.answer}</p>}
+            </div>)}
+            <div className="mail-head card-reply">
+              <div className="mail-to"><label htmlFor="contact-email">{contact.replyLabel}<span className="visually-hidden"> adres e-mail (wymagany)</span></label><input id="contact-email" name="email" type="email" autoComplete="email" spellCheck="false" maxLength="254" placeholder="twoj@adres.pl" value={email} onChange={e => { setEmail(e.target.value); clear('email'); reset(); }} onBlur={checkEmail} required aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? 'error-email' : undefined} /></div>
+              {errors.email && <p className="field-error" id="error-email">{errors.email}</p>}
+            </div>
+            <div className="mail-foot">
+              <Button type="submit" compact>{contact.button}</Button>
+              <p className="demo-notice">Karta jest sprawdzana tylko w tej karcie przeglądarki; nic nie jest wysyłane do serwera ani modelu AI. <a href="/prywatnosc/">Prywatność prototypu</a>.</p>
+            </div>
+          </fieldset>
+          <noscript><p className="demo-notice">Sprawdzenie karty wymaga JavaScript. Formularz nie wysyła wiadomości.</p></noscript>
+        </form>
+        {preview && <div className="mail-done draft-preview" ref={previewBox} tabIndex="-1" role="region" aria-label="Podgląd karty">
+          <p className="draft-title"><Mark kind="tick" />Karta jest gotowa.</p>
+          <p>To podgląd; niczego nie wysłano.</p>
+          <pre>{preview}</pre>
+          <button type="button" className="link" onClick={copyDraft}>{copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}<span>{copied ? 'Skopiowano kartę' : 'Kopiuj kartę'}</span></button>
+          <p className="visually-hidden" role="status">{copied ? 'Kartę skopiowano do schowka.' : ''}</p>
+          {copyError && <p role="status">Przeglądarka nie pozwoliła skopiować karty. Możesz zaznaczyć ją powyżej i skopiować ręcznie.</p>}
+        </div>}
       </div>
     </div>
   </section>;
@@ -652,7 +582,7 @@ function ArticleFrame({ kind, title, lead, meta, theses, terms, children, backHr
         <div className={`article-reading ${dropcap ? 'has-dropcap' : ''}`}>{children}</div>
         <Marginalia terms={terms} />
       </div>
-      <aside className="article-contact"><h2>Masz podobne pytanie w swoim zespole?</h2><Button href="/#kontakt">Opisz zadanie lub decyzję</Button></aside>
+      <aside className="article-contact"><h2>Masz podobne pytanie w swoim zespole?</h2><Button href="/?temat=inne#kontakt">{site.flow.cta.button}</Button></aside>
     </div>
   </main>;
 }
@@ -667,7 +597,7 @@ function DataTable({ block }) {
 
 function ArticlePage({ article }) {
   const meta = [formatDate(article.date), `${readingMinutes(article.blocks)} min czytania`, `Opracowanie: ${site.name}`];
-  return <ArticleFrame kind="Analiza" title={article.title} lead={article.lead} meta={meta} theses={article.theses} terms={article.terms} backHref="/#analizy" backLabel="Wróć do analiz" dropcap>
+  return <ArticleFrame kind="Analiza" title={article.title} lead={article.lead} meta={meta} theses={article.theses} terms={article.terms} backHref="/#etap-0" backLabel="Wróć do wiedzy otwartej" dropcap>
     {article.blocks.map((block, i) => {
       if (block.type === 'heading') return <h2 key={i}>{block.text}</h2>;
       if (block.type === 'pull') return <p key={i} className="pull" aria-hidden="true">{block.text}</p>;
@@ -782,7 +712,7 @@ function GuidePage() {
   return <main id="tresc" tabIndex="-1" className="guide">
     <section className="scene scene-intro" aria-labelledby="guide-title">
       <div className="wrap scene-grid"><div className="scene-col">
-        <a className="back-link" href="/#analizy"><ArrowLeft aria-hidden="true" />Wróć do wiedzy otwartej</a>
+        <a className="back-link" href="/#etap-0"><ArrowLeft aria-hidden="true" />Wróć do wiedzy otwartej</a>
         <h1 id="guide-title">{guide.title}</h1>
         <p className="article-lead">{guide.lead}</p>
         <p className="meta">{guide.meta.map(m => <span key={m}>{m}</span>)}</p>
@@ -809,7 +739,7 @@ function GuidePage() {
         <p className="scene-lead">{guide.form.intro}</p>
         <GuideForm />
         <Note>{guide.form.note} <a href="/prywatnosc/">Prywatność prototypu</a>.</Note>
-        <CallToAction headingLevel="h2" title={guide.next.title} text={guide.next.text} button={guide.next.button} href={compendiumPath} secondary={<TextLink href={deckPath} arrow>{guide.next.link}</TextLink>} />
+        <CallToAction headingLevel="h2" title={guide.next.title} text={guide.next.text} button={guide.next.button} href={compendiumPath} secondary={<TextLink href={pathHref} arrow>{guide.next.link}</TextLink>} />
       </div></div>
     </section>
   </main>;
@@ -818,7 +748,7 @@ function GuidePage() {
 function CompendiumPage() {
   const { compendium: c } = site;
   let offset = 0;
-  return <ArticleFrame kind="Przykładowe kompendium, dane syntetyczne" title={c.title} lead={c.lead} meta={['Materiał syntetyczny', formatDate('22.11.2026'), `Opracowanie: ${site.name}`]} backHref="/#analizy" backLabel="Wróć do wiedzy otwartej">
+  return <ArticleFrame kind="Przykładowe kompendium, dane syntetyczne" title={c.title} lead={c.lead} meta={['Materiał syntetyczny', formatDate('22.11.2026'), `Opracowanie: ${site.name}`]} backHref="/#etap-4" backLabel="Wróć do etapu „Kompendium”">
     <p className="boundary"><strong>Przykład syntetyczny.</strong> {c.boundary}</p>
     <h2>Czym jest kompendium</h2>{c.intro.map(p => <p key={p}>{p}</p>)}
     <h2>{c.contentsTitle}</h2>
@@ -836,9 +766,24 @@ function CompendiumPage() {
   </ArticleFrame>;
 }
 
+/* "Czego nie robię" on its own page (ink ground), linked from the person section and the footer. */
+function PrinciplesPage() {
+  return <main id="tresc" tabIndex="-1" className="principles principles-page">
+    <div className="wrap principles-grid">
+      <div className="principles-head">
+        <a className="back-link" href="/#o-mnie"><ArrowLeft aria-hidden="true" />Wróć na stronę główną</a>
+        <h1>{site.principlesTitle}</h1>
+        <p>{site.principlesLead}</p>
+      </div>
+      <ul>{site.principles.map(p => <li key={p}><span className="principle-no">Nie</span><span className="principle-text">{p.replace(/^Nie\s+/, '')}</span></li>)}</ul>
+      <div className="principles-cta"><p>{site.principlesCta}</p><Button href="/?temat=inne#kontakt">{site.flow.cta.button}</Button></div>
+    </div>
+  </main>;
+}
+
 function PrivacyPage() {
   return <ArticleFrame kind="Prototyp" title="Najpierw jasny opis. Poufne materiały później." lead="Ten podgląd pozwala zapoznać się ze stroną i sprawdzić opis zadania. Nie uruchamia rzeczywistej obsługi zapytań." backHref="/#kontakt" backLabel="Wróć do kontaktu">
-    <h2>Jak działają formularze</h2><p>Dotyczy to obu formularzy: opisu zadania i przewodnika. Wpisane informacje pozostają w pamięci tej karty przeglądarki. Żaden z formularzy nie wysyła ich do serwera, poczty ani modelu AI i nie zapisuje ich w cookies lub localStorage. Odświeżenie albo zamknięcie strony usuwa roboczy opis z formularza.</p><p>Formularz przewodnika pokazuje wyłącznie podgląd wiadomości. Przewodnik nie jest jeszcze wysyłany, adres nie jest zapisywany, a zaznaczone narzędzia i zgoda na kolejne wiadomości nie opuszczają tej karty. Dopisek do zestawu narzędzi nie jest generowany: żadne dane nie trafiają do modelu AI.</p><p>Przycisk kopiowania przenosi opis do schowka wyłącznie po Twoim kliknięciu. Strona nie odczytuje zawartości schowka.</p>
+    <h2>Jak działają formularze</h2><p>Dotyczy to obu formularzy: karty pierwszej rozmowy i przewodnika. Wpisane informacje pozostają w pamięci tej karty przeglądarki. Żaden z formularzy nie wysyła ich do serwera, poczty ani modelu AI i nie zapisuje ich w cookies lub localStorage. Odświeżenie albo zamknięcie strony usuwa roboczy opis z formularza.</p><p>Formularz przewodnika pokazuje wyłącznie podgląd wiadomości. Przewodnik nie jest jeszcze wysyłany, adres nie jest zapisywany, a zaznaczone narzędzia i zgoda na kolejne wiadomości nie opuszczają tej karty. Dopisek do zestawu narzędzi nie jest generowany: żadne dane nie trafiają do modelu AI.</p><p>Przycisk kopiowania przenosi opis do schowka wyłącznie po Twoim kliknięciu. Strona nie odczytuje zawartości schowka.</p>
     <h2>Odwiedziny strony</h2><p>Strona nie zawiera narzędzi reklamowych, zewnętrznej analityki, osadzonych kalendarzy ani formularzy innych dostawców. Fonty są ładowane z tego samego serwisu. Hosting może przetwarzać techniczne dane żądań; nie oznacza to, że prototyp jest usługą bez jakiegokolwiek przetwarzania danych.</p>
     <h2>Przed uruchomieniem kontaktu</h2><p>Przed uruchomieniem wysyłki przewodnika potrzebne będą osobne podstawy: jedna dla dostarczenia zamówionego pliku, druga, dobrowolna, dla kolejnych wiadomości. Do uzupełnienia pozostają rzeczywiste dane administratora, adres kontaktowy, dostawcy i odbiorcy, cele oraz podstawy przetwarzania, retencja, zasady transferów i realizacji praw. Dokument musi odpowiadać faktycznej konfiguracji hostingu, poczty i endpointu.</p><p>Ten opis dotyczy prototypu. Nie jest gotową polityką prywatności dla działającej praktyki. Rzeczywista wysyłka zostanie uruchomiona dopiero po ustaleniu tych elementów.</p>
   </ArticleFrame>;
@@ -850,8 +795,11 @@ function NotFound() {
 
 export function App({ path: suppliedPath }) {
   const path = suppliedPath || (typeof window !== 'undefined' ? window.location.pathname : '/');
-  const normalizedPath = path === '/' ? '/' : `${path.replace(/\/+$/, '')}/`;
+  const cleanPath = path === '/' ? '/' : `${path.replace(/\/+$/, '')}/`;
+  const legacyDeck = cleanPath === legacyDeckPath;
+  const normalizedPath = legacyDeck ? '/' : cleanPath;
   useEffect(() => {
+    if (legacyDeck) window.history.replaceState(null, '', pathHref);
     const meta = getPageMeta(normalizedPath);
     document.title = meta.title;
     document.querySelector('meta[name="description"]')?.setAttribute('content', meta.description);
@@ -862,6 +810,6 @@ export function App({ path: suppliedPath }) {
     return initMotion();
   }, [normalizedPath]);
   const article = articles.find(a => normalizedPath === `/analizy/${a.slug}/`);
-  const page = normalizedPath === '/' ? <Home /> : article ? <ArticlePage article={article} /> : normalizedPath === samplePath ? <SamplePage /> : normalizedPath === deckPath ? <DeckPage /> : normalizedPath === guidePath ? <GuidePage /> : normalizedPath === compendiumPath ? <CompendiumPage /> : normalizedPath === '/prywatnosc/' ? <PrivacyPage /> : <NotFound />;
+  const page = normalizedPath === '/' ? <Home /> : article ? <ArticlePage article={article} /> : normalizedPath === samplePath ? <SamplePage /> : normalizedPath === guidePath ? <GuidePage /> : normalizedPath === site.principlesPath ? <PrinciplesPage /> : normalizedPath === compendiumPath ? <CompendiumPage /> : normalizedPath === '/prywatnosc/' ? <PrivacyPage /> : <NotFound />;
   return <><Header overHero={normalizedPath === '/'} path={normalizedPath} />{page}<Footer /></>;
 }

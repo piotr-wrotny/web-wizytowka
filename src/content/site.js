@@ -3,13 +3,11 @@
 export const site = {
   name: 'Piotr Wrotny',
   descriptor: 'Niezależny doradca AI',
-  // The hero names the main offer (it absorbed the former blue offer block). Headline approved by the founder on 2026-11-10.
-  // DRAFT: `lead` was written by the assistant and still awaits approval.
-  // Previous headline, kept for reference: "Od odpowiedzi AI do dobrze wykonanej pracy."
+  // The hero names the main offer. Headline approved by the founder on 2026-11-10.
+  // DRAFT 2026-11-22: `lead` re-written by the assistant as one statement of the offer; the path itself follows on the next screens.
   hero: {
     lines: ['Konsultacje AI', 'szyte na miarę.'],
-    sub: 'Jedno pytanie, jeden zespół albo jedna decyzja.',
-    lead: 'Zaczynam od rozpoznania: co najbardziej przeszkadza i jaki jest poziom wiedzy. Na spotkaniu pokazuję AI na Waszych zadaniach. Zostaje po nim kompendium, do którego zespół wraca.',
+    lead: 'Od pierwszej rozmowy do kompendium, które zostaje w firmie. Doradzam, nie wdrażam.',
   },
   // DRAFT 2026-11-10: hero illustration written by the assistant from the synthetic note on the sample page.
   // It shows the method (check every statement against the source); it is not a model output and must stay labelled.
@@ -24,10 +22,6 @@ export const site = {
     ],
     caption: 'Ilustracja metody na materiale syntetycznym. Szkic i poprawki napisał autor strony; to nie jest wynik działania modelu.',
   },
-  perspective: {
-    title: 'Produkt. Proces. Technologia.',
-    text: 'Doświadczenie Technical Product Managera. Jasne pytanie, uzasadniony wybór, sprawdzalny rezultat.',
-  },
   nav: [
     { label: 'Konsultacja', href: '/#przebieg' },
     { label: 'Sytuacje', href: '/#sytuacje' },
@@ -36,13 +30,6 @@ export const site = {
     { label: 'O mnie', href: '/#o-mnie' },
     { label: 'Kontakt', href: '/#kontakt' },
   ],
-  // Former blue offer block. Since 2026-11-10 the hero carries the offer; kept as source text, not rendered.
-  offer: {
-    name: 'Konsultacje AI szyte na miarę',
-    subtitle: 'Jedno pytanie, jeden zespół albo jedna decyzja.',
-    intro: 'Zaczynam od zadania, nie od narzędzia.\nKończę pisemną rekomendacją albo standardem, który zespół utrzyma sam.',
-    link: 'Zobacz formaty współpracy',
-  },
   // DRAFT 2026-11-22: the main use case, re-cut by the assistant to the client path approved by the founder on 2026-11-22
   // (~/Work/ai-ekspert/oferta/sciezka-klienta.md, stages 1-5): call, recognition and programme, consultation on site,
   // compendium, optional next step. It replaces the 2026-11-10 cut (recognition, material, presentation, meeting, documents).
@@ -61,17 +48,28 @@ export const site = {
       { title: 'Kompendium na koniec', text: 'Wątki ze spotkania i z dyskusji, uporządkowane i rozwinięte.' },
     ],
     cta: { title: 'Zacznijmy od rozmowy.', text: 'Opisz, co dziś najbardziej przeszkadza. Odpowiem propozycją krótkiej, bezpłatnej rozmowy.', button: 'Opisz swoją sytuację' },
-    deck: { title: 'Konsultacja, krok po kroku.', link: 'Zobacz przebieg jako prezentację', themes: ['desk', 'ink', 'blue', 'paper', 'ink'] },
+    // One theme per stage, 0 to 5. No blue here: the hero and the closing screen are the page's two blue fields.
+    themes: ['paper', 'desk', 'ink', 'paper', 'desk', 'ink'],
+    indexLabel: 'Etapy ścieżki klienta',
+    // Stage 0 is open knowledge (free guide, analyses). Its sheet is a real index with links; the sheets of stages 1-5 are illustrative.
     stages: [
+      {
+        title: 'Wiedza otwarta',
+        text: 'Zanim porozmawiamy, możesz po prostu poczytać: bezpłatny przewodnik po AI i narzędziach oraz analizy.',
+        value: 'Sprawdzasz, jak myślę, zanim poświęcisz mi czas.',
+        action: { label: 'Pobierz przewodnik', href: '/przewodnik/' },
+        sheet: { kind: 'links', title: 'Do przeczytania', label: 'Bez rozmowy' },
+      },
       {
         title: 'Rozmowa',
         text: 'Krótka, bezpłatna rozmowa. Sprawdzamy, czy temat mieści się w mojej roli, i nazywamy pierwsze bolączki.',
         value: 'Wiesz, czy konsultacja ma sens, zanim cokolwiek zamówisz.',
+        action: { label: 'Opisz swoją sytuację', href: '/?temat=inne#kontakt' },
         sheet: { kind: 'questions', title: 'Pierwsza rozmowa', items: ['Co dziś najbardziej przeszkadza?', 'Kto miałby wziąć udział?', 'Jaki rezultat byłby użyteczny?'] },
       },
       {
         title: 'Rozpoznanie',
-        text: 'Wysyłam pytania mailem. Z odpowiedzi powstaje Karta rozpoznania i program spotkania. Akceptujesz program, czyli zakres, i dopiero wtedy rezerwujemy termin.',
+        text: 'Z Twoich odpowiedzi na kilka pytań powstaje Karta rozpoznania i program spotkania. Termin rezerwujemy, gdy zaakceptujesz program.',
         value: 'Wiesz, o czym będzie spotkanie, zanim zajmiesz czas zespołu.',
         sheet: { kind: 'card', title: 'Karta rozpoznania', rows: [['Problemy', 'Co dziś nie działa i gdzie ucieka czas.'], ['Bolączki', 'Co najbardziej przeszkadza w codziennej pracy.'], ['Program', 'Tematy spotkania, do akceptacji.']], scale: { label: 'Poziom wiedzy', from: 'początki', to: 'praktyka', steps: 5, at: 2 } },
       },
@@ -83,7 +81,8 @@ export const site = {
       },
       {
         title: 'Kompendium',
-        text: 'Po spotkaniu dostajesz kompendium. Porządkuje i rozwija wątki ze spotkania, razem z tym, co wyszło w dyskusji. Składa się z modułów ogólnych i rozdziałów napisanych dla Twojej firmy.',
+        text: 'Po spotkaniu dostajesz kompendium: wątki ze spotkania i z dyskusji, uporządkowane i rozwinięte. Część ogólna i rozdziały napisane dla Twojej firmy.',
+        action: { label: 'Zobacz przykładowe kompendium', href: '/materialy/przykladowe-kompendium/' },
         value: 'Zamawiasz dokument, do którego zespół wraca, a nie godziny spotkania.',
         sheet: { kind: 'contents', title: 'Kompendium', items: ['Wspólne pojęcia', 'Mapa narzędzi', 'Wasze zastosowania', 'Wątki z dyskusji', 'Słownik'] },
       },
@@ -91,6 +90,7 @@ export const site = {
         title: 'Dalej, jeśli warto',
         text: 'Na kompendium można skończyć. Jeśli warto iść dalej, możliwa jest kolejna konsultacja, Standard dla zespołu albo wskazanie, co warto wdrożyć.',
         value: 'Wdrożeń nie mam w ofercie, więc nie doradzam ich na zapas.',
+        action: { label: 'Zobacz formaty współpracy', href: '/#zakres' },
         sheet: { kind: 'list', title: 'Możliwe dalsze kroki', items: ['Kolejna konsultacja', 'Standard dla zespołu', 'Wskazanie, co warto wdrożyć', 'Nic więcej: kompendium wystarcza'] },
       },
     ],
@@ -104,10 +104,7 @@ export const site = {
     title: 'Dowiedz się o AI i narzędziach.',
     lead: 'Bezpłatny przewodnik, który wyrównuje słownictwo przed pierwszą rozmową: co AI potrafi, czego nie i jak nazwać to, z czego już korzystasz.',
     meta: ['PDF', 'Bezpłatny, za adres e-mail', 'Wydanie w przygotowaniu'],
-    heroLink: 'Albo zacznij od bezpłatnego przewodnika',
     jump: 'Pobierz przewodnik',
-    contactLine: 'Nie masz jeszcze konkretnego pytania?',
-    contactLink: 'Zacznij od przewodnika',
     contentsTitle: 'Co jest w środku',
     chapters: [
       { title: 'Co AI potrafi, a czego nie', text: 'Gdzie model pomaga, gdzie zgaduje i po czym to poznać.' },
@@ -149,14 +146,7 @@ export const site = {
       doneTitle: 'Adres jest poprawny.',
       doneText: 'W działającej wersji ten mail trafiłby teraz do Ciebie. Dziś nic nie zostało wysłane ani zapisane.',
     },
-    next: { title: 'Wolisz najpierw zobaczyć efekt końcowy?', text: 'Kompendium to dokument, który zostaje po konsultacji. Przykład jest w całości syntetyczny.', button: 'Zobacz przykładowe kompendium', link: 'Jak przebiega konsultacja' },
-  },
-  // DRAFT 2026-11-22: the open-knowledge rows on the home page (the former analyses section, same place in the order).
-  open: {
-    title: 'Wiedza otwarta.',
-    lead: 'Przewodnik, analizy i przykładowe kompendium. Do przeczytania, zanim zdecydujesz, czy warto ze mną rozmawiać.',
-    guide: { meta: ['Przewodnik', 'PDF, bezpłatny'], title: 'Dowiedz się o AI i narzędziach.', lead: 'Co AI potrafi, a czego nie, mapa narzędzi, kontekst, droga od czatu do agenta i słownik. Opcjonalnie z omówieniem narzędzi, z których korzystasz.' },
-    compendium: { meta: ['Przykład', 'Dane syntetyczne'], title: 'Przykładowe kompendium.', lead: 'Jak wygląda dokument, który zostaje po konsultacji: moduły ogólne i rozdziały napisane dla jednej firmy.' },
+    next: { title: 'Wolisz najpierw zobaczyć efekt końcowy?', text: 'Kompendium to dokument, który zostaje po konsultacji. Przykład jest w całości syntetyczny.', button: 'Zobacz przykładowe kompendium', link: 'Zobacz całą ścieżkę' },
   },
   // DRAFT 2026-11-22: a synthetic sample compendium, written by the assistant. The team, the meeting and every detail are invented
   // and unrelated to any engagement; no model was run. It shows the structure only (general modules + client chapters)
@@ -191,7 +181,8 @@ export const site = {
   // DRAFT 2026-11-09: illustrative situations. Generic roles, no clients, no outcomes. Wording awaits founder approval.
   cases: {
     title: 'Od czego zaczynają klienci.',
-    intro: 'Pierwsza wersja jest gotowa, ale senior nadal poprawia fakty, dopowiada kontekst i porządkuje wynik. Każda osoba pracuje inaczej. Trudno powiedzieć, kiedy rezultat jest dobry i kto go zatwierdza. Konsultacja zaczyna się od nazwania tej sytuacji.',
+    // DRAFT 2026-11-22: shortened to one sentence. Previous intro: 'Pierwsza wersja jest gotowa, ale senior nadal poprawia fakty, dopowiada kontekst i porządkuje wynik. Każda osoba pracuje inaczej. Trudno powiedzieć, kiedy rezultat jest dobry i kto go zatwierdza. Konsultacja zaczyna się od nazwania tej sytuacji.'
+    intro: 'Osiem przykładowych sytuacji i pytanie, od którego zaczęłoby się rozpoznanie.',
     note: 'Sytuacje przykładowe. Pokazują rodzaj pytania i dobór formatu; nie opisują zleceń ani klientów.',
     panelFirst: 'Od tego zaczynamy rozpoznanie',
     panelCta: 'Opisz podobną sytuację',
@@ -205,6 +196,19 @@ export const site = {
       { role: 'Marketing i treści', situation: 'Teksty powstają szybciej, ale brzmią podobnie i wymagają długiej redakcji przed publikacją.', question: 'Jak ustawić pracę z AI, żeby redakcja była krótsza, a głos marki pozostał własny?', format: 'Standard dla zespołu', first: 'Jak wygląda droga tekstu od briefu do publikacji i gdzie dziś ucieka czas.' },
       { role: 'IT i bezpieczeństwo', situation: 'Pracownicy korzystają z różnych narzędzi AI na własną rękę. Brakuje wspólnych zasad.', question: 'Od jakich zasad zacząć, żeby nie blokować pracy i nie tracić kontroli nad danymi?', format: 'Jedna decyzja', first: 'Z jakich narzędzi faktycznie korzystają zespoły i jakie dane mogą do nich trafiać.' },
     ],
+  },
+  // DRAFT 2026-11-22: the contact form is the card of the first conversation: the three questions of stage 1, answered in writing.
+  // A local demonstration: it validates and shows a draft; nothing is sent.
+  contact: {
+    title: 'Opisz swoją sytuację.',
+    text: 'To te same trzy pytania, od których zaczyna się pierwsza rozmowa. Odpowiem propozycją krótkiej, bezpłatnej rozmowy.',
+    note: 'Wystarczy ogólny opis. Nie wpisuj danych klientów, haseł ani poufnych dokumentów.',
+    pending: 'adres e-mail i termin odpowiedzi.',
+    sheetTitle: 'Pierwsza rozmowa',
+    replyLabel: 'Odpowiedź na:',
+    button: 'Sprawdź kartę',
+    topics: { zadanie: 'Standard dla zespołu', decyzja: 'Jedna decyzja', oferta: 'Przegląd oferty' },
+    hint: 'Zadanie lub decyzja, obecne narzędzie i główna trudność.',
   },
   formats: {
     title: 'Trzy formaty. Zakres ustalamy razem.',
@@ -275,6 +279,11 @@ export const site = {
   ],
   methodClosing: 'Dobra rekomendacja może oznaczać także wykorzystanie obecnego narzędzia lub rezygnację ze zmiany.',
   // DRAFT 2026-11-09: derived from conditions, boundaries and method above. Wording awaits founder approval.
+  // Since 2026-11-22 shown on its own page (/czego-nie-robie/), linked from the person section and the footer.
+  principlesPath: '/czego-nie-robie/',
+  principlesTitle: 'Czego nie robię',
+  principlesLead: 'Pięć rzeczy, których nie robię, żeby rekomendacja dała się obronić.',
+  principlesCta: 'Zamiast tego zaczynam od Twojego zadania.',
   principles: [
     'Nie oceniam narzędzia bez zadania, które ma wykonać.',
     'Nie podaję oszczędności, której nie zmierzono na porównywalnych zadaniach.',
@@ -289,4 +298,4 @@ export const site = {
   ],
 };
 
-export const pageRoutes = ['/', '/konsultacja/', '/przewodnik/', '/materialy/przykladowe-kompendium/', '/materialy/przyklad-standardu/', '/analizy/od-odpowiedzi-do-wyniku/', '/analizy/kiedy-obecne-narzedzie-wystarczy/', '/prywatnosc/'];
+export const pageRoutes = ['/', '/przewodnik/', '/czego-nie-robie/', '/materialy/przykladowe-kompendium/', '/materialy/przyklad-standardu/', '/analizy/od-odpowiedzi-do-wyniku/', '/analizy/kiedy-obecne-narzedzie-wystarczy/', '/prywatnosc/'];
