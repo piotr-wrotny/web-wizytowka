@@ -9,7 +9,7 @@ export const site = {
   hero: {
     lines: ['Konsultacje AI', 'szyte na miarę.'],
     sub: 'Jedno pytanie, jeden zespół albo jedna decyzja.',
-    lead: 'Zaczynam od rozpoznania: co najbardziej przeszkadza i jaki jest poziom wiedzy. Potem zbieram materiał, wyjaśniam go na spotkaniu i zostawiam dokumenty z całą wiedzą.',
+    lead: 'Zaczynam od rozpoznania: co najbardziej przeszkadza i jaki jest poziom wiedzy. Na spotkaniu pokazuję AI na Waszych zadaniach. Zostaje po nim kompendium, do którego zespół wraca.',
   },
   // DRAFT 2026-11-10: hero illustration written by the assistant from the synthetic note on the sample page.
   // It shows the method (check every statement against the source); it is not a model output and must stay labelled.
@@ -32,6 +32,7 @@ export const site = {
     { label: 'Konsultacja', href: '/#przebieg' },
     { label: 'Sytuacje', href: '/#sytuacje' },
     { label: 'Współpraca', href: '/#zakres' },
+    { label: 'Przewodnik', href: '/przewodnik/' },
     { label: 'O mnie', href: '/#o-mnie' },
     { label: 'Kontakt', href: '/#kontakt' },
   ],
@@ -42,55 +43,145 @@ export const site = {
     intro: 'Zaczynam od zadania, nie od narzędzia.\nKończę pisemną rekomendacją albo standardem, który zespół utrzyma sam.',
     link: 'Zobacz formaty współpracy',
   },
-  // DRAFT 2026-11-10: the main use case, written by the assistant from the founder's description
-  // (recognise problems and knowledge level first, gather material, present, meet, hand over documents).
+  // DRAFT 2026-11-22: the main use case, re-cut by the assistant to the client path approved by the founder on 2026-11-22
+  // (~/Work/ai-ekspert/oferta/sciezka-klienta.md, stages 1-5): call, recognition and programme, consultation on site,
+  // compendium, optional next step. It replaces the 2026-11-10 cut (recognition, material, presentation, meeting, documents).
   // Sheet contents are illustrative, not a record of an engagement. Wording awaits founder approval.
+  // Open founder decision: whether the compendium ends with a recommendation. Until then nothing here promises one.
   flow: {
     title: 'Jak przebiega konsultacja.',
     lead: 'Zanim cokolwiek wyjaśnię, ustalam z klientem, co najbardziej przeszkadza i od jakiego poziomu wiedzy zaczynamy. Wszystko, co dzieje się potem, jest przygotowane pod tę odpowiedź.',
     note: 'Przebieg poglądowy. Zawartość kart pokazuje rodzaj materiału; zakres i formę ustalamy przed rozpoczęciem.',
-    // DRAFT 2026-11-10: the consultation in short. "Spotkanie pod potrzeby" and "dowolna liczba uczestników" come from the founder; the rest is derived from the stages.
+    // DRAFT 2026-11-22: the consultation in short. "Spotkanie pod potrzeby" and "dowolna liczba uczestników" come from the founder (2026-11-10); the rest is derived from the path.
     termsTitle: 'Konsultacja w skrócie',
     terms: [
-      { title: 'Spotkanie pod potrzeby', text: 'Temat, poziom i forma wynikają z rozpoznania, nie z gotowego programu.' },
+      { title: 'Spotkanie pod potrzeby', text: 'Temat, poziom i przykłady wynikają z rozpoznania, nie z gotowego szkolenia.' },
       { title: 'Dowolna liczba uczestników', text: 'Jedna osoba, zespół albo kilka działów naraz.' },
-      { title: 'Materiał na właściwym poziomie', text: 'Dobrany do tego, co uczestnicy już wiedzą i czego potrzebują.' },
-      { title: 'Dokumenty na koniec', text: 'Zebrany materiał, prezentacja, odpowiedzi na pytania i rekomendacja.' },
+      { title: 'Wasze zadania, dane demonstracyjne', text: 'Dwa lub trzy zastosowania z Waszej pracy, pokazane bez poufnych materiałów.' },
+      { title: 'Kompendium na koniec', text: 'Wątki ze spotkania i z dyskusji, uporządkowane i rozwinięte.' },
     ],
-    cta: { title: 'Zacznijmy od rozpoznania.', text: 'Opisz, co dziś najbardziej przeszkadza. Od tego ustalimy temat, poziom i formę konsultacji.', button: 'Opisz swoją sytuację' },
+    cta: { title: 'Zacznijmy od rozmowy.', text: 'Opisz, co dziś najbardziej przeszkadza. Odpowiem propozycją krótkiej, bezpłatnej rozmowy.', button: 'Opisz swoją sytuację' },
     deck: { title: 'Konsultacja, krok po kroku.', link: 'Zobacz przebieg jako prezentację', themes: ['desk', 'ink', 'blue', 'paper', 'ink'] },
     stages: [
       {
+        title: 'Rozmowa',
+        text: 'Krótka, bezpłatna rozmowa. Sprawdzamy, czy temat mieści się w mojej roli, i nazywamy pierwsze bolączki.',
+        value: 'Wiesz, czy konsultacja ma sens, zanim cokolwiek zamówisz.',
+        sheet: { kind: 'questions', title: 'Pierwsza rozmowa', items: ['Co dziś najbardziej przeszkadza?', 'Kto miałby wziąć udział?', 'Jaki rezultat byłby użyteczny?'] },
+      },
+      {
         title: 'Rozpoznanie',
-        text: 'Przed konsultacją ustalam z klientem największe problemy i bolączki oraz poziom wiedzy o AI: osoby, zespołu albo całej firmy.',
-        value: 'Rozmawiamy o Twojej sytuacji, nie o AI w ogóle.',
-        sheet: { kind: 'card', title: 'Rozpoznanie', rows: [['Problemy', 'Co dziś nie działa i gdzie ucieka czas.'], ['Bolączki', 'Co najbardziej przeszkadza w codziennej pracy.']], scale: { label: 'Poziom wiedzy', from: 'początki', to: 'praktyka', steps: 5, at: 2 } },
+        text: 'Wysyłam pytania mailem. Z odpowiedzi powstaje Karta rozpoznania i program spotkania. Akceptujesz program, czyli zakres, i dopiero wtedy rezerwujemy termin.',
+        value: 'Wiesz, o czym będzie spotkanie, zanim zajmiesz czas zespołu.',
+        sheet: { kind: 'card', title: 'Karta rozpoznania', rows: [['Problemy', 'Co dziś nie działa i gdzie ucieka czas.'], ['Bolączki', 'Co najbardziej przeszkadza w codziennej pracy.'], ['Program', 'Tematy spotkania, do akceptacji.']], scale: { label: 'Poziom wiedzy', from: 'początki', to: 'praktyka', steps: 5, at: 2 } },
       },
       {
-        title: 'Zebranie materiału',
-        text: 'Zbieram dane, przykłady i źródła dobrane do tych problemów i do tego poziomu wiedzy. Bez materiału „na wszelki wypadek”.',
-        value: 'Dostajesz wiedzę dobraną do swoich pytań.',
-        sheet: { kind: 'list', title: 'Zebrany materiał', items: ['Dane i źródła do nazwanych problemów', 'Przykłady zastosowań na właściwym poziomie', 'Narzędzia, które warto porównać', 'Ograniczenia i ryzyka'] },
+        title: 'Konsultacja w firmie',
+        text: 'Prezentacja prowadzi od wspólnych pojęć do realiów Twojej firmy. Pokazuję dwa lub trzy Wasze zastosowania na danych demonstracyjnych, potem dyskutujemy w grupie.',
+        value: 'Zespół widzi AI na własnych zadaniach, bez wynoszenia poufnych danych.',
+        sheet: { kind: 'slide', title: 'Prezentacja', heading: 'Od wspólnych pojęć do Waszych zadań', items: ['Wspólne pojęcia', 'Wasze zastosowania', 'Dyskusja w grupie'] },
       },
       {
-        title: 'Prezentacja',
-        text: 'Układam materiał w prezentację, która tłumaczy temat krok po kroku, językiem dopasowanym do odbiorców.',
-        value: 'Trudny temat staje się zrozumiały dla całego zespołu.',
-        sheet: { kind: 'slide', title: 'Prezentacja', heading: 'Od czego zacząć i co sprawdzić najpierw', items: ['Gdzie jesteście dziś', 'Co jest możliwe, a co nie', 'Pierwszy rozsądny krok'] },
+        title: 'Kompendium',
+        text: 'Po spotkaniu dostajesz kompendium. Porządkuje i rozwija wątki ze spotkania, razem z tym, co wyszło w dyskusji. Składa się z modułów ogólnych i rozdziałów napisanych dla Twojej firmy.',
+        value: 'Zamawiasz dokument, do którego zespół wraca, a nie godziny spotkania.',
+        sheet: { kind: 'contents', title: 'Kompendium', items: ['Wspólne pojęcia', 'Mapa narzędzi', 'Wasze zastosowania', 'Wątki z dyskusji', 'Słownik'] },
       },
       {
-        title: 'Spotkanie',
-        text: 'Na spotkaniu wyjaśniam, odpowiadam na pytania i razem przechodzimy przez wnioski.',
-        value: 'Jest czas na pytania i wątpliwości, zanim podejmiesz decyzję.',
-        sheet: { kind: 'questions', title: 'Pytania ze spotkania', items: ['Od czego zacząć?', 'Co zostawić bez zmian?', 'Jak sprawdzić rezultat?'] },
-      },
-      {
-        title: 'Dokumenty',
-        text: 'Na koniec przekazuję dokumenty z całą wiedzą: zebrany materiał, prezentację, odpowiedzi na pytania i rekomendację.',
-        value: 'Wiedza zostaje u Ciebie i można do niej wracać.',
-        sheet: { kind: 'contents', title: 'Dokumenty końcowe', items: ['Rozpoznanie', 'Zebrany materiał', 'Prezentacja', 'Odpowiedzi na pytania', 'Rekomendacja i następny krok'] },
+        title: 'Dalej, jeśli warto',
+        text: 'Na kompendium można skończyć. Jeśli warto iść dalej, możliwa jest kolejna konsultacja, Standard dla zespołu albo wskazanie, co warto wdrożyć.',
+        value: 'Wdrożeń nie mam w ofercie, więc nie doradzam ich na zapas.',
+        sheet: { kind: 'list', title: 'Możliwe dalsze kroki', items: ['Kolejna konsultacja', 'Standard dla zespołu', 'Wskazanie, co warto wdrożyć', 'Nic więcej: kompendium wystarcza'] },
       },
     ],
+  },
+  // DRAFT 2026-11-22: stage 0 of the client path, "open knowledge". Written by the assistant from
+  // ~/Work/ai-ekspert/oferta/sciezka-klienta.md. The guide (PDF) does not exist yet; its date, the update terms,
+  // the e-mail delivery and the consents are open founder decisions. The form on /przewodnik/ is a local demonstration.
+  // The stack list is a proposal: every item is a block the founder has to write, date and maintain.
+  guide: {
+    path: '/przewodnik/',
+    kind: 'Wiedza otwarta',
+    title: 'Dowiedz się o AI i narzędziach.',
+    lead: 'Bezpłatny przewodnik, który wyrównuje słownictwo przed pierwszą rozmową: co AI potrafi, czego nie i jak nazwać to, z czego już korzystasz.',
+    meta: ['Przewodnik, PDF', 'Bezpłatny, za adres e-mail', 'Wydanie w przygotowaniu'],
+    heroLink: 'Albo zacznij od bezpłatnego przewodnika',
+    contactLine: 'Nie masz jeszcze konkretnego pytania?',
+    contactLink: 'Zacznij od przewodnika',
+    contentsTitle: 'Co jest w środku',
+    chapters: [
+      { title: 'Co AI potrafi, a czego nie', text: 'Gdzie model pomaga, gdzie zgaduje i po czym to poznać.' },
+      { title: 'Mapa narzędzi', text: 'Asystenci, środowiska pracy i automatyzacje: co jest czym i do czego służy.' },
+      { title: 'Jak dawać AI kontekst', text: 'Co model musi dostać, żeby wynik dało się zaakceptować.' },
+      { title: 'Od czatu do agenta', text: 'Czat, asystent, przepływ pracy, agent: cztery poziomy i kiedy który ma sens.' },
+      { title: 'Słownik', text: 'Pojęcia, które wracają w rozmowach o AI, wyjaśnione zwykłym językiem.' },
+    ],
+    termsTitle: 'Przewodnik w skrócie',
+    terms: [
+      { title: 'Z datą stanu', text: 'Każde wydanie mówi, na kiedy opisane informacje były aktualne.' },
+      { title: 'Aktualizowany', text: 'Gdy zmienia się coś istotnego, powstaje nowe wydanie.' },
+      { title: 'Pod Twoje narzędzia', text: 'Możesz zaznaczyć, z czego korzystasz. Dostaniesz wtedy krótkie omówienia tych narzędzi.' },
+      { title: 'Bez newslettera', text: 'Adres służy do wysłania przewodnika. Kolejne wiadomości tylko za osobną zgodą.' },
+    ],
+    pending: 'przewodnik (PDF), data wydania, zasady aktualizacji oraz rzeczywista wysyłka.',
+    form: {
+      title: 'Pobierz przewodnik.',
+      intro: [
+        'Podaj adres, na który ma przyjść przewodnik. Jeśli chcesz, zaznacz narzędzia, z których korzystasz: do maila dołączę krótkie, datowane omówienia właśnie tych pozycji.',
+        'Przy dwóch lub więcej narzędziach pod omówieniami pojawi się dopisek o tym, co ten zestaw daje razem. Dopisek powstaje automatycznie, wyłącznie z omówień powyżej, i jest tak oznaczony.',
+      ],
+      note: 'To demonstracja: formularz pokazuje podgląd maila, ale niczego nie wysyła i nie zapisuje adresu.',
+      sheetTitle: 'Przewodnik i Twoje narzędzia',
+      stackLegend: 'Z czego korzystasz?',
+      stackHint: 'Zaznacz to, czego używasz w pracy. Możesz pominąć.',
+      groups: [
+        { id: 'asystent', title: 'Asystent lub agent', items: ['ChatGPT', 'Microsoft Copilot', 'Gemini', 'Claude'] },
+        { id: 'srodowisko', title: 'Środowisko pracy', items: ['Microsoft 365', 'Google Workspace'] },
+        { id: 'automatyzacje', title: 'Automatyzacje', items: ['Power Automate', 'Zapier', 'Make', 'n8n'] },
+      ],
+      none: 'Nie wiem albo nie korzystam',
+      updates: 'Chcę dostać wiadomość, gdy przewodnik albo zaznaczone narzędzia istotnie się zmienią. To osobna zgoda; można ją wycofać.',
+      button: 'Pokaż podgląd maila',
+      blockParts: 'co to jest · do czego się nadaje · co nowego, z datą · ograniczenia i poufność · jeden praktyczny tip',
+    },
+    next: { title: 'Wolisz najpierw zobaczyć efekt końcowy?', text: 'Kompendium to dokument, który zostaje po konsultacji. Przykład jest w całości syntetyczny.', button: 'Zobacz przykładowe kompendium', link: 'Jak przebiega konsultacja' },
+  },
+  // DRAFT 2026-11-22: the open-knowledge rows on the home page (the former analyses section, same place in the order).
+  open: {
+    title: 'Wiedza otwarta.',
+    lead: 'Przewodnik, analizy i przykładowe kompendium. Do przeczytania, zanim zdecydujesz, czy warto ze mną rozmawiać.',
+    guide: { meta: ['Przewodnik', 'PDF, bezpłatny'], title: 'Dowiedz się o AI i narzędziach.', lead: 'Co AI potrafi, a czego nie, mapa narzędzi, kontekst, droga od czatu do agenta i słownik. Opcjonalnie z omówieniem narzędzi, z których korzystasz.' },
+    compendium: { meta: ['Przykład', 'Dane syntetyczne'], title: 'Przykładowe kompendium.', lead: 'Jak wygląda dokument, który zostaje po konsultacji: moduły ogólne i rozdziały napisane dla jednej firmy.' },
+  },
+  // DRAFT 2026-11-22: a synthetic sample compendium, written by the assistant. The team, the meeting and every detail are invented
+  // and unrelated to any engagement; no model was run. It shows the structure only (general modules + client chapters)
+  // and deliberately has no closing recommendation while that founder decision is open.
+  compendium: {
+    path: '/materialy/przykladowe-kompendium/',
+    title: 'Kompendium po konsultacji: dział obsługi klienta.',
+    lead: 'Przykład dokumentu, który zostaje po spotkaniu: moduły ogólne i rozdziały napisane dla jednej firmy.',
+    boundary: 'Zespół, spotkanie i wszystkie szczegóły są zmyślone. Nie opisują zlecenia ani klienta; nie uruchamiano żadnego modelu.',
+    intro: [
+      'Kompendium porządkuje i rozwija to, o czym była mowa na spotkaniu, razem z wątkami, które pojawiły się dopiero w dyskusji. Uczestnicy dostają je po konsultacji i mogą do niego wracać.',
+      'Ma dwie części. Moduły ogólne pochodzą z tej samej bazy co przewodnik i są dobierane do poziomu zespołu. Rozdziały klienta powstają dla jednej firmy: opisują jej zastosowania pokazane na danych demonstracyjnych oraz to, co wyszło w rozmowie.',
+    ],
+    contentsTitle: 'Spis treści przykładu',
+    parts: [
+      { title: 'Moduły ogólne', items: ['Co AI potrafi, a czego nie', 'Jak dawać AI kontekst', 'Od czatu do agenta', 'Słownik'] },
+      { title: 'Rozdziały klienta', items: ['Odpowiedź na zgłoszenie na podstawie bazy wiedzy', 'Streszczenie długiego zgłoszenia przy przekazaniu sprawy', 'Wątki z dyskusji', 'Otwarte pytania'] },
+    ],
+    excerptTitle: 'Fragment rozdziału klienta',
+    excerptLead: 'Tak wygląda jeden rozdział: sytuacja zespołu, to, co pokazano na spotkaniu, i to, co wyszło w dyskusji.',
+    excerptSheet: 'Odpowiedź na zgłoszenie na podstawie bazy wiedzy',
+    excerpt: [
+      ['Sytuacja', 'Konsultanci odpowiadają na powtarzalne pytania, korzystając z bazy wiedzy. Część artykułów jest nieaktualna, a odpowiedzi różnią się między osobami.'],
+      ['Pokazane na spotkaniu', 'Szkic odpowiedzi przygotowany wyłącznie z artykułów bazy wiedzy, z przytoczeniem artykułu przy każdym zdaniu. Materiał: trzy zmyślone zgłoszenia i sześć zmyślonych artykułów.'],
+      ['Przypadek graniczny', 'Na jedno ze zgłoszeń baza nie zawiera odpowiedzi. Poprawny szkic to „brak w źródłach, przekaż do drugiej linii”, a nie zgadywanie.'],
+      ['Z dyskusji', 'Kto odpowiada za aktualność artykułów. Czy szkic może trafić do klienta bez przeczytania przez konsultanta. Co zrobić ze zgłoszeniami, w których klient podaje dane osobowe.'],
+      ['Otwarte', 'Które kategorie zgłoszeń nadają się do pierwszej próby i kto zatwierdza zmiany w bazie wiedzy.'],
+    ],
+    closing: 'W prawdziwym kompendium każdy rozdział klienta jest rozwinięty do kilku stron, a moduły ogólne mają datę stanu, tak jak przewodnik.',
+    guideLink: 'Moduły ogólne mają ten sam układ co przewodnik',
   },
   // DRAFT 2026-11-09: illustrative situations. Generic roles, no clients, no outcomes. Wording awaits founder approval.
   cases: {
@@ -112,7 +203,8 @@ export const site = {
   },
   formats: {
     title: 'Trzy formaty. Zakres ustalamy razem.',
-    lead: 'Każda konsultacja kończy się zapisem: rekomendacją, standardem albo oceną oferty. Format dobieram do pytania, nie odwrotnie.',
+    // DRAFT 2026-11-22: lead re-written so the formats sit beside the full consultation path instead of competing with it.
+    lead: 'Pełna konsultacja kończy się kompendium. Gdy pytanie jest węższe albo idziemy krok dalej, wystarcza jeden z trzech formatów. Każdy kończy się zapisem: rekomendacją, standardem albo oceną oferty.',
     boundaryNote: 'Zakres, cenę i terminy potwierdzam przed rozpoczęciem współpracy.',
   },
   workflow: {
@@ -192,4 +284,4 @@ export const site = {
   ],
 };
 
-export const pageRoutes = ['/', '/konsultacja/', '/materialy/przyklad-standardu/', '/analizy/od-odpowiedzi-do-wyniku/', '/analizy/kiedy-obecne-narzedzie-wystarczy/', '/prywatnosc/'];
+export const pageRoutes = ['/', '/konsultacja/', '/przewodnik/', '/materialy/przykladowe-kompendium/', '/materialy/przyklad-standardu/', '/analizy/od-odpowiedzi-do-wyniku/', '/analizy/kiedy-obecne-narzedzie-wystarczy/', '/prywatnosc/'];

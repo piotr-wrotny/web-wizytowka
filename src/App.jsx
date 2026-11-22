@@ -7,6 +7,8 @@ import { initMotion } from './motion';
 
 const samplePath = '/materialy/przyklad-standardu/';
 const deckPath = '/konsultacja/';
+const guidePath = rawSite.guide.path;
+const compendiumPath = rawSite.compendium.path;
 
 /* Polish typesetting: a one-letter word never ends a line. Binds i, w, z, o, a, u (and capitals) to the next word. */
 export function pl(text) {
@@ -29,9 +31,11 @@ export function getPageMeta(path) {
   const article = articles.find(a => path === `/analizy/${a.slug}/`);
   if (article) return { title: `${article.title} — ${site.descriptor}`, description: article.lead };
   if (path === samplePath) return { title: 'Przykład standardu pracy z AI — dane syntetyczne', description: 'Otwarta demonstracja metody: wejście, kontrola faktów, odpowiedzialność i warunki przerwania pracy.' };
-  if (path === deckPath) return { title: `Jak przebiega konsultacja — ${site.name}`, description: 'Pięć etapów konsultacji AI: rozpoznanie problemów i poziomu wiedzy, zebranie materiału, prezentacja, spotkanie i dokumenty końcowe.' };
-  if (path === '/prywatnosc/') return { title: 'Prywatność prototypu — niezależny doradca AI', description: 'Jak działa demonstracyjny kontakt i co wymaga uzupełnienia przed uruchomieniem obsługi zapytań.' };
-  return { title: `${site.name} — niezależny doradca AI`, description: 'Konsultacje AI szyte na miarę zespołu i zadania: standard dla zespołu, jedna decyzja albo przegląd oferty. Ocena technologii, kryteria jakości i praktyczna próba.' };
+  if (path === deckPath) return { title: `Jak przebiega konsultacja — ${site.name}`, description: 'Pięć etapów konsultacji AI: rozmowa, rozpoznanie i program spotkania, konsultacja w firmie, kompendium i możliwe dalsze kroki.' };
+  if (path === guidePath) return { title: `Przewodnik po AI i narzędziach — ${site.name}`, description: site.guide.lead };
+  if (path === compendiumPath) return { title: 'Przykładowe kompendium po konsultacji — dane syntetyczne', description: 'Jak wygląda dokument, który zostaje po konsultacji: moduły ogólne i rozdziały napisane dla jednej firmy. Przykład w całości syntetyczny.' };
+  if (path === '/prywatnosc/') return { title: 'Prywatność prototypu — niezależny doradca AI', description: 'Jak działają demonstracyjne formularze i co wymaga uzupełnienia przed uruchomieniem obsługi zapytań.' };
+  return { title: `${site.name} — niezależny doradca AI`, description: 'Konsultacje AI szyte na miarę zespołu i zadania: od rozmowy i rozpoznania, przez spotkanie na Waszych zastosowaniach, do kompendium. Bezpłatny przewodnik po AI i narzędziach.' };
 }
 
 /* ------------------------------------------------------------------
@@ -77,7 +81,7 @@ function Words({ text, manual = false }) {
   return <span className="words" data-words={manual ? undefined : ''} style={{ '--n': n }}>{tokens.map((t, k) => t.trim() ? <span key={k} style={{ '--i': i++ }}>{t}</span> : t)}</span>;
 }
 
-function Header({ overHero = false }) {
+function Header({ overHero = false, path }) {
   const [open, setOpen] = useState(false);
   const [onHero, setOnHero] = useState(overHero);
   const bar = useRef(null);
@@ -128,7 +132,7 @@ function Header({ overHero = false }) {
         <p className="header-role">{site.descriptor}</p>
         <button className="nav-toggle" ref={toggle} type="button" aria-controls="main-nav" aria-expanded={open} onClick={() => setOpen(!open)}>{open ? 'Zamknij' : 'Menu'}<CaretDown aria-hidden="true" /></button>
         <nav ref={navRef} className={`site-nav ${open ? 'is-open' : ''}`} id="main-nav" aria-label="Nawigacja główna">
-          {site.nav.map(item => <a key={item.href} href={item.href} aria-current={active === item.href ? 'true' : undefined} onClick={() => setOpen(false)}>{item.label}</a>)}
+          {site.nav.map(item => <a key={item.href} href={item.href} aria-current={active === item.href ? 'true' : path === item.href ? 'page' : undefined} onClick={() => setOpen(false)}>{item.label}</a>)}
         </nav>
       </div>
     </header>
@@ -221,11 +225,10 @@ function FlowSheet({ sheet, index, total, className = '' }) {
 }
 
 /* The consultation in short: the terms that hold for every engagement, then one action. */
-function FlowTerms({ headingLevel: H = 'h3' }) {
-  const { flow } = site;
+function FlowTerms({ headingLevel: H = 'h3', title = site.flow.termsTitle, items = site.flow.terms }) {
   return <div className="terms">
-    <H className="terms-title">{flow.termsTitle}</H>
-    <dl className="terms-list">{flow.terms.map(t => <div key={t.title}><dt><Mark kind="tick" />{t.title}</dt><dd>{t.text}</dd></div>)}</dl>
+    <H className="terms-title">{title}</H>
+    <dl className="terms-list">{items.map(t => <div key={t.title}><dt><Mark kind="tick" />{t.title}</dt><dd>{t.text}</dd></div>)}</dl>
   </div>;
 }
 
@@ -433,6 +436,12 @@ function Flow() {
 function Home() {
   const { flow, formats, workflow, consultation, review, perspective } = site;
   const total = flow.stages.length;
+  /* Open knowledge (stage 0 of the client path): the guide first, then the analyses, then the sample compendium. */
+  const openRows = [
+    { ...site.open.guide, href: guidePath },
+    ...articles.map(a => ({ meta: [formatDate(a.date), `${readingMinutes(a.blocks)} min czytania`], title: a.title, lead: a.lead, href: `/analizy/${a.slug}/` })),
+    { ...site.open.compendium, href: compendiumPath },
+  ];
   return <main id="tresc" tabIndex="-1">
     <section className="hero theme-blue" aria-labelledby="hero-title">
       <div className="wrap">
@@ -443,16 +452,17 @@ function Home() {
             <p className="hero-lead">{site.hero.lead}</p>
             <div className="hero-actions">
               <Button href="/?temat=inne#kontakt">{flow.cta.button}</Button>
-              <TextLink href={deckPath} arrow>{flow.deck.link}</TextLink>
+              <TextLink href={guidePath} arrow>{site.guide.heroLink}</TextLink>
             </div>
             <div className="perspective">
               <p className="perspective-title">{perspective.title}</p>
               <p className="perspective-copy">{perspective.text}</p>
             </div>
           </div>
-          {/* The finished dossier: the five sheets a consultation leaves behind. Decorative here; the flow below carries the content. */}
+          {/* The finished dossier: the four sheets a consultation leaves behind, the compendium on top. The fifth stage is optional
+              and leaves no document, so it is not in the pile. Decorative here; the flow below carries the content. */}
           <div className="hero-pile" aria-hidden="true">
-            {flow.stages.map((stage, i) => <FlowSheet key={stage.title} sheet={stage.sheet} index={i} total={total} />)}
+            {flow.stages.slice(0, -1).map((stage, i) => <FlowSheet key={stage.title} sheet={stage.sheet} index={i} total={total} />)}
           </div>
         </div>
       </div>
@@ -512,11 +522,14 @@ function Home() {
     </section>
 
     <section className="section analyses wrap" id="analizy" aria-labelledby="analyses-title">
-      <h2 id="analyses-title">Kilka decyzji, którym warto przyjrzeć się bliżej.</h2>
-      <div className="analysis-list">{articles.map(article => <article key={article.slug}>
-        <p className="meta"><span>{formatDate(article.date)}</span><span>{readingMinutes(article.blocks)} min czytania</span></p>
-        <h3><a href={`/analizy/${article.slug}/`}>{article.title}</a></h3>
-        <p className="analysis-lead">{article.lead}</p>
+      <div className="section-head">
+        <h2 id="analyses-title">{site.open.title}</h2>
+        <p className="section-lead">{site.open.lead}</p>
+      </div>
+      <div className="analysis-list">{openRows.map(row => <article key={row.href}>
+        <p className="meta">{row.meta.map(m => <span key={m}>{m}</span>)}</p>
+        <h3><a href={row.href}>{row.title}</a></h3>
+        <p className="analysis-lead">{row.lead}</p>
         <ArrowRight className="analysis-arrow" aria-hidden="true" />
       </article>)}</div>
     </section>
@@ -577,7 +590,8 @@ function Contact() {
       <div className="contact-intro">
         <h2 id="contact-title">Opisz jedno zadanie lub decyzję.</h2>
         <p>{pl('Napisz, co chcesz usprawnić, z jakiego narzędzia korzystasz i na czym polega trudność. Jeśli możesz, dodaj częstotliwość zadania oraz termin.')}</p>
-        <p>{pl('Najpierw sprawdzę dopasowanie zakresu. Jeśli temat mieści się w mojej roli, ustalimy następny krok, cenę i terminy.')}</p>
+        <p>{pl('Odpowiem propozycją krótkiej, bezpłatnej rozmowy. Jeśli temat mieści się w mojej roli, ustalimy zakres, cenę i terminy.')}</p>
+        <p className="contact-alt">{site.guide.contactLine} <TextLink href={guidePath} arrow>{site.guide.contactLink}</TextLink></p>
         <Note>{pl('Na początek wystarczy ogólny opis. Nie wpisuj danych klientów, haseł ani poufnych dokumentów.')}</Note>
         <Pending>adres e-mail i termin odpowiedzi.</Pending>
       </div>
@@ -683,11 +697,141 @@ function SamplePage() {
   </ArticleFrame>;
 }
 
+/* Stage 0 of the client path: the free guide. The form is a local demonstration: it validates, then shows what the e-mail
+   would contain (guide, dated blocks for the ticked tools, and the generated note when there are two or more). Nothing is sent. */
+function GuideForm() {
+  const { form } = site.guide;
+  const [ready, setReady] = useState(false);
+  const [email, setEmail] = useState('');
+  const [picked, setPicked] = useState([]);
+  const [none, setNone] = useState(false);
+  const [updates, setUpdates] = useState(false);
+  const [error, setError] = useState('');
+  const [preview, setPreview] = useState(null);
+  const field = useRef(null);
+  const previewBox = useRef(null);
+  useEffect(() => { setReady(true); }, []);
+  useEffect(() => { if (preview) previewBox.current?.focus(); }, [preview]);
+  const reset = () => setPreview(null);
+  function toggle(item) {
+    reset(); setNone(false);
+    setPicked(list => list.includes(item) ? list.filter(x => x !== item) : [...list, item]);
+  }
+  function toggleNone() {
+    reset(); setPicked([]); setNone(v => !v);
+  }
+  function submit(event) {
+    event.preventDefault();
+    const address = email.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address)) { setError('Wpisz adres e-mail w poprawnym formacie.'); setPreview(null); field.current?.focus(); return; }
+    setError('');
+    const ordered = form.groups.flatMap(g => g.items).filter(item => picked.includes(item));
+    const lines = [`Do: ${address}`, 'Temat: Przewodnik po AI i narzędziach', '', '1. Przewodnik (PDF): w przygotowaniu'];
+    if (ordered.length) {
+      lines.push('', '2. Omówienia zaznaczonych narzędzi: w przygotowaniu', ...ordered.map(item => `   · ${item}`), `   W każdym: ${form.blockParts}`);
+      if (ordered.length > 1) lines.push('', '3. Dopisek: co ten zestaw daje razem', '   [wygenerowany automatycznie, wyłącznie z omówień powyżej]');
+    } else if (none) {
+      lines.push('', '2. Bez omówień narzędzi. Dobry początek: rozdział „Mapa narzędzi”.');
+    }
+    lines.push('', `Kolejne wiadomości o zmianach: ${updates ? 'tak, osobna zgoda' : 'nie'}`);
+    setPreview(lines.join('\n'));
+  }
+  return <div className="sheet contact-sheet">
+    <div className="sheet-bar"><p>{form.sheetTitle}</p><p>Formularz demonstracyjny</p></div>
+    <div className="contact-form-area">
+      <p className="demo-notice">Formularz działa tylko w tej karcie; nic nie jest wysyłane ani zapisywane. <a href="/prywatnosc/">Prywatność prototypu</a>.</p>
+      <form noValidate onSubmit={submit} aria-label="Przewodnik i Twoje narzędzia">
+        <fieldset disabled={!ready}>
+          <legend className="visually-hidden">Adres i narzędzia</legend>
+          <div className="form-row"><label htmlFor="guide-email">E-mail <span>(wymagany)</span></label><input id="guide-email" ref={field} name="email" type="email" autoComplete="email" spellCheck="false" maxLength="254" value={email} onChange={e => { setEmail(e.target.value); setError(''); reset(); }} required aria-invalid={Boolean(error)} aria-describedby={error ? 'guide-error-email' : undefined} />{error && <p className="field-error" id="guide-error-email" role="alert">{error}</p>}</div>
+          <fieldset className="stack">
+            <legend>{form.stackLegend} <span>(opcjonalne)</span></legend>
+            <p className="field-hint">{form.stackHint}</p>
+            {form.groups.map(group => <div className="stack-group" role="group" aria-labelledby={`stack-${group.id}`} key={group.id}>
+              <p id={`stack-${group.id}`}>{group.title}</p>
+              <div className="stack-options">{group.items.map(item => <label className="check" key={item}><input type="checkbox" name="stack" value={item} checked={picked.includes(item)} onChange={() => toggle(item)} /><span translate="no">{item}</span></label>)}</div>
+            </div>)}
+            <div className="stack-group stack-none"><label className="check"><input type="checkbox" name="stack-none" checked={none} onChange={toggleNone} /><span>{form.none}</span></label></div>
+          </fieldset>
+          <label className="check check-consent"><input type="checkbox" name="updates" checked={updates} onChange={() => { setUpdates(v => !v); reset(); }} /><span>{form.updates}</span></label>
+          <Button type="submit" compact>{form.button}</Button>
+        </fieldset>
+        <noscript><p>Podgląd maila wymaga JavaScript. Formularz niczego nie wysyła.</p></noscript>
+      </form>
+      {preview && <div className="draft-preview" ref={previewBox} tabIndex="-1" role="region" aria-label="Podgląd maila">
+        <p className="draft-title"><Mark kind="tick" />Tak wyglądałby mail.</p>
+        <p>To podgląd; niczego nie wysłano, a adres nie został zapisany.</p>
+        <pre>{preview}</pre>
+      </div>}
+    </div>
+  </div>;
+}
+
+function GuidePage() {
+  const { guide } = site;
+  return <main id="tresc" tabIndex="-1" className="article-page guide-page">
+    <div className="wrap">
+      <a className="back-link" href="/#analizy"><ArrowLeft aria-hidden="true" />Wróć do wiedzy otwartej</a>
+      <header className="article-header">
+        <p className="article-kind">{guide.kind}</p>
+        <h1>{guide.title}</h1>
+        <p className="article-lead">{guide.lead}</p>
+        <p className="meta">{guide.meta.map(m => <span key={m}>{m}</span>)}</p>
+        <div className="guide-jump"><Button href="#pobierz">{guide.form.title.replace(/\.$/, '')}</Button></div>
+      </header>
+      <section className="guide-contents" aria-labelledby="guide-contents-title">
+        <h2 id="guide-contents-title">{guide.contentsTitle}</h2>
+        <ol className="guide-chapters">{guide.chapters.map((chapter, i) => <li key={chapter.title}>
+          <span className="guide-numeral" aria-hidden="true">{i + 1}</span>
+          <h3>{chapter.title}</h3>
+          <p>{chapter.text}</p>
+        </li>)}</ol>
+      </section>
+      <FlowTerms headingLevel="h2" title={guide.termsTitle} items={guide.terms} />
+      <Pending>{guide.pending}</Pending>
+    </div>
+    <section className="contact guide-get" id="pobierz" aria-labelledby="guide-get-title">
+      <div className="wrap contact-grid">
+        <div className="contact-intro">
+          <h2 id="guide-get-title">{guide.form.title}</h2>
+          {guide.form.intro.map(p => <p key={p}>{p}</p>)}
+          <Note>{guide.form.note}</Note>
+        </div>
+        <GuideForm />
+      </div>
+    </section>
+    <div className="wrap guide-next">
+      <CallToAction headingLevel="h2" title={guide.next.title} text={guide.next.text} button={guide.next.button} href={compendiumPath} secondary={<TextLink href={deckPath} arrow>{guide.next.link}</TextLink>} />
+    </div>
+  </main>;
+}
+
+function CompendiumPage() {
+  const { compendium: c } = site;
+  let offset = 0;
+  return <ArticleFrame kind="Przykładowe kompendium, dane syntetyczne" title={c.title} lead={c.lead} meta={['Materiał syntetyczny', formatDate('22.11.2026'), `Opracowanie: ${site.name}`]} backHref="/#analizy" backLabel="Wróć do wiedzy otwartej">
+    <p className="boundary"><strong>Przykład syntetyczny.</strong> {c.boundary}</p>
+    <h2>Czym jest kompendium</h2>{c.intro.map(p => <p key={p}>{p}</p>)}
+    <h2>{c.contentsTitle}</h2>
+    <div className="sheet"><div className="sheet-bar"><p>Kompendium</p><p>Przykład, materiał syntetyczny</p></div>
+      {c.parts.map(part => {
+        const start = offset;
+        offset += part.items.length;
+        return <div className="sheet-part" key={part.title}><p className="sheet-part-title">{part.title}</p><ol className="fs-contents" start={start + 1} style={{ counterReset: `doc ${start}` }}>{part.items.map(item => <li key={item}><span>{item}</span></li>)}</ol></div>;
+      })}
+    </div>
+    <p>{c.guideLink}: <a href={guidePath}>zobacz przewodnik</a>.</p>
+    <h2>{c.excerptTitle}</h2><p>{c.excerptLead}</p>
+    <div className="sheet"><div className="sheet-bar"><p>{c.excerptSheet}</p><p>Rozdział 5 z 8, przykład</p></div><StandardTable rows={c.excerpt} /></div>
+    <p>{c.closing}</p>
+  </ArticleFrame>;
+}
+
 function PrivacyPage() {
   return <ArticleFrame kind="Prototyp" title="Najpierw jasny opis. Poufne materiały później." lead="Ten podgląd pozwala zapoznać się ze stroną i sprawdzić opis zadania. Nie uruchamia rzeczywistej obsługi zapytań." backHref="/#kontakt" backLabel="Wróć do kontaktu">
-    <h2>Jak działa formularz</h2><p>Wpisane informacje pozostają w pamięci tej karty przeglądarki. Formularz nie wysyła ich do serwera, poczty ani modelu AI i nie zapisuje ich w cookies lub localStorage. Odświeżenie albo zamknięcie strony usuwa roboczy opis z formularza.</p><p>Przycisk kopiowania przenosi opis do schowka wyłącznie po Twoim kliknięciu. Strona nie odczytuje zawartości schowka.</p>
+    <h2>Jak działają formularze</h2><p>Dotyczy to obu formularzy: opisu zadania i przewodnika. Wpisane informacje pozostają w pamięci tej karty przeglądarki. Żaden z formularzy nie wysyła ich do serwera, poczty ani modelu AI i nie zapisuje ich w cookies lub localStorage. Odświeżenie albo zamknięcie strony usuwa roboczy opis z formularza.</p><p>Formularz przewodnika pokazuje wyłącznie podgląd wiadomości. Przewodnik nie jest jeszcze wysyłany, adres nie jest zapisywany, a zaznaczone narzędzia i zgoda na kolejne wiadomości nie opuszczają tej karty. Dopisek do zestawu narzędzi nie jest generowany: żadne dane nie trafiają do modelu AI.</p><p>Przycisk kopiowania przenosi opis do schowka wyłącznie po Twoim kliknięciu. Strona nie odczytuje zawartości schowka.</p>
     <h2>Odwiedziny strony</h2><p>Strona nie zawiera narzędzi reklamowych, zewnętrznej analityki, osadzonych kalendarzy ani formularzy innych dostawców. Fonty są ładowane z tego samego serwisu. Hosting może przetwarzać techniczne dane żądań; nie oznacza to, że prototyp jest usługą bez jakiegokolwiek przetwarzania danych.</p>
-    <h2>Przed uruchomieniem kontaktu</h2><p>Do uzupełnienia pozostają rzeczywiste dane administratora, adres kontaktowy, dostawcy i odbiorcy, cele oraz podstawy przetwarzania, retencja, zasady transferów i realizacji praw. Dokument musi odpowiadać faktycznej konfiguracji hostingu, poczty i endpointu.</p><p>Ten opis dotyczy prototypu. Nie jest gotową polityką prywatności dla działającej praktyki. Rzeczywista wysyłka zostanie uruchomiona dopiero po ustaleniu tych elementów.</p>
+    <h2>Przed uruchomieniem kontaktu</h2><p>Przed uruchomieniem wysyłki przewodnika potrzebne będą osobne podstawy: jedna dla dostarczenia zamówionego pliku, druga, dobrowolna, dla kolejnych wiadomości. Do uzupełnienia pozostają rzeczywiste dane administratora, adres kontaktowy, dostawcy i odbiorcy, cele oraz podstawy przetwarzania, retencja, zasady transferów i realizacji praw. Dokument musi odpowiadać faktycznej konfiguracji hostingu, poczty i endpointu.</p><p>Ten opis dotyczy prototypu. Nie jest gotową polityką prywatności dla działającej praktyki. Rzeczywista wysyłka zostanie uruchomiona dopiero po ustaleniu tych elementów.</p>
   </ArticleFrame>;
 }
 
@@ -709,6 +853,6 @@ export function App({ path: suppliedPath }) {
     return initMotion();
   }, [normalizedPath]);
   const article = articles.find(a => normalizedPath === `/analizy/${a.slug}/`);
-  const page = normalizedPath === '/' ? <Home /> : article ? <ArticlePage article={article} /> : normalizedPath === samplePath ? <SamplePage /> : normalizedPath === deckPath ? <DeckPage /> : normalizedPath === '/prywatnosc/' ? <PrivacyPage /> : <NotFound />;
-  return <><Header overHero={normalizedPath === '/'} />{page}<Footer /></>;
+  const page = normalizedPath === '/' ? <Home /> : article ? <ArticlePage article={article} /> : normalizedPath === samplePath ? <SamplePage /> : normalizedPath === deckPath ? <DeckPage /> : normalizedPath === guidePath ? <GuidePage /> : normalizedPath === compendiumPath ? <CompendiumPage /> : normalizedPath === '/prywatnosc/' ? <PrivacyPage /> : <NotFound />;
+  return <><Header overHero={normalizedPath === '/'} path={normalizedPath} />{page}<Footer /></>;
 }

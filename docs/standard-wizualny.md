@@ -167,7 +167,7 @@ Kartka leżąca na biurku: tło `--sheet`, krawędź `--line`, promień 3 px, ci
 - Pasek u góry (`.sheet-bar`): tytuł po lewej w tuszu, licznik lub status po prawej („2 z 5”, „Formularz demonstracyjny”), Archivo `--t-meta`, zwężony.
 - Opcjonalna stopka (`.sheet-foot`) w tym samym stylu.
 - Wewnątrz: wiersze `dt/dd` lub listy oddzielone `--line-soft`.
-- Kartką są: karty przebiegu konsultacji (teczka), formularz kontaktowy, panel sytuacji, przykład standardu, szkic do sprawdzenia, rozwijane menu na telefonie.
+- Kartką są: karty przebiegu konsultacji (teczka), formularz kontaktowy, formularz przewodnika, spis treści i fragment przykładowego kompendium, panel sytuacji, przykład standardu, szkic do sprawdzenia, rozwijane menu na telefonie.
 - Kartka nie jest „kafelkiem” do układania w siatce. Nie stawiamy obok siebie rzędu równych kartek. Kartki leżą pojedynczo albo w **stosie** (teczka: każda kolejna przesunięta o 48 px w dół, widać paski poprzednich).
 
 Rodzaje treści kart przebiegu (`FlowSheet`): `card` (wiersze i skala 1–5), `questions`/`list` (pozycje ze znakiem), `slide` (tytuł i trzy numerowane punkty), `contents` (spis z kropkami i numerami stron).
@@ -179,7 +179,8 @@ Domyślny sposób pokazania zbioru rzeczy to **wiersze rozdzielone liniami** w s
 - etapy przebiegu: duża niebieska cyfra, nagłówek h2, tekst, wartość dla klienta jako uwaga ze znakiem ✓;
 - sytuacje: rola (Archivo), pytanie (szeryf h3), opis, format; na szerokim ekranie z JS pionowe zakładki i kartka-panel;
 - formaty: zwarte wiersze, szczegóły w rozwijanych sekcjach;
-- analizy: metadane, duży tytuł z podkreśleniem na hover, strzałka;
+- wiedza otwarta (przewodnik, analizy, przykładowe kompendium): metadane, duży tytuł z podkreśleniem na hover, strzałka;
+- rozdziały przewodnika (`.guide-chapters`): niebieska cyfra, tytuł szeryfowy w stopniu `--t-h3`, opis w `--ink-soft` po prawej;
 - ekspertyza, warunki konsultacji (`terms`): cztery kolumny z linią tuszu u góry i znakiem ✓.
 
 ### 5.6 Przyciski i linki
@@ -201,6 +202,8 @@ Natywne `<details>`, min. 56 px, strzałka `CaretDown` obraca się o 180°, wyso
 
 Leży na kartce na tle biurka. Etykieta nad polem (Archivo 600, zwężona), dopisek „(wymagany)/(opcjonalne)” w `--t-meta`. Pole: tło `--sheet`, krawędź `--field-line`, 52 px. Focus: niebieska krawędź i poświata 3 px z 22% niebieskiego. Błąd: czerwona krawędź, komunikat pod polem, zbiorcze podsumowanie błędów u góry z fokusem. Podgląd gotowego opisu w mono na papierze, ze znakiem ✓. Formularz zawsze mówi wprost, że niczego nie wysyła.
 
+Pola wyboru (`.check`): natywny checkbox 20 px w kolorze `--blue` (`accent-color`), etykieta obok, cel min. 44 px. Grupy opcji (`.stack-group`) to wiersze: nazwa grupy po lewej, opcje po prawej, pierwsza linia tuszem, kolejne `--line-soft`. Zgoda stoi osobno, między dwiema liniami, tuż nad przyciskiem.
+
 ### 5.10 Tabele danych
 
 Linia tuszu u góry, wiersze `--line`, liczby wyrównane do prawej i tabularne, ostatni wiersz (suma) pogrubiony z linią tuszu. Podpis pod tabelą w `--t-meta`.
@@ -213,9 +216,10 @@ Tekst szkicu w mono, poprawki na marginesie czerwoną kursywą, skreślenie czer
 
 ## 6. Strony i ich prezencja
 
-- **Strona główna — jedna oś.** Kolejność: hero (niebieskie pole, nagłówek w dwóch liniach, druga kursywą; obok gotowa teczka pięciu kart) → przebieg konsultacji → sytuacje → formaty jako wiersze → „Czego nie robię” (tło tuszu) → analizy → o mnie → kontakt (tło biurka) → stopka (tusz, duży znak słowny). Hero wypełnia dokładnie jeden ekran razem z nagłówkiem.
+- **Strona główna — jedna oś.** Kolejność: hero (niebieskie pole, nagłówek w dwóch liniach, druga kursywą; obok gotowa teczka czterech kart, kompendium na wierzchu; pod przyciskiem link do przewodnika) → przebieg konsultacji → sytuacje → formaty jako wiersze → „Czego nie robię” (tło tuszu) → wiedza otwarta → o mnie → kontakt (tło biurka) → stopka (tusz, duży znak słowny). Hero wypełnia dokładnie jeden ekran razem z nagłówkiem.
 - **`/konsultacja/`** — przewijana prezentacja: wstęp, pięć etapów (każdy jeden ekran, z motywem `paper`/`desk`/`ink`/`blue`), slajd końcowy na niebiesko. Wielka cyfra etapu (do 15 rem), tytuł w `--t-display`, kartka po drugiej stronie; co drugi slajd odwrócony.
-- **Analizy i przykład standardu** — kolumna do czytania (43 rem) w szeryfie, obok margines z pojęciami ze słownika (przyklejony), na górze trzy tezy. Przykład standardu zawsze z podpisem o materiale syntetycznym.
+- **`/przewodnik/`** — nagłówek jak w artykule (rodzaj, tytuł, lead kursywą, metadane, jeden przycisk prowadzący do formularza), rozdziały jako wiersze, „Przewodnik w skrócie” w czterech kolumnach, potem formularz na kartce na tle biurka i jedno wezwanie na końcu.
+- **Analizy, przykład standardu i przykładowe kompendium** — kolumna do czytania (43 rem) w szeryfie, obok margines z pojęciami ze słownika (przyklejony), na górze trzy tezy. Przykład standardu i przykładowe kompendium zawsze z podpisem o materiale syntetycznym.
 - **Stopka** zawiera kolofon z nazwami krojów i link „Włącz animacje”.
 
 ---
