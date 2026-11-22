@@ -200,14 +200,16 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
 .fs-contents>li::before{content:'';order:2;flex:1;border-bottom:1px dotted var(--field-line);transform:translateY(-.25em)}
 
 /* Situations: the question is the unit */
-.case-list{list-style:none;padding:0;margin-top:clamp(40px,5vw,72px);border-top:1px solid var(--ink)}
-.case-list li{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:8px var(--gap);padding-block:clamp(22px,2.4vw,32px);border-bottom:1px solid var(--line);align-items:baseline}
-.case-list h3{grid-column:1/span 3;font-family:var(--sans);font-size:var(--t-small);font-weight:600;font-stretch:94%;letter-spacing:0;line-height:1.4}
-.case-text{grid-column:4/span 7}
+.case-list{margin-top:clamp(40px,5vw,72px);border-top:1px solid var(--ink)}
+.case-item summary{align-items:flex-start;padding-block:16px}
+.case-item summary>span{display:grid;gap:4px}
+.case-role{font-size:var(--t-meta);font-weight:600;font-stretch:94%;color:var(--ink-soft)}
+.case-item .case-question{font-size:var(--t-h3)}
+.case-item summary>svg{margin-top:1.4em}
+.case-item .disclosure-body{max-width:60ch}
+.case-item .case-situation{margin-top:0}
 .case-question{font-family:var(--serif);font-size:var(--t-h3);line-height:1.22;letter-spacing:-.012em;max-width:32ch;text-wrap:balance}
 .case-situation{margin-top:10px;font-size:var(--t-small);line-height:1.6;color:var(--ink-soft);max-width:60ch}
-.case-format{grid-column:11/-1;font-size:var(--t-small);font-weight:500;line-height:1.4}
-.case-format>span{display:block;font-size:var(--t-meta);font-weight:400;color:var(--ink-soft)}
 
 /* Formats: three compact rows; details open on demand */
 .format-rows{margin-top:clamp(40px,5vw,72px);border-top:1px solid var(--ink)}
@@ -311,7 +313,8 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
 .card-q[data-answered] .mark-query{opacity:0}
 .card-q[data-answered] .mark-tick path{stroke-dashoffset:0}
 .card-q .field-hint{margin:4px 0 0 calc(1.25rem*1.05 + .75rem)}
-.card-q textarea{display:block;width:100%;min-height:3.6em;margin-top:8px;padding:6px 0;background:none;border:0;border-bottom:1px solid var(--field-line);border-radius:0;font-size:1rem;line-height:1.6;resize:vertical;field-sizing:content;transition:border-color .2s ease,box-shadow .2s ease}
+.card-q textarea{display:block;width:100%;min-height:3.6em;margin-top:8px;padding:6px 0;background:none;border:0;border-bottom:1px solid var(--field-line);border-radius:0;font-size:1rem;line-height:1.6;resize:vertical;transition:border-color .2s ease,box-shadow .2s ease}
+@supports (field-sizing:content){.card-q textarea{field-sizing:content;resize:none}}
 .card-q textarea:hover{border-bottom-color:var(--ink)}
 .card-q textarea:focus-visible{outline:0;border-bottom-color:var(--blue);box-shadow:0 2px 0 var(--blue)}
 .card-q textarea[aria-invalid='true']{border-bottom-color:var(--red);box-shadow:0 1px 0 var(--red)}
@@ -504,17 +507,12 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
   .hero-lead{max-width:44ch}
   .hero-actions{align-self:flex-start}
   .hero{min-height:0;padding-bottom:clamp(40px,7vw,64px)}
-  .hero-pile{--sheet-h:22rem;order:2;margin-top:48px;align-self:stretch}
+  .hero-pile{display:none}
   .format-row{display:block}
   .format-body{margin-top:18px}
   .offer-grid,.section-head,.format-grid,.exhibit-grid,.principles-grid,.about-grid,.contact-grid,.footer-top{display:block}
   .offer-index{margin-top:52px}
   .section-lead{margin-top:20px;padding-top:0;max-width:60ch}
-  .case-list li{grid-template-columns:1fr;gap:6px}
-  .case-list h3,.case-text,.case-format{grid-column:auto}
-  .case-format{margin-top:8px}
-  .case-format>span{display:inline}
-  .case-format>span::after{content:': '}
   .format-side{margin-top:48px}
   .exhibit-side,.principles-head{position:static}
   .exhibit-sheet{margin-top:36px}
@@ -668,13 +666,13 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 .slide-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gap);align-items:center}
 .slide-copy{grid-column:1/span 6;grid-row:1}
 .slide-visual{grid-column:8/-1;grid-row:1}
-.slide-numeral{font-family:var(--serif);font-size:clamp(6.5rem,17vw,15rem);line-height:.78;letter-spacing:-.05em;color:var(--blue);font-variant-numeric:lining-nums}
-.slide-stage h2{margin-top:.18em;font-size:var(--t-display);line-height:.98;letter-spacing:-.032em}
+.slide-numeral{font-family:var(--serif);font-size:clamp(4.5rem,10vw,9rem);line-height:.78;letter-spacing:-.04em;color:var(--blue);font-variant-numeric:lining-nums}
+.slide-stage h2{margin-top:.34em;font-size:var(--t-title);line-height:1.02;letter-spacing:-.03em}
 .slide-text{margin-top:clamp(18px,2.4vw,30px);font-size:clamp(1.1875rem,1.7vw,1.5rem);line-height:1.42;max-width:30ch}
 .slide-value{margin-top:clamp(18px,2.2vw,28px);font-size:clamp(1.1875rem,1.6vw,1.4375rem);max-width:30ch}
 .slide-action{margin-top:clamp(10px,1.4vw,18px)}
 .slide-visual .flow-sheet{font-size:1.125rem;box-shadow:0 1px 0 rgba(20,22,26,.05),0 40px 72px -32px rgba(8,10,20,.5)}
-.slide-end h2{font-size:var(--t-display);line-height:.98;letter-spacing:-.032em;max-width:12ch}
+.slide-end h2{font-size:var(--t-title);line-height:1.02;letter-spacing:-.03em;max-width:14ch}
 .slide-end-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 32px;margin-top:clamp(28px,3.4vw,44px)}
 .slide-end .terms{margin-top:clamp(56px,10vh,120px)}
 .deck-rail{display:none;position:fixed;right:clamp(6px,1.4vw,22px);top:50%;transform:translateY(-50%);z-index:30}
@@ -702,8 +700,6 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 .principles-cta>p{font-family:var(--serif);font-style:italic;font-size:var(--t-h3);line-height:1.25;max-width:22ch}
 
 /* Situations, extended: a list by default, a browser on wide screens */
-.case-list li{grid-template-columns:repeat(12,minmax(0,1fr))}
-.case-list .case-text{grid-column:4/-1}
 .case-facts{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:8px var(--gap);margin-top:18px;padding-top:14px;border-top:1px solid var(--line-soft);max-width:60rem}
 .case-facts dt{font-size:var(--t-meta);color:var(--ink-soft);line-height:1.5}
 .case-facts dd{margin-top:2px;font-size:var(--t-small);font-weight:500;line-height:1.5}
@@ -788,7 +784,7 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 @media(min-width:901px) and (min-height:560px){
   /* 170vh per stage: the scene is mostly told while the screen arrives, then held for a little over half a screen. */
   .js-motion .slide-stage{display:block;min-height:0;height:170vh;padding:0}
-  .js-motion .slide-pin{position:sticky;top:0;height:100vh;display:grid;align-items:center;overflow:clip}
+  .js-motion .slide-pin{position:sticky;top:0;height:100vh;padding-top:var(--header-h);display:grid;align-items:center;overflow:clip}
   /* Last stage: the earlier sheets slide out from under the final one, so the dossier is complete. */
   .js-motion .slide-stack{display:block;position:absolute;left:0;right:0;bottom:100%}
   .js-motion .slide-visual{position:relative}
@@ -800,19 +796,18 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
   .slide{min-height:0;padding-block:clamp(64px,10vw,96px)}
   .slide-grid{display:block}
   .slide-visual{margin-top:36px}
-  .path-index{order:4;margin-top:40px}
+  .path-index{margin-top:40px}
   .path-index ol{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 var(--gap)}
   .path-index a{display:flex;align-items:baseline;gap:12px;padding-block:12px}
   .path-index a>span{margin:0}
   .terms-list{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:28px}
   .principles-cta{margin-top:32px}
-  .case-list .case-text{grid-column:auto}
 }
 @media(max-width:767px){
   .terms-list{grid-template-columns:1fr}
   .case-facts{grid-template-columns:1fr}
   .cta-actions,.cta .btn,.principles-cta .btn,.slide-end-actions .btn{width:100%}
-  .slide-numeral{font-size:6rem}
+  .slide-numeral{font-size:4.5rem}
 }
 @media(prefers-reduced-motion:reduce){html:not(.js-motion){transition:none!important}}
 @media print{.slide{--sp:1!important;min-height:0!important;height:auto!important;padding-block:24px}.slide-pin{position:static!important;height:auto!important}.deck-rail{display:none}}

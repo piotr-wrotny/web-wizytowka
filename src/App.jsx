@@ -252,7 +252,7 @@ function CallToAction({ title, text, button, href = '/?temat=inne#kontakt', seco
   </div>;
 }
 
-/* Situations. Rendered as a plain list on the server and on narrow screens; on a wide screen with JS it becomes
+/* Situations. Rendered as a list of native disclosures on the server and on narrow screens; on a wide screen with JS it becomes
    a master-detail view (vertical tabs) so one question at a time gets the full stage. */
 function Cases() {
   const { cases } = site;
@@ -274,13 +274,14 @@ function Cases() {
     setCurrent(next);
     tabs.current[next]?.focus();
   }
+  const facts = c => <dl className="case-facts">
+    <div><dt>{cases.panelFirst}</dt><dd>{c.first}</dd></div>
+    <div><dt>Format</dt><dd>{c.format}</dd></div>
+  </dl>;
   const detail = c => <>
     <p className="case-question">{c.question}</p>
     <p className="case-situation">{c.situation}</p>
-    <dl className="case-facts">
-      <div><dt>{cases.panelFirst}</dt><dd>{c.first}</dd></div>
-      <div><dt>Format</dt><dd>{c.format}</dd></div>
-    </dl>
+    {facts(c)}
   </>;
   return <section className="section cases wrap" id="sytuacje" aria-labelledby="cases-title">
     <div className="section-head">
@@ -302,10 +303,10 @@ function Cases() {
           </div>
         </div>
       </div>
-      : <ul className="case-list">{cases.items.map(c => <li key={c.role}>
-        <h3>{c.role}</h3>
-        <div className="case-text">{detail(c)}</div>
-      </li>)}</ul>}
+      : <div className="case-list">{cases.items.map(c => <details className="disclosure case-item" key={c.role}>
+        <summary><span><span className="case-role">{c.role}</span><span className="case-question">{c.question}</span></span><CaretDown aria-hidden="true" /></summary>
+        <div className="disclosure-body"><p className="case-situation">{c.situation}</p>{facts(c)}</div>
+      </details>)}</div>}
     <Note className="section-note">{cases.note}</Note>
   </section>;
 }
@@ -541,7 +542,7 @@ function Contact() {
             </div>
             <div className="mail-foot">
               <Button type="submit" compact>{contact.button}</Button>
-              <p className="demo-notice">Karta jest sprawdzana tylko w tej karcie przeglądarki; nic nie jest wysyłane do serwera ani modelu AI. <a href="/prywatnosc/">Prywatność prototypu</a>.</p>
+              <p className="demo-notice">Formularz działa tylko w tej karcie przeglądarki; nic nie jest wysyłane do serwera ani modelu AI. <a href="/prywatnosc/">Prywatność prototypu</a>.</p>
             </div>
           </fieldset>
           <noscript><p className="demo-notice">Sprawdzenie karty wymaga JavaScript. Formularz nie wysyła wiadomości.</p></noscript>
