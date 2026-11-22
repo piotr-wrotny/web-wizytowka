@@ -93,7 +93,7 @@ Zasady:
 - Nagłówki: szeryf, waga 500 (nie bold), ujemny tracking `-.015em` do `-.04em` (im większy stopień, tym ciaśniej), `line-height` 0.92–1.12, `text-wrap: balance`.
 - Tekst ciągły: `text-wrap: pretty`, długość wiersza 34–64 znaków (`max-width` w `ch`).
 - Liczby w tabelach i metadanych: `font-variant-numeric: tabular-nums`; numery etapów: `lining-nums`.
-- **Polska typografia:** funkcja `pl()` w `App.jsx` wiąże jednoliterowe spójniki i przyimki (a, i, o, u, w, z) z następnym słowem. Każdy nowy tekst z `src/content` przechodzi przez `plDeep`/`pl`.
+- **Polska typografia:** funkcja `pl()` w `App.jsx` wiąże jednoliterowe spójniki i przyimki (a, i, o, u, w, z) z następnym słowem. Każdy nowy tekst z `src/content` przechodzi przez `plDeep`/`pl`. (Do 2026-11-22 funkcja wstawiała zwykłą spację i nie działała; poprawione na twardą spację.)
 
 ### 3.1 Skala
 
@@ -167,7 +167,7 @@ Kartka leżąca na biurku: tło `--sheet`, krawędź `--line`, promień 3 px, ci
 - Pasek u góry (`.sheet-bar`): tytuł po lewej w tuszu, licznik lub status po prawej („2 z 5”, „Formularz demonstracyjny”), Archivo `--t-meta`, zwężony.
 - Opcjonalna stopka (`.sheet-foot`) w tym samym stylu.
 - Wewnątrz: wiersze `dt/dd` lub listy oddzielone `--line-soft`.
-- Kartką są: karty przebiegu konsultacji (teczka), formularz kontaktowy, formularz przewodnika, spis treści i fragment przykładowego kompendium, panel sytuacji, przykład standardu, szkic do sprawdzenia, rozwijane menu na telefonie.
+- Kartką są: karty przebiegu konsultacji (teczka), formularz kontaktowy, spis treści przewodnika, list z przewodnikiem (p. 5.12), spis treści i fragment przykładowego kompendium, panel sytuacji, przykład standardu, szkic do sprawdzenia, rozwijane menu na telefonie.
 - Kartka nie jest „kafelkiem” do układania w siatce. Nie stawiamy obok siebie rzędu równych kartek. Kartki leżą pojedynczo albo w **stosie** (teczka: każda kolejna przesunięta o 48 px w dół, widać paski poprzednich).
 
 Rodzaje treści kart przebiegu (`FlowSheet`): `card` (wiersze i skala 1–5), `questions`/`list` (pozycje ze znakiem), `slide` (tytuł i trzy numerowane punkty), `contents` (spis z kropkami i numerami stron).
@@ -180,7 +180,6 @@ Domyślny sposób pokazania zbioru rzeczy to **wiersze rozdzielone liniami** w s
 - sytuacje: rola (Archivo), pytanie (szeryf h3), opis, format; na szerokim ekranie z JS pionowe zakładki i kartka-panel;
 - formaty: zwarte wiersze, szczegóły w rozwijanych sekcjach;
 - wiedza otwarta (przewodnik, analizy, przykładowe kompendium): metadane, duży tytuł z podkreśleniem na hover, strzałka;
-- rozdziały przewodnika (`.guide-chapters`): niebieska cyfra, tytuł szeryfowy w stopniu `--t-h3`, opis w `--ink-soft` po prawej;
 - ekspertyza, warunki konsultacji (`terms`): cztery kolumny z linią tuszu u góry i znakiem ✓.
 
 ### 5.6 Przyciski i linki
@@ -202,7 +201,7 @@ Natywne `<details>`, min. 56 px, strzałka `CaretDown` obraca się o 180°, wyso
 
 Leży na kartce na tle biurka. Etykieta nad polem (Archivo 600, zwężona), dopisek „(wymagany)/(opcjonalne)” w `--t-meta`. Pole: tło `--sheet`, krawędź `--field-line`, 52 px. Focus: niebieska krawędź i poświata 3 px z 22% niebieskiego. Błąd: czerwona krawędź, komunikat pod polem, zbiorcze podsumowanie błędów u góry z fokusem. Podgląd gotowego opisu w mono na papierze, ze znakiem ✓. Formularz zawsze mówi wprost, że niczego nie wysyła.
 
-Pola wyboru (`.check`): natywny checkbox 20 px w kolorze `--blue` (`accent-color`), etykieta obok, cel min. 44 px. Grupy opcji (`.stack-group`) to wiersze: nazwa grupy po lewej, opcje po prawej, pierwsza linia tuszem, kolejne `--line-soft`. Zgoda stoi osobno, między dwiema liniami, tuż nad przyciskiem.
+**Pole do odhaczenia (`Pick`).** Kwadrat 20 px z krawędzią `--field-line` na tle kartki, jak na papierowym formularzu. Zaznaczenie rysuje niebieski znak ✓ większy niż kwadrat (27 px, wychodzi poza krawędź), krawędź robi się niebieska, a etykieta przechodzi z `--ink-soft` w tusz. Pod spodem jest natywny checkbox: działa z klawiatury, fokus pokazuje kontur wokół kwadratu, cel ma min. 48 px. Wybór narzędzia to nazwa w szeryfie (`clamp(1.375rem, 2.2vw, 1.75rem)`); zgoda i „nie wiem” to wariant `pick-plain` w Archivo. Nie używamy natywnie rysowanych checkboxów ani przełączników-pigułek.
 
 ### 5.10 Tabele danych
 
@@ -212,13 +211,26 @@ Linia tuszu u góry, wiersze `--line`, liczby wyrównane do prawej i tabularne, 
 
 Tekst szkicu w mono, poprawki na marginesie czerwoną kursywą, skreślenie czerwoną kreską 1.5 px (nie `line-through`). Przełącznik „Z poprawkami / Po sprawdzeniu” to segmentowany przełącznik na tle biurka. Wersja po sprawdzeniu przechodzi na szeryf z niebieskim ✓ i cytatem źródła.
 
+### 5.12 List, który składa się sam (`GuideForm`)
+
+Formularz przewodnika nie jest zbiorem pól obok treści. Jest **mailem, który odwiedzający dostanie**, leżącym na kartce:
+
+- Nad kartką grupy pól do odhaczenia (p. 5.9), rozdzielone liniami; pierwsza linia tuszem.
+- Kartka: pasek („Twój mail” / „Podgląd, nic nie jest wysyłane”), nagłówek listu w mono („Do:” z polem adresu, „Temat:”), wiersze z tym, co list zawiera, stopka ze zgodą i jednym przyciskiem.
+- **Pole adresu jest linią do wpisania**: bez ramki, sama dolna krawędź `--field-line` (hover: tusz, fokus: niebieska i pogrubiona do 2 px, błąd: czerwona), tekst w mono, min. 44 px. To jedyne miejsce, gdzie pole nie ma pełnej ramki z p. 5.9; uzasadnienie: jest wierszem nagłówka listu, a nie polem formularza.
+- Każde odhaczone narzędzie dopisuje wiersz „Omówienie: …” ze znakiem ✓. Przy dwóch i więcej pojawia się wiersz dopisku: niebieska kursywa szeryfowa ze znakiem ⊢ i podpisem, że jest wygenerowany. Pusty stan mówi, co zrobić.
+- Na ekranie ≤ 900 px list jest pod zgięciem w chwili wyboru, więc do dołu ekranu przykleja się jedna linia „W mailu: przewodnik + 2 omówienia + dopisek” (tło biurka, linia tuszu u góry). To też komunikat `role="status"` dla czytników.
+- Po sprawdzeniu adresu kartka dostaje dolny wiersz z dużym ✓ i zdaniem, że nic nie wysłano.
+
+Zasada ogólna dla interakcji: **efekt ma być odpowiedzią na działanie czytelnika i ma pokazywać, co się zmieniło.** Element, który tylko się rusza, nie wchodzi.
+
 ---
 
 ## 6. Strony i ich prezencja
 
 - **Strona główna — jedna oś.** Kolejność: hero (niebieskie pole, nagłówek w dwóch liniach, druga kursywą; obok gotowa teczka czterech kart, kompendium na wierzchu; pod przyciskiem link do przewodnika) → przebieg konsultacji → sytuacje → formaty jako wiersze → „Czego nie robię” (tło tuszu) → wiedza otwarta → o mnie → kontakt (tło biurka) → stopka (tusz, duży znak słowny). Hero wypełnia dokładnie jeden ekran razem z nagłówkiem.
 - **`/konsultacja/`** — przewijana prezentacja: wstęp, pięć etapów (każdy jeden ekran, z motywem `paper`/`desk`/`ink`/`blue`), slajd końcowy na niebiesko. Wielka cyfra etapu (do 15 rem), tytuł w `--t-display`, kartka po drugiej stronie; co drugi slajd odwrócony.
-- **`/przewodnik/`** — nagłówek jak w artykule (rodzaj, tytuł, lead kursywą, metadane, jeden przycisk prowadzący do formularza), rozdziały jako wiersze, „Przewodnik w skrócie” w czterech kolumnach, potem formularz na kartce na tle biurka i jedno wezwanie na końcu.
+- **`/przewodnik/`** — strona czytana z góry na dół, **jedno pytanie na ekran**: co to jest (tytuł w `--t-display`, lead, jeden przycisk), co jest w środku (kartka ze spisem treści na tle biurka; data stanu i aktualizacje w stopce kartki), jak to dostać (list z p. 5.12, potem jedno wezwanie). Wszystko stoi w jednej kolumnie siatki (kolumny 4–10; 3–10 poniżej 1100 px; pełna szerokość poniżej 900 px), więc oko idzie tylko w dół. Sceny (`.scene`) mają na szerokim ekranie co najmniej wysokość ekranu. Bez nadtytułów, bez wejść przy przewijaniu: jedyny ruch to list odpowiadający na wybór.
 - **Analizy, przykład standardu i przykładowe kompendium** — kolumna do czytania (43 rem) w szeryfie, obok margines z pojęciami ze słownika (przyklejony), na górze trzy tezy. Przykład standardu i przykładowe kompendium zawsze z podpisem o materiale syntetycznym.
 - **Stopka** zawiera kolofon z nazwami krojów i link „Włącz animacje”.
 
@@ -253,6 +265,8 @@ Jeden język: **ołówek stawia znaki, kartki są kładzione na biurku, tusz wyp
 | `strike` | czerwone skreślenie przeciąga się w poprzek | szkic w `Proof` |
 | `rule` | linia tuszu rysuje się od lewej | indeks etapów |
 | `appear` | samo krycie | panel sytuacji, uwagi |
+| `mail-in` | wiersz listu wsuwa się z −10 px, znak ✓ się rysuje | list przewodnika, po odhaczeniu narzędzia |
+| `mail-lift` | kartka unosi się o 10 px z obrotem −0.5° i wraca | list przewodnika, po sprawdzeniu adresu |
 
 ### 7.4 Sceny sterowane przewijaniem
 

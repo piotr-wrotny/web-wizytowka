@@ -354,31 +354,93 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
 .draft-title .mark{color:var(--blue)}
 .draft-preview pre{font:.875rem/1.65 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;padding:18px;border-radius:3px;background:var(--paper);border:1px solid var(--line-soft);margin-block:16px}
 
-/* Guide (/przewodnik/): chapters as ruled rows, then the form on the desk. Checkboxes for the optional stack. */
+/* Guide (/przewodnik/): scenes read top to bottom on one axis; the form is the letter itself. */
+.scene{padding-block:var(--section)}
+.scene-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:0 var(--gap)}
+.scene-col{grid-column:4/span 7}
+.scene-desk{background:var(--desk)}
+.scene-intro{padding-top:clamp(20px,3vw,40px)}
+.scene-intro h1{margin-top:clamp(28px,8vh,96px);font-size:var(--t-display);line-height:.98;letter-spacing:-.032em}
+.scene-intro .article-lead{margin-top:clamp(20px,2.4vw,32px);max-width:34ch}
+.scene-intro .meta{margin-top:clamp(20px,2.4vw,32px)}
 .guide-jump{margin-top:clamp(24px,3vw,36px)}
-.guide-contents>h2{font-size:var(--t-h2)}
-.guide-chapters{list-style:none;padding:0;margin:clamp(28px,3.4vw,44px) 0 0;border-top:1px solid var(--ink)}
-.guide-chapters>li{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:6px var(--gap);align-items:baseline;padding-block:clamp(18px,2.2vw,28px);border-bottom:1px solid var(--line)}
-.guide-numeral{grid-column:1;font-family:var(--serif);font-size:var(--t-h3);line-height:1.15;color:var(--blue);font-variant-numeric:lining-nums}
-.guide-chapters h3{grid-column:2/span 5;font-size:var(--t-h3);line-height:1.15;letter-spacing:-.015em}
-.guide-chapters p{grid-column:8/-1;line-height:1.6;color:var(--ink-soft);max-width:48ch}
-.guide-page .terms{margin-top:clamp(48px,6vw,88px)}
-.guide-page .terms+.note{margin-top:28px}
-.guide-get{margin-top:var(--section)}
-.guide-next{padding-bottom:var(--section)}
+.scene-title{font-size:var(--t-title);line-height:1.02;letter-spacing:-.03em}
+.scene-lead{margin-top:18px;font-size:var(--t-lead);line-height:1.5;color:var(--ink-soft);max-width:38ch}
+.scene .scene-col>.note{margin-top:28px}
+.scene .cta{margin-top:var(--section)}
+@media(min-width:901px){
+  .scene{min-height:100svh;display:grid;align-items:center}
+  .scene-intro{min-height:calc(100svh - var(--header-h));align-items:start}
+}
+@media(max-width:1100px){.scene-col{grid-column:3/span 8}}
+@media(max-width:900px){.scene-grid{display:block}}
+.guide-toc{margin-top:clamp(28px,3.4vw,44px)}
+.guide-toc ol{list-style:none;margin:0;padding:6px clamp(18px,2.4vw,32px)}
+.guide-toc .sheet-foot{border-top:1px solid var(--line)}
+.guide-toc li{display:grid;grid-template-columns:2.6rem minmax(0,1fr);gap:0 8px;align-items:baseline;padding-block:clamp(14px,1.8vw,20px);border-bottom:1px solid var(--line-soft)}
+.guide-toc li:last-child{border-bottom:0}
+.guide-numeral{font-family:var(--serif);font-size:var(--t-h3);line-height:1.15;color:var(--blue);font-variant-numeric:lining-nums}
+.guide-toc h3{font-size:var(--t-h3);line-height:1.15;letter-spacing:-.015em}
+.guide-toc li p{margin-top:5px;font-size:var(--t-small);line-height:1.55;color:var(--ink-soft)}
 .contact-alt{display:flex;flex-wrap:wrap;align-items:center;gap:0 .5em}
-.stack{margin-bottom:10px}
-.stack legend{padding:0;font-size:var(--t-small);font-weight:600;font-stretch:94%;margin-bottom:4px}
-.stack legend span{font-size:var(--t-meta);font-weight:400;color:var(--ink-soft)}
-.stack-group{display:grid;grid-template-columns:9.5rem minmax(0,1fr);gap:0 16px;align-items:baseline;padding-block:4px;border-top:1px solid var(--line-soft)}
-.stack-group:first-of-type{border-top-color:var(--ink)}
-.stack-group>p{font-size:var(--t-small);font-weight:600;font-stretch:94%;line-height:1.4}
-.stack-none{display:block}
-.stack-options{display:flex;flex-wrap:wrap;gap:0 24px}
-.check{display:inline-flex;align-items:center;gap:10px;min-height:44px;line-height:1.35;cursor:pointer}
-.check input{width:20px;height:20px;flex:none;margin:0;cursor:pointer}
-.check-consent{display:flex;align-items:flex-start;padding-block:14px;margin-bottom:22px;border-block:1px solid var(--line-soft);font-size:var(--t-small);line-height:1.5}
-.check-consent input{margin-top:1px}
+
+/* Picking tools: each option is a word; choosing it underlines it in pencil and ticks it off. */
+.guide-form{margin-top:clamp(28px,3.4vw,44px)}
+.picks legend{padding:0;font-family:var(--serif);font-size:var(--t-h3);font-weight:500;letter-spacing:-.015em;line-height:1.2}
+.picks legend span{font-family:var(--sans);font-size:var(--t-meta);font-weight:400;letter-spacing:0;color:var(--ink-soft)}
+.picks .field-hint{margin:6px 0 16px;font-size:var(--t-small)}
+.pick-group{padding-block:10px 12px;border-top:1px solid var(--line)}
+.pick-group:first-of-type{border-top-color:var(--ink)}
+.pick-group>p{font-size:var(--t-meta);font-weight:600;font-stretch:94%;color:var(--ink-soft)}
+.pick-options{display:flex;flex-wrap:wrap;gap:0 clamp(18px,2.6vw,34px)}
+.pick{position:relative;display:inline-flex;align-items:center;gap:.55em;min-height:48px;padding-block:6px;font-family:var(--serif);font-size:clamp(1.375rem,2.2vw,1.75rem);line-height:1.2;letter-spacing:-.012em;color:var(--ink-soft);cursor:pointer;transition:color .2s ease}
+.pick input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.pick-box{position:relative;flex:none;width:20px;height:20px;border:1px solid var(--field-line);border-radius:2px;background:var(--sheet);transition:border-color .2s ease}
+.pick-box .mark{position:absolute;left:1px;bottom:2px;width:27px;height:27px;color:var(--blue)}
+.pick-box .mark path{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .45s var(--ease)}
+.pick:hover{color:var(--ink)}
+.pick:hover .pick-box{border-color:var(--ink)}
+.pick:has(input:checked){color:var(--ink)}
+.pick:has(input:checked) .pick-box{border-color:var(--blue)}
+.pick:has(input:checked) .mark path{stroke-dashoffset:0}
+.pick:has(input:focus-visible) .pick-box{outline:2px solid var(--blue);outline-offset:3px}
+.pick-plain{display:flex;align-items:flex-start;font-family:var(--sans);font-size:var(--t-small);line-height:1.5;letter-spacing:0;color:var(--ink)}
+.pick-plain .pick-box{margin-top:1px}
+.pick-none .pick-plain{font-size:1rem;align-items:center}
+.mail-status{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+
+/* The letter: address line, subject, then one row per thing it will carry. Rows are written in as the reader chooses. */
+.mail{margin-top:clamp(20px,2.6vw,32px)}
+.mail-head{padding:14px clamp(18px,2.4vw,32px) 12px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:.9375rem;line-height:1.6;letter-spacing:-.01em}
+.mail-to{display:flex;align-items:baseline;gap:12px}
+.mail-to label,.mail-subject>span{color:var(--ink-soft)}
+.mail-to input{flex:1;min-width:0;min-height:44px;padding:6px 0;background:none;border:0;border-bottom:1px solid var(--field-line);border-radius:0;font-family:var(--mono);font-size:1rem;letter-spacing:-.01em;transition:border-color .2s ease,box-shadow .2s ease}
+.mail-to input::placeholder{color:var(--field-line);opacity:1}
+.mail-to input:hover{border-bottom-color:var(--ink)}
+.mail-to input:focus-visible{outline:0;border-bottom-color:var(--blue);box-shadow:0 2px 0 var(--blue)}
+.mail-to input[aria-invalid='true']{border-bottom-color:var(--red);box-shadow:0 1px 0 var(--red)}
+.mail-head .field-error{font-family:var(--sans);letter-spacing:0;margin-top:6px}
+.mail-subject{margin-top:6px}
+.mail-address-note{margin-top:8px;font-family:var(--sans);font-size:var(--t-meta);letter-spacing:0;color:var(--ink-soft)}
+.mail-rows{list-style:none;margin:0;padding:6px clamp(18px,2.4vw,32px)}
+.mail-rows>li{display:flex;align-items:baseline;gap:.7em;padding-block:13px;border-bottom:1px solid var(--line-soft);line-height:1.4}
+.mail-rows>li:last-child{border-bottom:0}
+.mail-rows .mark{color:var(--blue);transform:translateY(.16em)}
+.mail-item{font-size:1.125rem;font-weight:500}
+.mail-sub{margin-top:3px;font-size:var(--t-meta);line-height:1.5;color:var(--ink-soft)}
+.mail-note .mail-item{font-family:var(--serif);font-style:italic;font-weight:400;font-size:1.25rem;color:var(--blue)}
+.mail-parts .mail-sub,.mail-empty .mail-sub{margin:0}
+.mail-foot{display:grid;gap:18px;justify-items:start;padding:16px clamp(18px,2.4vw,32px) clamp(20px,2.6vw,30px);border-top:1px solid var(--line)}
+.mail-done{padding:18px clamp(18px,2.4vw,32px) 24px;border-top:1px solid var(--ink);font-size:var(--t-small)}
+.mail-done:focus{outline:0}
+.mail[data-done]{box-shadow:0 1px 0 rgba(20,22,26,.05),0 36px 64px -28px rgba(20,22,26,.46)}
+@media(max-width:900px){
+  /* On a narrow screen the letter is below the fold while choosing, so a line pinned to the bottom says what it holds. */
+  .mail-status{position:sticky;bottom:0;z-index:5;width:auto;height:auto;margin:10px calc(var(--gutter)*-1) 0;padding:11px var(--gutter);overflow:visible;clip:auto;white-space:normal;background:var(--desk);border-top:1px solid var(--ink);font-size:var(--t-small);font-weight:600;font-stretch:94%}
+  .mail-status>span{font-weight:400;color:var(--ink-soft)}
+}
+@media(max-width:767px){.guide-jump .btn,.mail-foot .btn{width:100%}}
+
 /* A sheet in two labelled parts (sample compendium contents) */
 .sheet-part+.sheet-part{border-top:1px solid var(--line)}
 .sheet-part-title{padding:16px clamp(18px,2.4vw,32px) 0;font-size:var(--t-small);font-weight:600;font-stretch:94%}
@@ -492,8 +554,6 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
   .analysis-list .meta{flex-direction:row}
   .expertise{margin-top:44px}
   .contact-sheet{margin-top:44px}
-  .guide-chapters>li{display:grid;grid-template-columns:2.4rem minmax(0,1fr);gap:4px 8px}
-  .guide-chapters h3,.guide-chapters p{grid-column:2}
   .footer-side{margin-top:28px}
   .theses{grid-template-columns:1fr;gap:0}
   .theses li{padding-block:16px}
@@ -537,8 +597,6 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
   .fs-slide ol{grid-template-columns:1fr}
   .principles li{grid-template-columns:2.6rem minmax(0,1fr);gap:0 8px}
   .optional-fields{grid-template-columns:1fr}
-  .stack-group{display:block;padding-block:10px 4px}
-  .guide-jump .btn{width:100%}
   .footer-bottom>p{width:100%;margin:0 0 8px}
   .article-reading{font-size:1.125rem;line-height:1.6}
   .article-contact .btn{width:100%}
@@ -588,10 +646,20 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
 }
 .js-motion .motion-on{display:none}
 
+/* The letter writes itself: a new row slides in under the pencil, and the checked letter is lifted off the desk once. */
+.js-motion .mail-rows>li{animation:mail-in .6s var(--ease) both}
+.js-motion .mail-rows .mark path{stroke-dasharray:1;animation:draw .5s var(--ease) .18s both}
+.js-motion .mail[data-done]{animation:mail-lift .9s var(--ease)}
+.js-motion .mail-done{animation:settle .7s var(--ease) both}
+.js-motion .mail-done .mark path{stroke-dasharray:1;animation:draw .6s var(--ease) .2s both}
+.mail{transition:box-shadow .5s ease}
+@keyframes mail-in{from{opacity:0;transform:translateY(-10px)}}
+@keyframes mail-lift{35%{transform:translateY(-10px) rotate(-.5deg)}}
+
 @media print{
   body{background:#fff;font-size:11pt}
   .site-header{position:static}
-  .site-nav,.nav-toggle,.hero-actions,.proof-switch,.contact,.site-footer,.article-contact,.back-link{display:none}
+  .site-nav,.nav-toggle,.hero-actions,.proof-switch,.contact,.guide-form,.site-footer,.article-contact,.back-link{display:none}
   .wrap{width:100%}
   .offer,.principles{background:#fff;color:#14161a;border-block:1px solid #999}
   .offer-subtitle,.offer-index-sub,.offer-index-title{color:#444}

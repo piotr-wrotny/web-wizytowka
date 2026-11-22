@@ -12,7 +12,7 @@ const compendiumPath = rawSite.compendium.path;
 
 /* Polish typesetting: a one-letter word never ends a line. Binds i, w, z, o, a, u (and capitals) to the next word. */
 export function pl(text) {
-  return typeof text === 'string' ? text.replace(/(^|[\s(„])([aiouwzAIOUWZ])\s(?=\S)/g, '$1$2 ') : text;
+  return typeof text === 'string' ? text.replace(/(?<=^|[\s(„])([aiouwzAIOUWZ])\s(?=\S)/g, '$1\u00a0') : text;
 }
 const plDeep = v => typeof v === 'string' ? pl(v) : Array.isArray(v) ? v.map(plDeep) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, plDeep(x)])) : v;
 const site = plDeep(rawSite);
@@ -225,10 +225,11 @@ function FlowSheet({ sheet, index, total, className = '' }) {
 }
 
 /* The consultation in short: the terms that hold for every engagement, then one action. */
-function FlowTerms({ headingLevel: H = 'h3', title = site.flow.termsTitle, items = site.flow.terms }) {
+function FlowTerms({ headingLevel: H = 'h3' }) {
+  const { flow } = site;
   return <div className="terms">
-    <H className="terms-title">{title}</H>
-    <dl className="terms-list">{items.map(t => <div key={t.title}><dt><Mark kind="tick" />{t.title}</dt><dd>{t.text}</dd></div>)}</dl>
+    <H className="terms-title">{flow.termsTitle}</H>
+    <dl className="terms-list">{flow.terms.map(t => <div key={t.title}><dt><Mark kind="tick" />{t.title}</dt><dd>{t.text}</dd></div>)}</dl>
   </div>;
 }
 
@@ -697,8 +698,14 @@ function SamplePage() {
   </ArticleFrame>;
 }
 
-/* Stage 0 of the client path: the free guide. The form is a local demonstration: it validates, then shows what the e-mail
-   would contain (guide, dated blocks for the ticked tools, and the generated note when there are two or more). Nothing is sent. */
+/* Stage 0 of the client path: the free guide. The form is the e-mail the visitor would receive: ticking a tool writes its block
+   into the letter, two or more add the generated note, and the address goes in the letter's own "Do:" line.
+   A local demonstration: nothing is sent, stored or generated. */
+/* A box to tick, as on a paper form: the pencil tick is drawn larger than the box. Used for every choice on the guide page. */
+function Pick({ children, plain = false, ...input }) {
+  return <label className={`pick${plain ? ' pick-plain' : ''}`}><input type="checkbox" {...input} /><span className="pick-box" aria-hidden="true"><Mark kind="tick" /></span><span className="pick-text">{children}</span></label>;
+}
+
 function GuideForm() {
   const { form } = site.guide;
   const [ready, setReady] = useState(false);
@@ -707,102 +714,104 @@ function GuideForm() {
   const [none, setNone] = useState(false);
   const [updates, setUpdates] = useState(false);
   const [error, setError] = useState('');
-  const [preview, setPreview] = useState(null);
+  const [done, setDone] = useState(false);
   const field = useRef(null);
-  const previewBox = useRef(null);
+  const doneBox = useRef(null);
   useEffect(() => { setReady(true); }, []);
-  useEffect(() => { if (preview) previewBox.current?.focus(); }, [preview]);
-  const reset = () => setPreview(null);
+  useEffect(() => { if (done) doneBox.current?.focus(); }, [done]);
   function toggle(item) {
-    reset(); setNone(false);
+    setDone(false); setNone(false);
     setPicked(list => list.includes(item) ? list.filter(x => x !== item) : [...list, item]);
   }
-  function toggleNone() {
-    reset(); setPicked([]); setNone(v => !v);
-  }
+  function toggleNone() { setDone(false); setPicked([]); setNone(v => !v); }
   function submit(event) {
     event.preventDefault();
-    const address = email.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address)) { setError('Wpisz adres e-mail w poprawnym formacie.'); setPreview(null); field.current?.focus(); return; }
-    setError('');
-    const ordered = form.groups.flatMap(g => g.items).filter(item => picked.includes(item));
-    const lines = [`Do: ${address}`, 'Temat: Przewodnik po AI i narzędziach', '', '1. Przewodnik (PDF): w przygotowaniu'];
-    if (ordered.length) {
-      lines.push('', '2. Omówienia zaznaczonych narzędzi: w przygotowaniu', ...ordered.map(item => `   · ${item}`), `   W każdym: ${form.blockParts}`);
-      if (ordered.length > 1) lines.push('', '3. Dopisek: co ten zestaw daje razem', '   [wygenerowany automatycznie, wyłącznie z omówień powyżej]');
-    } else if (none) {
-      lines.push('', '2. Bez omówień narzędzi. Dobry początek: rozdział „Mapa narzędzi”.');
-    }
-    lines.push('', `Kolejne wiadomości o zmianach: ${updates ? 'tak, osobna zgoda' : 'nie'}`);
-    setPreview(lines.join('\n'));
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) { setError('Wpisz adres e-mail w poprawnym formacie.'); setDone(false); field.current?.focus(); return; }
+    setError(''); setDone(true);
   }
-  return <div className="sheet contact-sheet">
-    <div className="sheet-bar"><p>{form.sheetTitle}</p><p>Formularz demonstracyjny</p></div>
-    <div className="contact-form-area">
-      <p className="demo-notice">Formularz działa tylko w tej karcie; nic nie jest wysyłane ani zapisywane. <a href="/prywatnosc/">Prywatność prototypu</a>.</p>
-      <form noValidate onSubmit={submit} aria-label="Przewodnik i Twoje narzędzia">
-        <fieldset disabled={!ready}>
-          <legend className="visually-hidden">Adres i narzędzia</legend>
-          <div className="form-row"><label htmlFor="guide-email">E-mail <span>(wymagany)</span></label><input id="guide-email" ref={field} name="email" type="email" autoComplete="email" spellCheck="false" maxLength="254" value={email} onChange={e => { setEmail(e.target.value); setError(''); reset(); }} required aria-invalid={Boolean(error)} aria-describedby={error ? 'guide-error-email' : undefined} />{error && <p className="field-error" id="guide-error-email" role="alert">{error}</p>}</div>
-          <fieldset className="stack">
-            <legend>{form.stackLegend} <span>(opcjonalne)</span></legend>
-            <p className="field-hint">{form.stackHint}</p>
-            {form.groups.map(group => <div className="stack-group" role="group" aria-labelledby={`stack-${group.id}`} key={group.id}>
-              <p id={`stack-${group.id}`}>{group.title}</p>
-              <div className="stack-options">{group.items.map(item => <label className="check" key={item}><input type="checkbox" name="stack" value={item} checked={picked.includes(item)} onChange={() => toggle(item)} /><span translate="no">{item}</span></label>)}</div>
-            </div>)}
-            <div className="stack-group stack-none"><label className="check"><input type="checkbox" name="stack-none" checked={none} onChange={toggleNone} /><span>{form.none}</span></label></div>
-          </fieldset>
-          <label className="check check-consent"><input type="checkbox" name="updates" checked={updates} onChange={() => { setUpdates(v => !v); reset(); }} /><span>{form.updates}</span></label>
+  const ordered = form.groups.flatMap(g => g.items).filter(item => picked.includes(item));
+  const n = ordered.length;
+  const summary = ['przewodnik', n > 0 && `${n} ${n === 1 ? 'omówienie' : n < 5 ? 'omówienia' : 'omówień'}`, n > 1 && 'dopisek'].filter(Boolean).join(' + ');
+  return <form className="guide-form" noValidate onSubmit={submit} aria-label="Przewodnik i Twoje narzędzia">
+    <fieldset disabled={!ready}>
+      <legend className="visually-hidden">Narzędzia i adres</legend>
+      <fieldset className="picks">
+        <legend>{form.stackLegend} <span>(opcjonalne)</span></legend>
+        <p className="field-hint">{form.stackHint}</p>
+        {form.groups.map(group => <div className="pick-group" role="group" aria-labelledby={`pick-${group.id}`} key={group.id}>
+          <p id={`pick-${group.id}`}>{group.title}</p>
+          <div className="pick-options">{group.items.map(item => <Pick key={item} name="stack" value={item} checked={picked.includes(item)} onChange={() => toggle(item)}><span translate="no">{item}</span></Pick>)}</div>
+        </div>)}
+        <div className="pick-group pick-none"><Pick plain name="stack-none" checked={none} onChange={toggleNone}>{form.none}</Pick></div>
+      </fieldset>
+      <p className="mail-status" role="status"><span>W mailu:</span> {summary}</p>
+      <div className="sheet mail" data-done={done ? '' : undefined}>
+        <div className="sheet-bar"><p>{form.mailTitle}</p><p>Podgląd, nic nie jest wysyłane</p></div>
+        <div className="mail-head">
+          <div className="mail-to"><label htmlFor="guide-email">Do:<span className="visually-hidden"> adres e-mail (wymagany)</span></label><input id="guide-email" ref={field} name="email" type="email" autoComplete="email" spellCheck="false" maxLength="254" placeholder="twoj@adres.pl" value={email} onChange={e => { setEmail(e.target.value); setError(''); setDone(false); }} required aria-invalid={Boolean(error)} aria-describedby={error ? 'guide-error-email' : undefined} /></div>
+          {error && <p className="field-error" id="guide-error-email" role="alert">{error}</p>}
+          <p className="mail-subject"><span>Temat:</span> {form.subject}</p>
+          <p className="mail-address-note">{form.addressNote}</p>
+        </div>
+        <ul className="mail-rows">
+          <li><Mark kind="tick" /><div><p className="mail-item">{form.guideRow}</p><p className="mail-sub">{form.guideSub}</p></div></li>
+          {ordered.map(item => <li key={item}><Mark kind="tick" /><div><p className="mail-item">{form.blockLabel}: <span translate="no">{item}</span></p></div></li>)}
+          {n > 1 && <li key="note" className="mail-note"><Mark kind="bar" /><div><p className="mail-item">{form.noteRow}</p><p className="mail-sub">{form.noteTag}</p></div></li>}
+          {n > 0 && <li key="parts" className="mail-parts"><p className="mail-sub">{form.blockParts}</p></li>}
+          {n === 0 && none && <li key="none"><Mark kind="bar" /><div><p className="mail-item">{form.noneRow}</p><p className="mail-sub">{form.noneSub}</p></div></li>}
+          {n === 0 && !none && <li key="empty" className="mail-empty"><p className="mail-sub">{form.emptyHint}</p></li>}
+        </ul>
+        <div className="mail-foot">
+          <Pick plain name="updates" checked={updates} onChange={() => { setUpdates(v => !v); setDone(false); }}>{form.updates}</Pick>
           <Button type="submit" compact>{form.button}</Button>
-        </fieldset>
-        <noscript><p>Podgląd maila wymaga JavaScript. Formularz niczego nie wysyła.</p></noscript>
-      </form>
-      {preview && <div className="draft-preview" ref={previewBox} tabIndex="-1" role="region" aria-label="Podgląd maila">
-        <p className="draft-title"><Mark kind="tick" />Tak wyglądałby mail.</p>
-        <p>To podgląd; niczego nie wysłano, a adres nie został zapisany.</p>
-        <pre>{preview}</pre>
-      </div>}
-    </div>
-  </div>;
+        </div>
+        {done && <div className="mail-done" ref={doneBox} tabIndex="-1" role="status">
+          <p className="draft-title"><Mark kind="tick" />{form.doneTitle}</p>
+          <p>{form.doneText}</p>
+        </div>}
+      </div>
+    </fieldset>
+    <noscript><p>Składanie maila wymaga JavaScript. Formularz niczego nie wysyła.</p></noscript>
+  </form>;
 }
 
+/* The guide page is read top to bottom, one question per screen: what is it, what is inside, how do I get it.
+   Everything sits on one column of the grid. The only motion is the letter answering the reader's choices. */
 function GuidePage() {
   const { guide } = site;
-  return <main id="tresc" tabIndex="-1" className="article-page guide-page">
-    <div className="wrap">
-      <a className="back-link" href="/#analizy"><ArrowLeft aria-hidden="true" />Wróć do wiedzy otwartej</a>
-      <header className="article-header">
-        <p className="article-kind">{guide.kind}</p>
-        <h1>{guide.title}</h1>
+  return <main id="tresc" tabIndex="-1" className="guide">
+    <section className="scene scene-intro" aria-labelledby="guide-title">
+      <div className="wrap scene-grid"><div className="scene-col">
+        <a className="back-link" href="/#analizy"><ArrowLeft aria-hidden="true" />Wróć do wiedzy otwartej</a>
+        <h1 id="guide-title">{guide.title}</h1>
         <p className="article-lead">{guide.lead}</p>
         <p className="meta">{guide.meta.map(m => <span key={m}>{m}</span>)}</p>
-        <div className="guide-jump"><Button href="#pobierz">{guide.form.title.replace(/\.$/, '')}</Button></div>
-      </header>
-      <section className="guide-contents" aria-labelledby="guide-contents-title">
-        <h2 id="guide-contents-title">{guide.contentsTitle}</h2>
-        <ol className="guide-chapters">{guide.chapters.map((chapter, i) => <li key={chapter.title}>
-          <span className="guide-numeral" aria-hidden="true">{i + 1}</span>
-          <h3>{chapter.title}</h3>
-          <p>{chapter.text}</p>
-        </li>)}</ol>
-      </section>
-      <FlowTerms headingLevel="h2" title={guide.termsTitle} items={guide.terms} />
-      <Pending>{guide.pending}</Pending>
-    </div>
-    <section className="contact guide-get" id="pobierz" aria-labelledby="guide-get-title">
-      <div className="wrap contact-grid">
-        <div className="contact-intro">
-          <h2 id="guide-get-title">{guide.form.title}</h2>
-          {guide.form.intro.map(p => <p key={p}>{p}</p>)}
-          <Note>{guide.form.note}</Note>
-        </div>
-        <GuideForm />
-      </div>
+        <div className="guide-jump"><Button href="#pobierz">{guide.jump}</Button></div>
+      </div></div>
     </section>
-    <div className="wrap guide-next">
-      <CallToAction headingLevel="h2" title={guide.next.title} text={guide.next.text} button={guide.next.button} href={compendiumPath} secondary={<TextLink href={deckPath} arrow>{guide.next.link}</TextLink>} />
-    </div>
+    <section className="scene scene-desk" aria-labelledby="guide-contents-title">
+      <div className="wrap scene-grid"><div className="scene-col">
+        <h2 className="scene-title" id="guide-contents-title">{guide.contentsTitle}</h2>
+        <div className="sheet guide-toc">
+          <div className="sheet-bar"><p>{guide.form.subject}</p><p>Spis treści</p></div>
+          <ol>{guide.chapters.map((chapter, i) => <li key={chapter.title}>
+            <span className="guide-numeral" aria-hidden="true">{i + 1}</span>
+            <div><h3>{chapter.title}</h3><p>{chapter.text}</p></div>
+          </li>)}</ol>
+          <div className="sheet-foot"><p>{guide.tocFoot}</p></div>
+        </div>
+        <Pending>{guide.pending}</Pending>
+      </div></div>
+    </section>
+    <section className="scene" id="pobierz" aria-labelledby="guide-get-title">
+      <div className="wrap scene-grid"><div className="scene-col">
+        <h2 className="scene-title" id="guide-get-title">{guide.form.title}</h2>
+        <p className="scene-lead">{guide.form.intro}</p>
+        <GuideForm />
+        <Note>{guide.form.note} <a href="/prywatnosc/">Prywatność prototypu</a>.</Note>
+        <CallToAction headingLevel="h2" title={guide.next.title} text={guide.next.text} button={guide.next.button} href={compendiumPath} secondary={<TextLink href={deckPath} arrow>{guide.next.link}</TextLink>} />
+      </div></div>
+    </section>
   </main>;
 }
 

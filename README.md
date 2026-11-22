@@ -23,7 +23,7 @@ Strona jest złożona jak sprawdzony dokument. Jedynym motywem graficznym jest o
 
 ## Edycja
 
-- Przewodnik (`site.guide`, `/przewodnik/`): spis rozdziałów, zasady wydania i formularz demonstracyjny: e-mail, opcjonalny wybór narzędzi w trzech grupach, „nie wiem albo nie korzystam”, osobna zgoda na kolejne wiadomości. Po sprawdzeniu pokazuje podgląd maila; niczego nie wysyła. Przykładowe kompendium (`site.compendium`) jest w całości syntetyczne.
+- Przewodnik (`site.guide`, `/przewodnik/`): trzy ekrany czytane z góry na dół (co to jest, co jest w środku, jak to dostać). Formularz jest mailem, który składa się na oczach odwiedzającego: odhaczone narzędzie dopisuje swoje omówienie, przy dwóch pojawia się oznaczony dopisek, adres wpisuje się w linii „Do:”. Demonstracja; niczego nie wysyła. Przykładowe kompendium (`site.compendium`) jest w całości syntetyczne.
 - `src/content/site.js`: hero (DRAFT), ilustracja sprawdzania szkicu (DRAFT), przebieg konsultacji (DRAFT), przewodnik, wiedza otwarta i przykładowe kompendium (DRAFT), sytuacje przykładowe (DRAFT), formaty, przykład standardu, metoda, zasady „Czego nie robię” (DRAFT), ekspertyza.
 - `src/content/articles.js`, `src/content/glossary.js`: analizy i słownik pokazywany na marginesie.
 - `src/App.jsx`: skład sekcji i komponenty. `src/motion.js`: rozświetlanie słów.
