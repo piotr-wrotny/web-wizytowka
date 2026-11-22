@@ -4,6 +4,7 @@ Visual direction, typography, colour, layout and motion are deliberately not pre
 
 ## Content and business rules
 
+- 2026-11-22, founder: production is deployed only from `deploy/cloudflare`. Branches move fast-forward only: `dev` → `main` → `deploy/cloudflare`; the deploy branch always equals what is live. Never deploy without the founder's go-ahead.
 - 2026-11-22, founder: the visual standard (colour, type, elements, layout, motion) is documented in `docs/standard-wizualny.md`. It describes the approved `redesign/reimagined` direction as built; keep it in sync with `src/styles.css` when the look changes.
 - 2026-11-22, founder: the substantive knowledge (offer, methodology, glossary, analyses, situations, client work) lives in `~/Work/ai-ekspert`, which is the source of truth. `src/content` holds published copies; take new or changed content from there, never from client folders.
 - Founder name is **Piotr Wrotny** (confirmed 2026-11-09). Public biography, contact, domain and real client evidence remain placeholders. No invented clients, metrics, testimonials or certifications. No public prices in this prototype.

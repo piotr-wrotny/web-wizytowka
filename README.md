@@ -40,6 +40,14 @@ Worker (`worker/index.js`) serwuje statyczne pliki z `dist/client` przez binding
 
 - `npm run preview`: build i lokalny podgląd przez `wrangler dev` (http://127.0.0.1:8787).
 - `npm run deploy:check`: build i `wrangler deploy --dry-run`, bez publikacji.
-- `npm run deploy`: build i publikacja. Wymaga wcześniejszego `npx wrangler login`.
+- `npm run deploy`: build i publikacja. Wymaga wcześniejszego `npx wrangler login`. Skrypt `scripts/check-deploy-branch.mjs` przerywa wdrożenie, jeśli nie jesteś na `deploy/cloudflare`, masz niezacommitowane zmiany albo gałąź różni się od origin.
+
+### Gałęzie i wdrożenie
+
+Zmiany płyną w jedną stronę, wyłącznie fast-forward:
+
+`dev` (bieżąca praca) → `main` (sprawdzony stan: build i testy przechodzą) → `deploy/cloudflare` (dokładnie to, co jest na produkcji).
+
+Produkcja jest wdrażana **tylko z `deploy/cloudflare`**. Wydanie: `git switch deploy/cloudflare && git merge --ff-only main && git push origin deploy/cloudflare`, a następnie wdrożenie: automatycznie przez Cloudflare Workers Builds, jeśli jest podłączone do tej gałęzi, albo ręcznie przez `npm run deploy`.
 
 Strona jest publikowana pod `piotrwrotny.pl` i `www.piotrwrotny.pl` (Custom Domain w `wrangler.jsonc`) oraz pod adresem `*.workers.dev`; `noindex` zostaje do publicznej wersji. Formularz pozostaje lokalną demonstracją. Sekrety nie trafiają do repo.
