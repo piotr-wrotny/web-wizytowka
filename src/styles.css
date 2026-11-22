@@ -758,6 +758,8 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 .js-motion .slide-value .mark path{stroke-dasharray:1;stroke-dashoffset:calc(1 - var(--v))}
 .js-motion .slide-value>span{opacity:var(--v);transform:translateX(calc((1 - var(--v))*-10px))}
 .js-motion .slide-action{opacity:var(--v)}
+/* The sheet arrives rotated; on a narrow screen its corner must not widen the page. */
+.js-motion .slide-stage{overflow-x:clip}
 .js-motion .slide-visual{opacity:clamp(0,calc(var(--a)*2.5),1);transform:translateY(calc((1 - var(--a))*26vh)) rotate(calc((1 - var(--a))*5deg)) scale(calc(.88 + var(--a)*.12));transform-origin:50% 100%;will-change:transform}
 
 /* The sheet is filled in: each line has its own 0-to-1 value --r, later lines start later. */
