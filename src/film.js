@@ -5,8 +5,10 @@
 // Timeline T: the index of the section whose top has passed the top of the screen, plus how far it has scrolled through.
 //   0 hero      asleep, then woken up as the first papers arrive
 //   1 rynek     the market's papers stream past, four of them stop in front of him with a question in red pencil
-//   2 stawka    "AI!" shouts from everywhere, the fridge included
-//   3 zwrot     "Muszę to uporządkować." The bedroom leaves, a desk arrives, the papers land on it
+//   1.6 to 2    he walks over to the fridge, which trembles and leaks red light
+//   2 stawka    he looks back, opens it, and "AI!" bursts out at him; then it shouts from everywhere
+//   3 zwrot     "Muszę to uporządkować." The bedroom leaves, a desk arrives, the papers land on it, and the card of
+//               the first conversation comes down in front of him: three questions, ticked one by one
 //   3.5 to 4    while the steps screen arrives, the heap is sorted into four stacks
 //   4 kroki     the film fades; from here on the page is paper again, ending with the real compendium sheet
 import * as THREE from 'three';
@@ -69,6 +71,23 @@ function paperTexture(paper, label, withQuery) {
     }
   });
 }
+/* The card of the first conversation, as an object of the film: the same three questions as on the flat sheet. */
+function cardTexture(card, ticks) {
+  return texture(640, 400, (g, w) => {
+    g.fillStyle = C.paper; g.fillRect(0, 0, w, 400);
+    g.strokeStyle = C.line; g.lineWidth = 2; g.strokeRect(1, 1, w - 2, 398);
+    g.beginPath(); g.moveTo(0, 62); g.lineTo(w, 62); g.stroke();
+    g.fillStyle = C.ink; g.font = '500 20px Archivo, sans-serif'; g.textBaseline = 'middle';
+    g.fillText(card.title, 36, 32);
+    g.fillStyle = C.inkSoft; g.textAlign = 'right'; g.fillText(card.label, w - 36, 32); g.textAlign = 'left';
+    card.questions.forEach((question, i) => {
+      const y = 124 + i * 96;
+      if (i < ticks) { g.strokeStyle = C.blue; g.lineWidth = 4; g.lineCap = 'round'; g.lineJoin = 'round'; g.beginPath(); g.moveTo(38, y + 2); g.lineTo(50, y + 14); g.lineTo(72, y - 14); g.stroke(); }
+      g.fillStyle = C.ink; g.font = 'italic 33px "Brygada 1918", serif'; g.fillText(question, 96, y);
+      if (i < card.questions.length - 1) { g.strokeStyle = '#d9ddd9'; g.lineWidth = 1; g.beginPath(); g.moveTo(36, y + 48); g.lineTo(w - 36, y + 48); g.stroke(); }
+    });
+  });
+}
 function shoutTexture() {
   return texture(260, 200, (g, w) => {
     g.fillStyle = C.red; roundRect(g, 6, 6, w - 12, 150, 34);
@@ -125,7 +144,7 @@ function buildMan() {
   return { man, head, eyes, arms };
 }
 
-export async function startFilm({ canvas, sections, papers, paperLabel, say }) {
+export async function startFilm({ canvas, sections, papers, paperLabel, say, card: cardContent }) {
   await Promise.all(['700 25px Archivo', '800 104px Archivo', '500 15px Archivo', 'italic 46px "Brygada 1918"'].map(f => document.fonts.load(f, 'AIąż?')));
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -192,12 +211,19 @@ export async function startFilm({ canvas, sections, papers, paperLabel, say }) {
     scene.add(mesh);
     return mesh;
   });
-  const bigHome = [[-1.25, 2.75, 0.9], [1.75, 2.95, 0.5], [-1.45, 1.45, 1.5], [1.95, 1.6, 1.3]];
+  const bigHome = [[-1.75, 2.75, 0.8], [-0.15, 3.25, 0.4], [-2.0, 1.45, 1.4], [1.1, 3.05, 0.6]];
+  const cardMaps = [0, 1, 2, 3].map(n => cardTexture(cardContent, n));
+  const card = solid(new THREE.BoxGeometry(2.5, 1.56, 0.014), [mat(C.paper), mat(C.paper), mat(C.paper), mat(C.paper), mat('#ffffff', { map: cardMaps[0] }), mat(C.paper)]);
+  card.scale.setScalar(0.0001);
+  scene.add(card);
+  const glow = new THREE.PointLight(C.red, 0, 7);
+  glow.position.set(1.9, 1.4, 0.3);
+  scene.add(glow);
 
   const shoutMap = shoutTexture();
   // Where each shout comes from, where it ends up, how large it is: the fridge first.
   const shoutPlan = [
-    [[2.3, 1.3, -0.5], [1.55, 2.4, 1.9], 1.2],
+    [[2.3, 1.3, -0.5], [1.3, 2.25, 2.0], 1.45],
     [[-1.6, 0.2, 0.7], [-0.9, 0.85, 2.0], 0.85],
     [[-3.0, 1.0, 0], [-1.25, 2.6, 1.8], 0.95],
     [[0.2, 4.6, 0], [0.45, 2.85, 1.7], 1.0],
@@ -212,16 +238,23 @@ export async function startFilm({ canvas, sections, papers, paperLabel, say }) {
 
   const dummy = new THREE.Object3D();
   const look = new THREE.Vector3();
+  // time, camera position, look-at, picture shift to the right and upwards (fractions of the screen)
   const cams = [
     [0, [-0.9, 2.3, 9.2], [-1.3, 1.0, 0], 0.24, 0.02],
     [1.1, [0.2, 2.5, 11.4], [0.25, 1.6, 0], 0.21, 0.0],
-    [2.4, [0.5, 2.4, 11.8], [0.4, 1.65, 0], 0.21, 0.0],
-    [3.5, [0.9, 2.7, 10.4], [1.2, 1.2, 0.3], 0.14, -0.02],
+    [1.62, [0.2, 2.5, 11.4], [0.25, 1.6, 0], 0.21, 0.0],
+    // Closer, on the man and the fridge: what happens when he opens it?
+    [2.0, [1.0, 2.1, 8.6], [1.75, 1.4, -0.3], 0.2, 0.0],
+    [2.19, [1.0, 2.1, 8.4], [1.75, 1.4, -0.3], 0.2, 0.0],
+    [2.34, [0.5, 2.4, 11.8], [0.4, 1.65, 0], 0.21, 0.0],
+    [2.75, [0.5, 2.4, 11.8], [0.4, 1.65, 0], 0.21, 0.0],
+    [3.2, [1.3, 2.4, 9.8], [1.6, 1.6, 0.3], 0.2, 0.0],
+    [3.66, [1.3, 2.4, 9.8], [1.6, 1.6, 0.3], 0.2, 0.0],
     // The steps screen uses the full width for its text: the desk is seen from further away, in the free upper right.
-    [3.9, [1.9, 3.4, 13.5], [2.1, 1.2, 0.6], 0.27, 0.26],
+    [3.93, [1.9, 3.4, 13.5], [2.1, 1.2, 0.6], 0.27, 0.26],
     [6, [1.9, 3.4, 13.5], [2.1, 1.2, 0.6], 0.27, 0.26],
   ];
-  let width = 0, height = 0, frame = 0, T = -1, shown = -1, running = true;
+  let width = 0, height = 0, frame = 0, T = -1, shown = -1, running = true, last = performance.now();
   const start = performance.now();
 
   function timeline() {
@@ -238,7 +271,10 @@ export async function startFilm({ canvas, sections, papers, paperLabel, say }) {
     if (!running) return;
     frame = requestAnimationFrame(tick);
     const target = timeline();
-    T = T < 0 ? target : T + (target - T) * 0.16;
+    // Follow the scroll with a short, frame-rate independent lag, so a slow machine is not left behind.
+    const now = performance.now(), dt = Math.min(0.1, (now - last) / 1000);
+    last = now;
+    T = T < 0 ? target : T + (target - T) * (1 - Math.exp(-dt * 10));
     // The steps screen scrolls its own text through the picture, so the film is over just after that screen has arrived.
     const visible = 1 - seg(T, 4.03, 4.28);
     if (visible !== shown) { canvas.style.opacity = visible.toFixed(3); shown = visible; }
@@ -262,31 +298,40 @@ export async function startFilm({ canvas, sections, papers, paperLabel, say }) {
     camera.updateProjectionMatrix();
 
     // The bedroom and the desk.
-    const leave = seg(T, 3.05, 3.45), arrive = seg(T, 3.12, 3.5);
+    const leave = seg(T, 2.9, 3.2), arrive = seg(T, 2.95, 3.25);
     bed.position.x = -1.9 - leave * 11;
     fridge.position.x = 2.3 + leave * 11;
     desk.position.y = lerp(-4, 0, arrive);
     const wake = seg(T, 0.42, 0.9);
     blanket.scale.y = lerp(1, 0.14, seg(T, 0.42, 0.7));
     blanket.position.y = lerp(1.08, 0.76, seg(T, 0.42, 0.7));
-    door.rotation.y = 1.75 * (seg(T, 1.98, 2.14) - seg(T, 3.0, 3.2));
+    // The fridge gives itself away before it is opened: it trembles and red light leaks out.
+    const hint = seg(T, 1.7, 2.05) * (1 - seg(T, 2.2, 2.3)), storm = seg(T, 2.2, 2.3) * (1 - seg(T, 2.8, 3.0));
+    fridge.rotation.z = Math.sin(time * 33) * 0.013 * hint;
+    glow.intensity = hint * 9 + storm * 16;
+    door.rotation.y = 1.75 * (seg(T, 2.1, 2.21) - seg(T, 2.85, 3.0));
+
+    const deskX = desk.position.x, deskZ = desk.position.z;
 
     // The man: asleep on his side, up on his feet, overwhelmed, then decided.
-    const panic = seg(T, 1.95, 2.2) * (1 - seg(T, 2.85, 3.1));
-    const puzzled = seg(T, 1.0, 1.2) * (1 - seg(T, 1.9, 2.1));
-    const decide = seg(T, 2.85, 3.1) * (1 - seg(T, 3.4, 3.65));
-    const work = seg(T, 3.45, 3.7);
-    man.position.set(lerp(-0.9, 0.15, wake) + work * 0.75, lerp(1.08, 0, wake) + Math.sin(wake * Math.PI) * 0.55, lerp(0, 0.5, wake) + work * 0.1);
+    const panic = seg(T, 2.2, 2.28) * (1 - seg(T, 2.72, 2.9));
+    const puzzled = seg(T, 1.0, 1.2) * (1 - seg(T, 1.55, 1.65));
+    // He walks over to the fridge, looks back once, reaches for the handle; what jumps out throws him back.
+    const walk = seg(T, 1.62, 1.95), recoil = seg(T, 2.2, 2.32), reach = seg(T, 1.92, 2.04) * (1 - seg(T, 2.2, 2.26));
+    const glance = seg(T, 1.99, 2.04) * (1 - seg(T, 2.07, 2.12));
+    const decide = seg(T, 2.72, 2.9) * (1 - seg(T, 3.25, 3.45));
+    const work = seg(T, 3.5, 3.72);
+    man.position.set(lerp(-0.9, 0.15, wake) + walk * 1.1 - recoil * 0.8 + work * 0.45, lerp(1.08, 0, wake) + Math.sin(wake * Math.PI) * 0.55 + Math.abs(Math.sin(walk * 14)) * 0.05 * (walk < 1 ? 1 : 0), lerp(0, 0.5, wake) - walk * 0.35 + recoil * 0.35 + work * 0.1);
     man.rotation.z = lerp(Math.PI / 2, 0, wake) + panic * Math.sin(time * 9) * 0.035;
-    man.rotation.y = puzzled * Math.sin(time * 1.1) * 0.5 + panic * Math.sin(time * 2.3) * 0.7 + work * 0.75;
+    man.rotation.y = puzzled * Math.sin(time * 1.1) * 0.5 + (walk - recoil) * 2.0 + panic * Math.sin(time * 2.3) * 0.7 + work * 0.75;
     man.scale.y = 1 - panic * 0.06;
     head.rotation.x = panic * 0.3 + work * 0.35;
-    head.rotation.y = puzzled * Math.sin(time * 1.7 + 1) * 0.5;
+    head.rotation.y = puzzled * Math.sin(time * 1.7 + 1) * 0.5 - glance * 1.3;
     eyes.forEach(eye => { eye.scale.y = lerp(0.12, 1, seg(T, 0.36, 0.46)) * (1 + panic * 0.5); });
     arms.forEach((arm, i) => {
       const side = i ? 1 : -1;
       arm.rotation.z = side * (0.12 + puzzled * 0.45 + panic * 2.55 + (i ? decide * 2.9 : decide * 0.2) + work * 0.25);
-      arm.rotation.x = -work * (1.0 + Math.sin(time * 3 + i * 2) * 0.25) - panic * 0.3;
+      arm.rotation.x = -work * (1.0 + Math.sin(time * 3 + i * 2) * 0.25) - panic * 0.3 - (i ? reach * 1.35 : 0);
     });
     zs.forEach((z, i) => {
       const u = (time * 0.32 + i / 3) % 1, on = 1 - seg(T, 0.3, 0.44);
@@ -296,14 +341,13 @@ export async function startFilm({ canvas, sections, papers, paperLabel, say }) {
     });
 
     // Papers: a stream from left to right, then a heap on the desk, then four stacks.
-    const flow = seg(T, 0.62, 1.15), gather = seg(T, 3.12, 3.5);
-    const deskX = desk.position.x, deskZ = desk.position.z;
+    const flow = seg(T, 0.62, 1.15), gather = seg(T, 2.95, 3.3);
     for (let i = 0; i < N; i++) {
       const p = rand(i), q = rand(i + 50), s = rand(i + 99);
       const u = (T * 0.55 + time * 0.035 * (0.6 + q) + p) % 1;
       const fx = -7.5 + u * 15, fy = 0.9 + q * 3.1 + Math.sin(u * 9 + i) * 0.35, fz = -2.2 + s * 4;
       const stack = i % 4, level = Math.floor(i / 4);
-      const sorted = seg(T, 3.5 + stack * 0.08, 3.7 + stack * 0.08);
+      const sorted = seg(T, 3.6 + stack * 0.07, 3.78 + stack * 0.07);
       const hx = deskX - 0.2 + (p - 0.5) * 1.5, hz = deskZ + (q - 0.5) * 0.6, hy = deskTop + 0.01 + i * 0.007;
       const sx = deskX - 0.93 + stack * 0.62, sz = deskZ + 0.05, sy = deskTop + 0.008 + level * 0.014;
       const tx = lerp(hx, sx, sorted), ty = lerp(hy, sy, sorted) + Math.sin(sorted * Math.PI) * 0.5, tz = lerp(hz, sz, sorted);
@@ -318,7 +362,7 @@ export async function startFilm({ canvas, sections, papers, paperLabel, say }) {
 
     // The four papers that can be read: they stop in front of him, the pencil asks, later they join the heap.
     big.forEach((mesh, i) => {
-      const t0 = 0.86 + i * 0.1, come = seg(T, t0, t0 + 0.2), go = seg(T, 3.1 + i * 0.04, 3.42 + i * 0.04);
+      const t0 = 0.86 + i * 0.1, come = seg(T, t0, t0 + 0.2), go = seg(T, 2.95 + i * 0.04, 3.25 + i * 0.04);
       const asked = T > t0 + 0.34;
       const face = mesh.material[4];
       if (face.map !== (asked ? mesh.userData.asked : mesh.userData.plain)) { face.map = asked ? mesh.userData.asked : mesh.userData.plain; face.needsUpdate = true; }
@@ -331,16 +375,26 @@ export async function startFilm({ canvas, sections, papers, paperLabel, say }) {
 
     // "AI!" from everywhere.
     shouts.forEach((s, i) => {
-      const [from, to, size] = shoutPlan[i], t0 = 2.06 + i * 0.075;
-      const out = pop((T - t0) / 0.09) * (T > t0 ? 1 : 0), off = seg(T, 2.95 + i * 0.02, 3.15 + i * 0.02), mv = seg(T, t0, t0 + 0.09);
+      // The first one comes out of the fridge, straight at him; the rest follow from everywhere.
+      const [from, to, size] = shoutPlan[i], t0 = i ? 2.25 + i * 0.038 : 2.2;
+      const out = pop((T - t0) / 0.09) * (T > t0 ? 1 : 0), off = seg(T, 2.82 + i * 0.02, 3.0 + i * 0.02), mv = seg(T, t0, t0 + 0.09);
       const wobble = 1 + Math.sin(time * 7 + i * 2.1) * 0.06;
       s.position.set(lerp(from[0], to[0], mv) + Math.sin(time * 5 + i) * 0.04, lerp(from[1], to[1], mv) - off * 2.5, lerp(from[2], to[2], mv));
       const scale = Math.max(0.0001, out * (1 - off) * size * wobble);
       s.scale.set(s.userData.size[0] * scale, s.userData.size[1] * scale, 1);
       s.material.rotation = Math.sin(time * 4 + i * 1.3) * 0.08 * (1 - off);
     });
-    const speak = pop((T - 2.9) / 0.14) * (T > 2.9 ? 1 : 0) * (1 - seg(T, 3.5, 3.68));
-    bubble.position.set(man.position.x + 1.25, 3.15, man.position.z + 0.2);
+    const speak = pop((T - 2.78) / 0.14) * (T > 2.78 ? 1 : 0) * (1 - seg(T, 3.2, 3.32));
+    bubble.position.set(man.position.x + 1.1, 3.4, man.position.z + 0.2);
+
+    // The consultation enters as one calm sheet: the card of the first conversation, its questions ticked one by one.
+    // Later it lies down on the desk as the first of the four stacks.
+    const cardIn = seg(T, 3.22, 3.36), cardDown = seg(T, 3.64, 3.82);
+    const ticks = T > 3.45 ? 3 : T > 3.41 ? 2 : T > 3.37 ? 1 : 0;
+    if (card.material[4].map !== cardMaps[ticks]) { card.material[4].map = cardMaps[ticks]; card.material[4].needsUpdate = true; }
+    card.position.set(lerp(2.5, deskX - 0.93, cardDown), lerp(lerp(5.0, 2.15, cardIn), deskTop + 0.17, cardDown) + Math.sin(cardDown * Math.PI) * 0.4, lerp(0.75, deskZ + 0.05, cardDown));
+    card.rotation.set(lerp(0, -Math.PI / 2, cardDown), lerp(-0.2, 0, cardDown), lerp((1 - cardIn) * 0.25, 0, cardDown));
+    card.scale.setScalar(Math.max(0.0001, cardIn * lerp(1, 0.24, cardDown)));
     bubble.scale.set(Math.max(0.0001, bubble.userData.size[0] * speak), Math.max(0.0001, bubble.userData.size[1] * speak), 1);
 
     renderer.render(scene, camera);

@@ -570,7 +570,7 @@ function Home() {
         if (probe.getContext('webgl2') || probe.getContext('webgl')) {
           const { startFilm } = await import('./film.js');
           const sections = [document.querySelector('.story-hero'), ...document.querySelectorAll('.story .slide')];
-          const dispose = await startFilm({ canvas: film.current, sections, papers: story.papers, paperLabel: story.paperLabel, say: story.turn.say });
+          const dispose = await startFilm({ canvas: film.current, sections, papers: story.papers, paperLabel: story.paperLabel, say: story.turn.say, card: { title: flow.stages[1].sheet.title, label: story.turn.sheetLabel, questions: flow.stages[1].sheet.items } });
           if (cancelled || !wide.matches) dispose();
           else { stop = dispose; html.classList.add('film-on'); }
         }

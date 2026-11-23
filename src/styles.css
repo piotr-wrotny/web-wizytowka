@@ -950,7 +950,14 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 .film-on .story-hero>.wrap,.film-on .story .beat-steps>.wrap{position:relative;z-index:2}
 .film-on .story .slide-pin{z-index:2}
 .film-on .market-pile{visibility:hidden}
-.film-on .beat-rynek .slide-visual,.film-on .beat-stawka .slide-visual{clip-path:inset(50%)}
+.film-on .beat-rynek .slide-visual,.film-on .beat-stawka .slide-visual,.film-on .beat-zwrot .slide-visual{clip-path:inset(50%)}
+/* While the film plays, a flat sheet never lies on top of the animation: the card of the first conversation is an object of
+   the film too. The fridge screen says nothing until he has opened it: it is longer (300vh), its text arrives with the burst,
+   and it is still held for a third of a screen afterwards. */
+.film-on.js-motion .beat-stawka.slide-stage{height:300vh;--t:clamp(0,calc((var(--sp,1) - .5)*9),1);--u:clamp(0,calc((var(--sp,1) - .56)*8),1);--w:clamp(0,calc((var(--sp,1) - .56)*5),1);--v:clamp(0,calc((var(--sp,1) - .76)*8),1)}
+.film-on .beat-stawka .slide-copy{opacity:var(--t)}
+/* The turn is held longer too (280vh): the room has to leave and the card has to arrive and be read. */
+.film-on.js-motion .beat-zwrot.slide-stage{height:280vh}
 @media print{.film{display:none!important}}
 
 @media(max-width:1100px){.market-pile{grid-column:7/-1}}
