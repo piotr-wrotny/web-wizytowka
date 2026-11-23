@@ -21,6 +21,8 @@
   --ink:#14161a;--ink-soft:#4d5359;--line:#c6ccc7;--line-soft:#d9ddd9;--field-line:#767c83;
   --blue:#2340c8;--blue-deep:#1a31a3;--on-blue:#fcfdfb;--on-blue-soft:#cdd6ff;
   --red:#c02a16;--red-on-ink:#ff8a75;
+  /* One green, used once: the happy ending of the story and the way from it to the contact card. */
+  --green:#1f7a4d;--green-deep:#165c39;
   --serif:'Brygada 1918','Iowan Old Style',Georgia,serif;
   --sans:Archivo,'Segoe UI',system-ui,sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
@@ -968,15 +970,45 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 .film-on .beat-stawka .slide-copy{opacity:var(--t)}
 /* The turn is held longer too (280vh): the room has to leave and the card has to arrive and be read. */
 .film-on.js-motion .beat-zwrot.slide-stage{height:280vh}
-/* The four steps are one screen, pinned while the film plays them one after another above the columns (440vh): each title
-   arrives with its step of the film, and the finished screen is held before it leaves. */
-.film-on.js-motion .beat-steps{display:block;min-height:0;height:440vh;padding:0}
-.film-on.js-motion .beat-steps>.wrap{position:sticky;top:0;z-index:2;height:100vh;display:flex;flex-direction:column;padding-block:calc(var(--header-h) + clamp(20px,5vh,56px)) clamp(20px,4vh,48px)}
-.film-on.js-motion .beat-steps .story-steps{margin-top:auto}
-.film-on.js-motion .beat-steps .story-steps li{--r:clamp(0,calc((var(--sp,1) - .23 - var(--i,0)*.18)*10),1)}
-/* The ending is the fourth act of the film: the compendium opens as its object, then the hero sits among his team (300vh). */
-.film-on.js-motion .beat-koniec.slide-stage{height:300vh}
-@media print{.film{display:none!important}}
+/* The four steps are one screen, pinned while the film plays them one after another (560vh; the third step, the conversation, takes the most). The film has the stage: the
+   steps are a short list in the text column, and each line arrives with its step of the film. The finished screen is held. */
+.film-on.js-motion .beat-steps{display:block;min-height:0;height:560vh;padding:0}
+.film-on.js-motion .beat-steps>.wrap{position:sticky;top:0;z-index:2;height:100vh;display:flex;flex-direction:column;justify-content:center;padding-block:calc(var(--header-h) + 12px) 16px}
+.film-on.js-motion .beat-steps h2{font-size:clamp(1.9rem,min(4.2vw,7.4vh),3.5rem)}
+.film-on.js-motion .beat-steps .story-steps{grid-template-columns:minmax(0,1fr);gap:0;width:min(34%,26rem);margin-top:clamp(14px,3.4vh,36px);perspective:none}
+.film-on.js-motion .beat-steps .story-steps li{display:grid;grid-template-columns:2.2rem minmax(0,1fr);column-gap:10px;padding-block:clamp(8px,1.5vh,14px);--at:.17;--r:clamp(0,calc((var(--sp,1) - var(--at))*12),1);transform:translateY(calc((1 - var(--r))*12px));opacity:var(--r)}
+.film-on.js-motion .beat-steps .story-steps li:nth-child(2){--at:.33}
+.film-on.js-motion .beat-steps .story-steps li:nth-child(3){--at:.46}
+.film-on.js-motion .beat-steps .story-steps li:nth-child(4){--at:.89}
+.film-on.js-motion .beat-steps .story-step-no{grid-row:1/span 2;font-size:clamp(1.6rem,4.4vh,2.4rem);line-height:1}
+.film-on.js-motion .beat-steps .story-steps h3{margin-top:0;font-size:clamp(1.05rem,2.6vh,1.35rem)}
+.film-on.js-motion .beat-steps .story-steps p{margin-top:3px;font-size:clamp(.875rem,2vh,1rem);line-height:1.4;max-width:none}
+.film-on.js-motion .beat-steps .slide-action{margin-top:clamp(10px,2.4vh,24px)}
+/* The ending is the fourth act of the film: the compendium opens as its object, then the hero stands among his team (380vh). */
+.film-on.js-motion .beat-koniec.slide-stage{height:380vh}
+/* The way out of the happy ending: one green button under the hero, only while the film plays. It arrives after the team
+   has started celebrating. Green is used nowhere else, so it reads as "now you". */
+.story-go,.contact-guest{display:none}
+.btn-go{background:var(--green);color:#fcfdfb}
+.btn-go:hover{background:var(--green-deep)}
+.film-on.js-motion .beat-koniec{--go:clamp(0,calc((var(--sp,1) - .875)*16),1)}
+.film-on.js-motion .beat-koniec .story-go{display:block;position:absolute;left:70%;bottom:clamp(20px,6.5vh,64px);margin:0;translate:-50% calc((1 - var(--go))*14px);opacity:var(--go)}
+/* Whoever took the green button finds the hero on the contact card, compendium in hand, and a green edge on the card.
+   The fields keep their own language (red query, blue tick); green never marks a field. */
+.go-wipe{position:fixed;inset:0;z-index:200;background:var(--green);clip-path:circle(0 at var(--x) var(--y));animation:go-in .55s var(--ease) forwards}
+.go-wipe.out{clip-path:none;animation:go-out .7s ease forwards}
+@keyframes go-in{to{clip-path:circle(150vmax at var(--x) var(--y))}}
+@keyframes go-out{to{opacity:0}}
+.from-story .contact{background:var(--green)}
+.from-story .contact :where(.contact-intro,.cta-copy){color:#fcfdfb;--ink:#fcfdfb;--ink-soft:#d9eee2;--blue:#fcfdfb;--blue-deep:#fcfdfb;--red:#ffd9cf;--line:#5fa784}
+.from-story .contact-sheet{position:relative;border-top:3px solid var(--green)}
+.from-story .contact-guest{display:block;position:absolute;right:clamp(16px,3vw,40px);bottom:calc(100% - 2px);width:clamp(64px,7vw,96px);pointer-events:none}
+.contact-guest svg{display:block;width:100%;height:auto;overflow:visible}
+.contact-guest path{stroke-linecap:round;stroke-linejoin:round}
+.contact-guest .b1{display:none}
+.js-motion .from-story .contact-guest,.from-story.js-motion .contact-guest{animation:guest-up .7s var(--ease) .75s both}
+@keyframes guest-up{from{opacity:0;translate:0 18px}}
+@media print{.film,.story-go,.contact-guest,.go-wipe{display:none!important}}
 
 @media(max-width:1100px){.market-pile{grid-column:7/-1}}
 @media(max-width:900px){

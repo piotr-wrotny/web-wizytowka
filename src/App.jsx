@@ -446,7 +446,7 @@ function Story() {
   const { story, flow, compendium } = site;
   const deck = useRef(null);
   useScenes(deck);
-  const scene = (id, theme, index, beat, visual, action) => <section className={`slide slide-stage beat beat-${id}`} id={`historia-${id}`} data-theme={theme} data-index={index} aria-labelledby={`historia-${id}-title`}>
+  const scene = (id, theme, index, beat, visual, action, after) => <section className={`slide slide-stage beat beat-${id}`} id={`historia-${id}`} data-theme={theme} data-index={index} aria-labelledby={`historia-${id}-title`}>
     <div className="slide-pin">
       <div className="wrap slide-grid">
         <div className="slide-copy">
@@ -459,8 +459,35 @@ function Story() {
         </div>
         <div className="slide-visual">{visual}</div>
       </div>
+      {after}
     </div>
   </section>;
+  // The green button under the happy ending exists only while the film plays. Taking it carries the ending over to the
+  // contact card: the hero stands on it with his compendium. Decoration only; the card itself is the same for everyone.
+  // The way there is green too: the colour floods the screen from the button, the page moves to the contact panel under it,
+  // and the green clears to show the panel.
+  const fromStory = event => {
+    const target = document.getElementById('kontakt');
+    if (!target) return;
+    event.preventDefault();
+    const box = event.currentTarget.getBoundingClientRect();
+    const wipe = document.createElement('div');
+    wipe.className = 'go-wipe';
+    wipe.style.setProperty('--x', `${Math.round(box.left + box.width / 2)}px`);
+    wipe.style.setProperty('--y', `${Math.round(box.top + box.height / 2)}px`);
+    document.body.appendChild(wipe);
+    import('./film.js').then(film => film.drawGuest(document.querySelector('.contact-guest'))).catch(() => {});
+    setTimeout(() => {
+      document.documentElement.classList.add('from-story');
+      // Land with the hero on the card fully in view, not under the header.
+      const guest = document.querySelector('.contact-guest'), header = document.querySelector('.site-header');
+      const top = Math.min(target.getBoundingClientRect().top, (guest?.getBoundingClientRect().top ?? Infinity) - 24);
+      window.scrollTo({ top: window.scrollY + top - (header?.offsetHeight ?? 0), behavior: 'instant' });
+      history.replaceState(null, '', '#kontakt');
+      wipe.classList.add('out');
+      setTimeout(() => wipe.remove(), 800);
+    }, 560);
+  };
   return <div className="deck story" ref={deck}>
     {scene('rynek', 'desk', 0, story.chaos, <>
       <div className="market-desk">{story.papers.map((paper, i) => <Paper key={paper.kind} paper={paper} index={i} query />)}</div>
@@ -489,7 +516,8 @@ function Story() {
       <div className="sheet-bar"><p>{story.ending.sheet.title}</p><p>{story.ending.sheet.label}</p></div>
       <p className="sheet-part-title">{story.ending.sheet.part}</p>
       <dl className="fs-card rec">{compendium.recommendation.map(row => <div key={row.label}><dt><Mark kind="tick" />{row.label}</dt><dd>{row.text}</dd></div>)}</dl>
-    </div>, <p className="slide-action"><TextLink href={compendiumPath} arrow>{story.ending.action}</TextLink></p>)}
+    </div>, <p className="slide-action"><TextLink href={compendiumPath} arrow>{story.ending.action}</TextLink></p>,
+      <p className="story-go"><a className="btn btn-go" href="#kontakt" onClick={fromStory}><span>{flow.cta.button}</span><ArrowRight aria-hidden="true" /></a></p>)}
   </div>;
 }
 
@@ -571,7 +599,7 @@ function Home() {
       try {
         const { startFilm } = await import('./film.js');
         const sections = [document.querySelector('.story-hero'), ...document.querySelectorAll('.story .slide')];
-        const dispose = await startFilm({ root: film.current, sections, papers: story.papers, paperLabel: story.paperLabel, say: story.turn.say, card: { title: flow.stages[1].sheet.title, label: story.turn.sheetLabel, questions: flow.stages[1].sheet.items }, karta: flow.stages[2].sheet, slide: flow.stages[3].sheet, ending: { ...story.ending.sheet, rows: site.compendium.recommendation }, team: story.ending.team });
+        const dispose = await startFilm({ root: film.current, sections, papers: story.papers, paperLabel: story.paperLabel, say: story.turn.say, card: { title: flow.stages[1].sheet.title, label: story.turn.sheetLabel, questions: flow.stages[1].sheet.items }, karta: flow.stages[2].sheet, slide: flow.stages[3].sheet, ending: { ...story.ending.sheet, rows: site.compendium.recommendation, book: story.ending.book }, team: story.ending.team, talk: story.steps.talk });
         if (cancelled || !wide.matches) dispose();
         else { stop = dispose; html.classList.add('film-on'); }
       } catch { /* the flat page stays */ }
@@ -699,6 +727,7 @@ function Contact() {
         <Pending>{contact.pending}</Pending>
       </div>
       <div className="sheet contact-sheet card">
+        <div className="contact-guest" aria-hidden="true" />
         <div className="sheet-bar"><p>{contact.sheetTitle}{topic ? `: ${contact.topics[topic]}` : ''}</p><p>Formularz demonstracyjny</p></div>
         <form noValidate onSubmit={submit} aria-label="Karta pierwszej rozmowy">
           <fieldset disabled={!ready}>

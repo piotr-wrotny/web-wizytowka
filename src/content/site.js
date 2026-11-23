@@ -79,6 +79,13 @@ export const site = {
         { title: 'Kompendium', text: 'Zostaje dokument z rekomendacją, od czego zacząć.' },
       ],
       action: 'Zobacz, jak przebiega konsultacja',
+      // DRAFT 2026-11-23: what is said in the film during the consultation (founder decision 2026-11-23: everyone speaks,
+      // and the work is done on the team's own use cases). Figures of the story, no client, no product named.
+      talk: {
+        ask: 'Jak dziś to robicie?',
+        answers: ['Oferty piszemy ręcznie.', 'Mamy CRM, a notatki w mailach.', 'A co z danymi klientów?'],
+        close: 'Pokażę to na danych demonstracyjnych.',
+      },
     },
     ending: {
       title: 'Na końcu wiesz, od czego zacząć.',
@@ -89,6 +96,8 @@ export const site = {
       // DRAFT 2026-11-23: what the people of the hero's team say in the last picture of the film (founder decision 2026-11-23:
       // he ends up not alone with the problem, among a team that can finally act). Figures of the story, not client quotes.
       team: ['Wreszcie możemy działać.', 'Nareszcie wiem, o co chodzi.'],
+      // DRAFT 2026-11-23: the cover of the book the plan closes into, in the founder's words ("kompendium szyte na miarę").
+      book: ['Kompendium', 'szyte na miarę'],
     },
     later: {
       title: 'Jeszcze nie teraz?',
