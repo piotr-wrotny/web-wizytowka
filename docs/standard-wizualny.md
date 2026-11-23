@@ -1,6 +1,6 @@
 # Standard wizualny strony
 
-Stan na 2026-11-22 (po przebudowie strony głównej w ścieżkę czytaną ekranami). Dokument opisuje kierunek z gałęzi `redesign/reimagined`, zaakceptowany przez założyciela 2026-11-10, w postaci wdrożonej w `src/styles.css` i `src/App.jsx`. Gdy kod i dokument się rozjadą, rozstrzyga decyzja założyciela; dokument trzeba wtedy poprawić razem z kodem.
+Stan na 2026-11-23 (strona główna opowiada historię odwiedzającego; ścieżka klienta jest na stronie usługi `/konsultacja/`). Dokument opisuje kierunek z gałęzi `redesign/reimagined`, zaakceptowany przez założyciela 2026-11-10, w postaci wdrożonej w `src/styles.css` i `src/App.jsx`. Gdy kod i dokument się rozjadą, rozstrzyga decyzja założyciela; dokument trzeba wtedy poprawić razem z kodem.
 
 Zasady treści (co wolno napisać, co jest DRAFT, czego nie wymyślać) są w `AGENTS.md`. Ten dokument dotyczy wyłącznie wyglądu i zachowania.
 
@@ -45,7 +45,7 @@ Tokeny są na początku `src/styles.css` (`:root`). W kodzie używamy wyłączni
 | `--blue-deep` | `#1a31a3` | hover przycisku |
 | `--on-blue` | `#fcfdfb` | tekst na niebieskim |
 | `--on-blue-soft` | `#cdd6ff` | tekst drugorzędny na niebieskim |
-| `--red` | `#c42b17` | ołówek poprawiający: skreślenia, błędy, „Stop”, „Do uzupełnienia” |
+| `--red` | `#c02a16` (4,65:1 także na tle biurka; na tle tuszu `#ff8a75`) | ołówek poprawiający: skreślenia, błędy, „Stop”, „Do uzupełnienia” |
 | `--red-on-ink` | `#ff8a75` | czerwony na ciemnym tle (słowo „Nie” w zasadach) |
 
 ### 2.2 Znaczenie koloru
@@ -69,7 +69,7 @@ Strona „Czego nie robię” i stopka mają tło `--ink` i tekst `--paper`; lin
 
 **Kartka jest zawsze papierem i tuszem**, niezależnie od otaczającego motywu (`.sheet`, `.proof` przywracają tokeny jasne). Dzięki temu teczka w niebieskim hero i karty na ciemnym slajdzie wyglądają jak ten sam papier.
 
-Na stronie głównej są dokładnie **dwa niebieskie pola**: hero i ekran zamykający ścieżkę (`.slide-end`). Etapy ścieżki używają tylko motywów `paper`, `desk` i `ink`. Trzeciego niebieskiego pola nie dodajemy.
+Każda z dwóch stron ze scenami ma dokładnie **dwa niebieskie pola**. Strona główna: hero i scena zwrotu („Zacznij od swojej pracy, nie od rynku”), czyli miejsce, w którym pojawia się oferta. Strona usługi: hero i ekran zamykający ścieżkę (`.slide-end`). Pozostałe sceny używają tylko motywów `paper`, `desk` i `ink`. Trzeciego niebieskiego pola nie dodajemy. Czerwony ołówek nie pisze na niebieskim tle.
 
 ### 2.4 Wyjątki od tokenów
 
@@ -130,7 +130,7 @@ Największy stopień na stronie ma zawsze jej pierwszy nagłówek; tytuły etap�
 | Szerokość | Zmiana |
 |---|---|
 | ≤ 1100 px | węższe kolumny boczne, artykuł 38rem + margines |
-| ≤ 900 px | siatki 12-kolumnowe przechodzą w jedną kolumnę; etapy ścieżki nie są przypinane; teczka w hero znika (powtarza kartki etapów tuż pod nią); mapa etapów w dwóch kolumnach; sytuacje jako rozwijane pytania |
+| ≤ 900 px | siatki 12-kolumnowe przechodzą w jedną kolumnę; etapy ścieżki nie są przypinane; teczka w hero strony usługi i sterta papierów w hero strony głównej znikają (powtarzają to, co jest tuż pod nimi); sceny nie mają głębi 3D; mapa etapów w dwóch kolumnach; sytuacje jako rozwijane pytania |
 | ≤ 767 px | menu rozwijane, przyciski na pełną szerokość, tabele w jednej kolumnie |
 | ≤ 359 px | mniejszy margines i znak słowny |
 
@@ -191,7 +191,7 @@ Domyślny sposób pokazania zbioru rzeczy to **wiersze rozdzielone liniami** w s
 
 ### 5.7 Wezwania do działania
 
-- **Przycisk** stoi tylko tam, gdzie zaczyna się rozmowa albo pobranie: hero, ekran zamykający ścieżkę, panel sytuacji, strona „Czego nie robię”, przewodnik, kontakt.
+- **Przycisk** stoi tylko tam, gdzie zaczyna się rozmowa albo pobranie: hero obu stron, ekran zamykający ścieżkę, panel sytuacji, strona „Czego nie robię”, przewodnik, kontakt.
 - **Działanie etapu** to link tekstowy ze strzałką pod uwagą o wartości (`.slide-action`), najwyżej jeden na etap. Etapy bez naturalnego działania (2, 3) go nie mają.
 - **`CallToAction`** (linia tuszu u góry, tytuł szeryfowy po lewej, przycisk i ewentualnie link po prawej) zamyka stronę przewodnika.
 - Działanie nosi tę samą nazwę w całej drodze: „Opisz swoją sytuację” na przycisku, w linku etapu 1 i w tytule sekcji kontaktu; „Pobierz przewodnik” w etapie 0, na przycisku i w tytule ekranu z listem.
@@ -204,7 +204,7 @@ Natywne `<details>`, min. 56 px, strzałka `CaretDown` obraca się o 180°, wyso
 
 Formularz nie jest zbiorem pól obok treści. **Jest dokumentem, który odwiedzający wypełnia albo dostaje**, leżącym na kartce: w kontakcie to karta pierwszej rozmowy, na stronie przewodnika to list (p. 5.12). Formularz zawsze mówi wprost, że niczego nie wysyła.
 
-- **Pole to linia do pisania**: bez ramki, sama dolna krawędź `--field-line` (kontrast ≥ 3:1), hover: tusz, fokus: niebieska i pogrubiona do 2 px, błąd: czerwona. Min. 44 px. Pól w pełnej ramce nie używamy.
+- **Pole to linia do pisania**: bez ramki, sama dolna krawędź `--field-line` (kontrast ≥ 3:1; podpowiedź w polu jest tekstem, więc ma kolor `--ink-soft`), hover: tusz, fokus: niebieska i pogrubiona do 2 px, błąd: czerwona. Min. 44 px. Pól w pełnej ramce nie używamy.
 - **Adres** stoi w wierszu nagłówka w mono („Do:”, „Odpowiedź na:”), bo to surowa linia listu.
 - **Karta pierwszej rozmowy (`Contact`)**: trzy pytania z kartki etapu 1, każde jako etykieta w kursywie szeryfowej nad linią do pisania (`.card-q`). Otwarte pytanie ma znak `query` w `--ink-soft`; gdy pojawia się odpowiedź, znak zmienia się w niebieski ✓, który się rysuje. Wymagane jest pierwsze pytanie i adres; pozostałe mają dopisek „(opcjonalne)”. Pole rośnie z tekstem (`field-sizing: content`, w starszych przeglądarkach uchwyt zmiany rozmiaru).
 - **Błędy**: komunikat pod polem, przy nieudanym sprawdzeniu zbiorcze podsumowanie u góry z fokusem i linkami do pól; adres jest sprawdzany przy opuszczeniu pola. Wpisane wartości zostają.
@@ -237,7 +237,9 @@ Zasada ogólna dla interakcji: **efekt ma być odpowiedzią na działanie czytel
 
 ## 6. Strony i ich prezencja
 
-- **Strona główna — ścieżka klienta, ekran po ekranie.** Kolejność: hero → etapy 0–5 → ekran zamykający ścieżkę (niebieski) → sytuacje → formaty jako wiersze → o mnie → kontakt (tło biurka) → stopka (tusz, duży znak słowny).
+- **Strona główna — historia odwiedzającego, ekran po ekranie.** Kolejność: hero (niebieski; sytuacja odwiedzającego i sterta papierów z rynku) → rynek (biurko; cztery papiery i pytania czerwonym ołówkiem) → dwa odruchy (tusz; skreślony szkic planu) → zwrot (niebieski; karta pierwszej rozmowy) → cztery kroki (papier) → zakończenie (biurko; rekomendacja z przykładowego kompendium) → sytuacje → o mnie → kontakt (tło biurka) z listą lektur → stopka. Ekrany problemu niosą uwagę czerwonym ołówkiem ze znakiem „?”, ekrany rozwiązania niebieskie odhaczenie.
+- **Papier z rynku (`.paper`).** Kartka z paskiem (rodzaj papieru, etykieta „Przykład”) i jednym zdaniem obietnicy. Obietnica jest złożona głośno: Archivo 700, szerokość 110%, interlinia 1,3. To jedyne miejsce, w którym bezszeryf krzyczy; głos doradcy pozostaje szeryfową kursywą ołówka. Papiery są ilustracją i zawsze mają etykietę oraz uwagę „Papiery przykładowe”.
+- **Strona usługi `/konsultacja/` — ścieżka klienta, ekran po ekranie.** Kolejność: hero (niebieski; nagłówek oferty, teczka, mapa etapów) → etapy 0–5 → ekran zamykający ścieżkę (niebieski) → formaty jako wiersze → stopka.
   - **Hero** (niebieskie pole, dokładnie jeden ekran razem z nagłówkiem): nagłówek w dwóch liniach, druga kursywą; jedno zdanie; jeden przycisk; obok teczka czterech kart z kompendium na wierzchu; u dołu mapa sześciu etapów. Nic więcej.
   - **Etap** (`.slide-stage`): zawsze ten sam układ, tekst w kolumnach 1–6, kartka w 8–12. Cyfra etapu (do 9 rem), tytuł w `--t-title` z podkreśleniem ołówkiem, jedno–dwa zdania, wartość ze znakiem ✓, najwyżej jeden link. Etapy nie są odwracane na przemian.
   - **Ekran zamykający** (`.slide-end`): tytuł, zdanie, przycisk, „Konsultacja w skrócie” w czterech kolumnach, jedna uwaga.
@@ -272,7 +274,9 @@ Jeden język: **ołówek stawia znaki, kartki są kładzione na biurku, tusz wyp
 |---|---|---|
 | `rise` | linia tekstu wyjeżdża spod maski | nagłówek hero, wstęp prezentacji |
 | `settle` | wyjście z przezroczystości z 16 px w górę | tekst pod nagłówkiem, mapa etapów w hero |
-| `lay` | kartka opada z −44 px i obrotu −2.5° | teczka w hero |
+| `lay` | kartka opada z −44 px i obrotu −2.5° | teczka w hero strony usługi |
+| `drop`, `drop-deep` | papier spada na biurko; na szerokim ekranie z głębi (620 px przed kartką, obrót w osi X) | sterta w hero strony głównej |
+| `pile-away` | sterta odchyla się i oddala razem z przewijaniem pierwszego ekranu (tylko z `animation-timeline`) | hero strony głównej |
 | `draw` | kreska znaku rysuje się (`stroke-dashoffset`) | znaki ✓ i ⊢ |
 | `strike` | czerwone skreślenie przeciąga się w poprzek | szkic w `Proof` |
 | `rule` | linia tuszu rysuje się od lewej | mapa etapów w hero |
@@ -283,7 +287,10 @@ Jeden język: **ołówek stawia znaki, kartki są kładzione na biurku, tusz wyp
 ### 7.4 Sceny sterowane przewijaniem
 
 - **Słowa rozświetlane przewijaniem** (`Words`): w etapach ścieżki słowa zdania przechodzą z krycia 0.22 do 1.
-- **Etapy ścieżki** (strona główna, ≥ 901 px i ≥ 560 px wysokości): każdy etap przypięty na 170 vh. Postęp `--sp` (0→1) rozkłada się na zmienne pochodne: `--a` kartka kładziona na biurko, `--t` cyfra wypełnia się tuszem i tytuł wyjeżdża, `--u` podkreślenie ołówkiem, `--w` zdanie czytane słowo po słowie, `--r` kartka wypełniana wiersz po wierszu, `--v` wartość odhaczona i link etapu. Scena cofa się przy przewijaniu w górę. Na ostatnim etapie spod kartki wysuwają się zakładki poprzednich czterech. Motyw etapu przechodzi na całą stronę razem z nagłówkiem i wraca do papieru po wyjściu ze ścieżki. Po prawej kropki etapów, widoczne tylko w obrębie ścieżki.
+- **Etapy ścieżki** (strona usługi, ≥ 901 px i ≥ 560 px wysokości): każdy etap przypięty na 170 vh. Postęp `--sp` (0→1) rozkłada się na zmienne pochodne: `--a` kartka kładziona na biurko, `--t` cyfra wypełnia się tuszem i tytuł wyjeżdża, `--u` podkreślenie ołówkiem, `--w` zdanie czytane słowo po słowie, `--r` kartka wypełniana wiersz po wierszu, `--v` wartość odhaczona i link etapu. Scena cofa się przy przewijaniu w górę. Na ostatnim etapie spod kartki wysuwają się zakładki poprzednich czterech. Motyw etapu przechodzi na całą stronę razem z nagłówkiem i wraca do papieru po wyjściu ze ścieżki. Po prawej kropki etapów, widoczne tylko w obrębie ścieżki.
+- **Sceny historii** (strona główna, ten sam mechanizm `useScenes`; ≥ 901 px i ≥ 560 px wysokości: każda scena przypięta na 200 vh). Tytuł, podkreślenie, zdanie i uwaga działają jak w etapach ścieżki. Własny ruch scen: pytania czerwonym ołówkiem dopisują się do papierów po kolei (`--q`), skreślenia planu rysują się od lewej, cztery kroki rozkładają się od swoich linii, odhaczenia rekomendacji rysują się wiersz po wierszu.
+- **Głębia (CSS 3D, tylko szeroki ekran).** Biurko leży w perspektywie (1600–1700 px). Zmienna `--cam` (0→1) to kamera: przy 0 patrzy wzdłuż biurka (kartka odchylona o 60°, 380 px w głąb), przy 1 patrzy prosto na kartkę. Połowa ruchu kamery dzieje się po przypięciu sceny; ołówek zaczyna pracę, gdy kartka jest już czytelna. Papiery z rynku unoszą się na różnych wysokościach i osiadają, karta pierwszej rozmowy leży grzbietem do góry i jest odwracana (`--flip`), pod kompendium leżą głębiej dwie wcześniejsze kartki. Kartki to prawdziwy tekst na płaszczyznach CSS: bez canvasu i WebGL, bez nowych zależności. Element z `preserve-3d` nie dostaje `opacity`; przenikanie robią liście.
+- **Link do przypiętej sceny** (mapa etapów, kropki, adres z kotwicą) przewija do końca sceny, czyli do miejsca, w którym kartka jest już wypełniona.
 - **Nagłówek**: przy przewijaniu dostaje dolną linię (`animation-timeline: scroll()`, jeśli przeglądarka wspiera).
 - Przejścia między stronami: `@view-transition` (tylko bez preferencji ograniczenia ruchu).
 
@@ -299,7 +306,7 @@ Podkreślenie dorysowuje się od lewej, strzałka przesuwa się o 4–8 px, tytu
 - Cel kliknięcia min. 44 px.
 - Focus: niebieski kontur 2 px z odstępem 3 px (biały na niebieskim i ciemnym tle).
 - Link „Przejdź do treści”, `aria-current` w nawigacji i na kropkach etapów, zakładki sytuacji obsługiwane strzałkami, Home i End. Tytuł etapu ma dla czytników dopisek „Etap n:”.
-- Elementy dekoracyjne (teczka w hero, stos kartek, znaki) mają `aria-hidden`; ta sama treść jest dostępna w tekście.
+- Elementy dekoracyjne (teczka i sterta papierów w hero, stos kartek, znaki) mają `aria-hidden`; ta sama treść jest dostępna w tekście.
 - Kontrast tekstu co najmniej WCAG AA; obramowanie pól co najmniej 3:1.
 
 ---
