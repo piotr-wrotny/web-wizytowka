@@ -553,7 +553,37 @@ function About() {
    conversation. The presentation of the service itself lives on the service page. */
 function Home() {
   const { story, flow } = site;
+  const film = useRef(null);
+  // The film: on a wide screen with motion and WebGL, a small 3D scene plays behind the text and replaces the flat sheets of
+  // the first screens. It is loaded on demand; if anything is missing the page simply stays as it is.
+  useEffect(() => {
+    const html = document.documentElement;
+    if (!html.classList.contains('js-motion')) return;
+    const wide = window.matchMedia('(min-width: 901px) and (min-height: 560px)');
+    let stop = null, starting = false, cancelled = false;
+    const off = () => { stop?.(); stop = null; html.classList.remove('film-on'); };
+    const on = async () => {
+      if (stop || starting) return;
+      starting = true;
+      try {
+        const probe = document.createElement('canvas');
+        if (probe.getContext('webgl2') || probe.getContext('webgl')) {
+          const { startFilm } = await import('./film.js');
+          const sections = [document.querySelector('.story-hero'), ...document.querySelectorAll('.story .slide')];
+          const dispose = await startFilm({ canvas: film.current, sections, papers: story.papers, paperLabel: story.paperLabel, say: story.turn.say });
+          if (cancelled || !wide.matches) dispose();
+          else { stop = dispose; html.classList.add('film-on'); }
+        }
+      } catch { /* the flat page stays */ }
+      starting = false;
+    };
+    const sync = () => { if (wide.matches) on(); else off(); };
+    sync();
+    wide.addEventListener('change', sync);
+    return () => { cancelled = true; wide.removeEventListener('change', sync); off(); };
+  }, []);
   return <main id="tresc" tabIndex="-1">
+    <canvas className="film" ref={film} aria-hidden="true" />
     <section className="hero theme-blue story-hero" aria-labelledby="hero-title">
       <div className="wrap">
         <div className="hero-row">

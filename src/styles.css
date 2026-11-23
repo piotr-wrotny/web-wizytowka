@@ -941,6 +941,18 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
   .js-motion .beat-koniec .slide-visual::after{translate:0 0 calc(-3px - (1 - var(--cam))*75px)}
 }
 
+/* The film (src/film.js): a WebGL scene fixed behind the story's text. It replaces the flat visuals of the first screens;
+   their content stays in the page for assistive technology. The sheets of the turn and of the ending remain real sheets. */
+.film{display:none}
+/* The film never runs under the text column: it fades out towards the left, so papers emerge from behind the words. */
+.film-on .film{display:block;position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent 30%,#000 44%);mask-image:linear-gradient(90deg,transparent 30%,#000 44%)}
+.film-on .beat h2{max-width:11ch}
+.film-on .story-hero>.wrap,.film-on .story .beat-steps>.wrap{position:relative;z-index:2}
+.film-on .story .slide-pin{z-index:2}
+.film-on .market-pile{visibility:hidden}
+.film-on .beat-rynek .slide-visual,.film-on .beat-stawka .slide-visual{clip-path:inset(50%)}
+@media print{.film{display:none!important}}
+
 @media(max-width:1100px){.market-pile{grid-column:7/-1}}
 @media(max-width:900px){
   .market-pile{display:none}

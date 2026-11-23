@@ -47,9 +47,13 @@ export const site = {
       query: 'Żaden z tych papierów nie pyta, co przeszkadza w Twojej firmie.',
     },
     stake: {
-      title: 'Kupić coś na szybko albo czekać.',
-      text: 'Oba wyjścia kosztują. Narzędzie kupione na szybko nie ma zadania, które miałoby wykonać. A kiedy firma czeka, zespół i tak korzysta z AI na własną rękę, bez wspólnych zasad.',
-      query: 'Oba zaczynają od narzędzia, nie od Twojej pracy.',
+      // DRAFT 2026-11-23 (second cut): the screen is the pressure itself, as the founder told it: AI shouting from everywhere,
+      // the fridge included. The two reflexes moved into the pencil's note; the struck-out plan stays as the flat illustration.
+      // Previous: 'Kupić coś na szybko albo czekać.' / 'Oba wyjścia kosztują. Narzędzie kupione na szybko nie ma zadania, które
+      // miałoby wykonać. A kiedy firma czeka, zespół i tak korzysta z AI na własną rękę, bez wspólnych zasad.'
+      title: 'AI krzyczy z każdej strony.',
+      text: 'Z ofert, z newsletterów, z każdej aplikacji. Masz wrażenie, że zaraz wyskoczy z lodówki.',
+      query: 'Kupić coś na szybko czy czekać? Oba odruchy zaczynają od narzędzia, nie od Twojej pracy.',
       plan: {
         title: 'Plan na AI, szkic',
         rows: [
@@ -63,6 +67,8 @@ export const site = {
       text: 'Konsultacja szyta na miarę zaczyna się od trzech pytań o Twoją firmę. Narzędzia przychodzą potem, jeśli w ogóle są potrzebne.',
       value: 'Doradzam, nie wdrażam, więc nie doradzam wdrożeń na zapas.',
       sheetLabel: 'Trzy pytania',
+      // What the little man says in the film when he has had enough.
+      say: 'Muszę to uporządkować.',
     },
     steps: {
       title: 'Cztery kroki od chaosu do decyzji.',
