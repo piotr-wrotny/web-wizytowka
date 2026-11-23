@@ -336,7 +336,10 @@ function useScenes(deck) {
         const pinned = r.height > vh * 1.3;
         // Not pinned: the scene is complete while its top is still a quarter of a screen below the top edge, so nothing is
         // still being drawn when the screen starts to leave.
-        const travel = pinned ? vh * 0.85 + (r.height - vh) : vh * 0.6;
+        // A pinned stage of the path plays its scene over the first 80% of its scroll and is then held, complete, for the rest.
+        // Story scenes carry their own hold in their timeline (see the stylesheet), because the film is timed against them.
+        const hold = el.classList.contains('beat') ? 1 : 0.8;
+        const travel = pinned ? (vh * 0.85 + (r.height - vh)) * hold : vh * 0.6;
         el.style.setProperty('--sp', Math.min(1, Math.max(0, (vh * 0.85 - r.top) / travel)).toFixed(4));
       }
       const theme = current?.dataset.theme;

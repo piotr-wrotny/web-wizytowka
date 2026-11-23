@@ -117,7 +117,7 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
 .hero-line-inner{display:block}
 .hero-line:nth-child(2){font-style:italic;font-weight:400;letter-spacing:-.028em}
 .hero-row{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gap);align-items:center}
-.hero-copy{grid-column:1/span 7;display:flex;flex-direction:column;align-items:flex-start}
+.hero-copy{grid-column:1/span 7;grid-row:1;display:flex;flex-direction:column;align-items:flex-start}
 .hero-lead{font-size:var(--t-lead);line-height:1.5;max-width:34ch}
 .path-index{margin-top:clamp(20px,4.5vh,52px)}
 .path-index ol{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:var(--gap)}
@@ -128,7 +128,7 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
 
 .hero{background:var(--paper);color:var(--ink)}
 .theme-blue ::selection{background:#fcfdfb;color:#2340c8}
-.hero-pile{--sheet-h:min(22rem,calc(100svh - var(--header-h) - 3*48px - 2*clamp(24px,5vh,56px) - clamp(96px,17vh,150px)));grid-column:8/-1;position:relative;align-self:center;height:calc(3*48px + var(--sheet-h))}
+.hero-pile{--sheet-h:min(22rem,calc(100svh - var(--header-h) - 3*48px - 2*clamp(24px,5vh,56px) - clamp(96px,17vh,150px)));grid-column:8/-1;grid-row:1;position:relative;align-self:center;height:calc(3*48px + var(--sheet-h))}
 .hero-pile .flow-sheet{position:absolute;left:0;right:0;top:calc(var(--i)*48px);min-height:var(--sheet-h);box-shadow:0 1px 0 rgba(8,10,30,.08),0 28px 56px -28px rgba(6,10,50,.6)}
 .proof{align-self:start;background:var(--sheet);border:1px solid var(--line);border-radius:3px;box-shadow:var(--shadow-sheet)}
 .proof-bar{display:flex;align-items:center;justify-content:space-between;gap:10px 20px;flex-wrap:wrap;padding:10px 12px 10px clamp(18px,2vw,26px);border-bottom:1px solid var(--line)}
@@ -491,6 +491,8 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
    Responsive
    ------------------------------------------------------------------ */
 @media(max-width:1100px){
+  .hero-copy{grid-column:1/span 6}
+  .hero h1{font-size:clamp(2.6rem,min(5.7vw,11.5vh),6rem)}
   .hero-pile{grid-column:7/-1}
   .offer-main{grid-column:1/span 6}
   .offer-index{grid-column:8/-1}
@@ -784,12 +786,14 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 
 /* Wide screens: each stage is pinned while its scene plays, then scrolls away as the next one arrives. */
 @media(min-width:901px) and (min-height:560px){
-  /* 170vh per stage: the scene is mostly told while the screen arrives, then held for a little over half a screen. */
-  .js-motion .slide-stage{display:block;min-height:0;height:170vh;padding:0}
+  /* 220vh per stage: the scene is told while the screen arrives and just after it is pinned (the first 80% of its scroll,
+     see useScenes), then the finished screen is held for about 40% of a screen before it leaves. */
+  .js-motion .slide-stage{display:block;min-height:0;height:220vh;padding:0}
   .js-motion .slide-pin{position:sticky;top:0;height:100vh;padding-top:var(--header-h);display:grid;align-items:center;overflow:clip}
   /* Last stage: the earlier sheets slide out from under the final one, so the dossier is complete. */
-  .js-motion .slide-stack{display:block;position:absolute;left:0;right:0;bottom:100%}
+  .js-motion .slide-stack{display:block;position:absolute;left:0;right:0;top:0}
   .js-motion .slide-visual{position:relative}
+  .js-motion .slide-visual:has(.slide-stack){padding-top:calc(4*44px)}
   .js-motion .slide-stack-tab{--r:clamp(0,calc((var(--sp,1) - .62 - (3 - var(--k,0))*.05)*11),1);display:flex;justify-content:space-between;gap:16px;height:44px;align-items:center;margin-inline:calc((3 - var(--k,0))*10px);padding-inline:clamp(18px,2.4vw,32px);border:1px solid #c6ccc7;border-bottom:0;border-radius:3px 3px 0 0;background:#fcfdfb;color:#14161a;font-size:var(--t-meta);font-weight:500;font-stretch:92%;opacity:var(--r);transform:translateY(calc((1 - var(--r))*44px))}
   .js-motion .slide-stack-tab>p:last-child{font-weight:400;color:#4d5359;font-variant-numeric:tabular-nums}
 }
@@ -823,7 +827,7 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 .paper .sheet-bar{padding-block:10px}
 .paper-claim{padding:14px clamp(16px,2vw,24px) 18px;font-size:clamp(1.0625rem,1.45vw,1.3125rem);font-weight:700;font-stretch:110%;line-height:1.3;letter-spacing:-.012em;text-wrap:balance}
 .paper-query{max-width:none;margin:0 clamp(16px,2vw,24px);padding-block:11px 14px;border-top:1px solid var(--line-soft);font-size:1.1875rem}
-.market-pile{grid-column:8/-1;position:relative;align-self:center;height:min(29rem,calc(100svh - var(--header-h) - 2*clamp(24px,5vh,56px) - 24px))}
+.market-pile{grid-column:8/-1;grid-row:1;position:relative;align-self:center;height:min(29rem,calc(100svh - var(--header-h) - 2*clamp(24px,5vh,56px) - 24px))}
 .market-pile .paper{position:absolute;width:76%;box-shadow:0 1px 0 rgba(8,10,30,.08),0 28px 56px -28px rgba(6,10,50,.6)}
 .market-pile .paper:nth-child(1){left:0;top:0;rotate:-5deg}
 .market-pile .paper:nth-child(2){left:24%;top:20%;rotate:4deg}
@@ -913,10 +917,11 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
   /* A story scene is held longer than a stage of the path (240vh): half of the camera move happens while it is pinned, every animation is
      finished by about 80% of the scene, and the finished screen then stays for almost half a screen of scrolling before it leaves. */
   .js-motion .beat.slide-stage{height:240vh;--t:clamp(0,calc((var(--sp,1) - .12)*5),1);--u:clamp(0,calc((var(--sp,1) - .26)*5),1);--w:clamp(0,calc((var(--sp,1) - .3)*3.4),1);--v:clamp(0,calc((var(--sp,1) - .66)*7),1)}
-  .js-motion .beat{--cam:clamp(0,calc((var(--sp,1) - .12)*2.2),1)}
-  .js-motion .beat .slide-grid{perspective:1700px;perspective-origin:76% 42%}
-  .js-motion .beat .slide-visual{opacity:1;transform-style:preserve-3d;transform-origin:50% 70%;transform:translate3d(0,calc((1 - var(--cam))*14vh),calc((1 - var(--cam))*-380px)) rotateX(calc((1 - var(--cam))*60deg)) rotateZ(calc((1 - var(--cam))*-10deg))}
-  .js-motion .beat .slide-visual>.sheet,.js-motion .beat .market-desk .paper{opacity:clamp(0,calc(var(--a)*3),1)}
+  /* The stages of the path on the service page are seen the same way, so both pages move alike. */
+  .js-motion .slide-stage{--cam:clamp(0,calc((var(--sp,1) - .12)*2.2),1)}
+  .js-motion .slide-stage .slide-grid{perspective:1700px;perspective-origin:76% 42%}
+  .js-motion .slide-stage .slide-visual{opacity:1;transform-style:preserve-3d;transform-origin:50% 70%;transform:translate3d(0,calc((1 - var(--cam))*14vh),calc((1 - var(--cam))*-380px)) rotateX(calc((1 - var(--cam))*60deg)) rotateZ(calc((1 - var(--cam))*-10deg))}
+  .js-motion .slide-stage .slide-visual>.sheet,.js-motion .beat .market-desk .paper{opacity:clamp(0,calc(var(--a)*3),1)}
 
   /* The market's papers float at different heights and settle as the camera rises. */
   .js-motion .beat-rynek .market-desk{transform-style:preserve-3d}
