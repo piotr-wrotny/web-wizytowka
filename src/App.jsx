@@ -6,9 +6,11 @@ import { glossary as rawGlossary } from './content/glossary';
 import { initMotion } from './motion';
 
 const samplePath = '/materialy/przyklad-standardu/';
-const pathHref = '/#przebieg';
-// The former presentation page. Since 2026-11-22 the home page carries the path itself; the old address opens it there.
-const legacyDeckPath = '/konsultacja/';
+// The service page: the offer, the client path (stages 0 to 5) and the formats. Since 2026-11-23 the home page tells
+// the visitor's story and links here for the presentation of the service.
+const servicePath = '/konsultacja/';
+const pathHref = `${servicePath}#przebieg`;
+const contactHref = '/?temat=inne#kontakt';
 const guidePath = rawSite.guide.path;
 const compendiumPath = rawSite.compendium.path;
 
@@ -22,9 +24,7 @@ const articles = plDeep(rawArticles);
 const glossary = plDeep(rawGlossary);
 
 const navSections = {
-  '/#przebieg': ['przebieg'],
   '/#sytuacje': ['sytuacje'],
-  '/#zakres': ['zakres'],
   '/#o-mnie': ['o-mnie'],
   '/#kontakt': ['kontakt'],
 };
@@ -37,7 +37,8 @@ export function getPageMeta(path) {
   if (path === guidePath) return { title: `Przewodnik po AI i narzędziach — ${site.name}`, description: site.guide.lead };
   if (path === compendiumPath) return { title: 'Przykładowe kompendium po konsultacji — dane syntetyczne', description: 'Jak wygląda dokument, który zostaje po konsultacji: moduły ogólne i rozdziały napisane dla jednej firmy. Przykład w całości syntetyczny.' };
   if (path === '/prywatnosc/') return { title: 'Prywatność prototypu — niezależny doradca AI', description: 'Jak działają demonstracyjne formularze i co wymaga uzupełnienia przed uruchomieniem obsługi zapytań.' };
-  return { title: `${site.name} — niezależny doradca AI`, description: 'Konsultacje AI szyte na miarę: od pierwszej rozmowy do kompendium, które zostaje w firmie. Doradzam, nie wdrażam. Bezpłatny przewodnik po AI i narzędziach.' };
+  if (path === servicePath) return { title: `Konsultacje AI szyte na miarę — ${site.name}`, description: 'Jak przebiega konsultacja: rozmowa, rozpoznanie, spotkanie w firmie i kompendium z rekomendacją. Trzy formaty współpracy i bezpłatny przewodnik po AI i narzędziach.' };
+  return { title: `${site.name} — niezależny doradca AI`, description: 'Musisz coś zrobić z AI, ale nie wiesz, od czego zacząć? Konsultacje AI szyte na miarę: od pierwszej rozmowy do kompendium z rekomendacją. Doradzam, nie wdrażam.' };
 }
 
 /* ------------------------------------------------------------------
@@ -245,7 +246,7 @@ function FlowTerms({ headingLevel: H = 'h3' }) {
 }
 
 /* A call to action that is hard to miss: one sentence, one button, optionally a second link. */
-function CallToAction({ title, text, button, href = '/?temat=inne#kontakt', secondary, headingLevel: H = 'h3' }) {
+function CallToAction({ title, text, button, href = contactHref, secondary, headingLevel: H = 'h3' }) {
   return <div className="cta">
     <div className="cta-copy"><H className="cta-title">{title}</H>{text && <p>{text}</p>}</div>
     <div className="cta-actions"><Button href={href}>{button}</Button>{secondary}</div>
@@ -276,7 +277,6 @@ function Cases() {
   }
   const facts = c => <dl className="case-facts">
     <div><dt>{cases.panelFirst}</dt><dd>{c.first}</dd></div>
-    <div><dt>Format</dt><dd>{c.format}</dd></div>
   </dl>;
   const detail = c => <>
     <p className="case-question">{c.question}</p>
@@ -299,33 +299,31 @@ function Cases() {
           <div className="sheet-bar"><p>{cases.items[current].role}</p><p>{`${current + 1} z ${cases.items.length}`}</p></div>
           <div className="case-panel-body" key={current}>
             {detail(cases.items[current])}
-            <Button href="/?temat=inne#kontakt" compact>{cases.panelCta}</Button>
+            <Button href="#kontakt" compact>{cases.panelCta}</Button>
           </div>
         </div>
       </div>
       : <div className="case-list">{cases.items.map(c => <details className="disclosure case-item" key={c.role}>
         <summary><span><span className="case-role">{c.role}</span><span className="case-question">{c.question}</span></span><CaretDown aria-hidden="true" /></summary>
-        <div className="disclosure-body"><p className="case-situation">{c.situation}</p>{facts(c)}</div>
+        <div className="disclosure-body"><p className="case-situation">{c.situation}</p>{facts(c)}<p className="case-cta"><TextLink href="#kontakt" arrow>{cases.panelCta}</TextLink></p></div>
       </details>)}</div>}
     <Note className="section-note">{cases.note}</Note>
   </section>;
 }
 
-/* The client path, one stage per screen: open knowledge (0), then the five stages of the consultation, then one closing screen.
-   Every screen has the same composition (number, name, one sentence, what it gives, one sheet, at most one link), so the reader
-   only ever moves down. Each slide carries its own theme, so the page is complete without JS. With motion the theme moves to <html>
-   and cross-fades; on a wide screen every stage is pinned while its scene plays, and each slide gets --sp (0 to 1), its progress
-   through the viewport, which the stylesheet turns into the choreography. */
-function Path() {
-  const { flow } = site;
-  const stages = flow.stages;
-  const sheets = stages.length - 1;
+/* Scroll-driven scenes, shared by the story (home) and the client path (service page). Every .slide in the deck gets --sp
+   (0 to 1), its progress through the viewport, which the stylesheet turns into the choreography; the slide under the middle
+   of the screen lends its theme to the whole page. Without motion nothing here runs and every slide is simply complete. */
+const isPinnedScene = el => document.documentElement.classList.contains('js-motion') && el.classList.contains('slide-stage') && el.offsetHeight > window.innerHeight * 1.3;
+const sceneEnd = el => el.getBoundingClientRect().top + window.scrollY + Math.max(0, el.offsetHeight - window.innerHeight);
+
+function useScenes(deck) {
   const [active, setActive] = useState(-1);
-  const deck = useRef(null);
   useEffect(() => {
     const html = document.documentElement;
     if (!html.classList.contains('js-motion')) return;
-    const slides = Array.from(deck.current.querySelectorAll('.slide'));
+    const root = deck.current;
+    const slides = Array.from(root.querySelectorAll('.slide'));
     let frame = 0;
     const update = () => {
       frame = 0;
@@ -349,17 +347,44 @@ function Path() {
     const onFocus = event => {
       const slide = event.target.closest?.('.slide-stage');
       if (!slide || !event.target.matches(':focus-visible')) return;
-      const r = slide.getBoundingClientRect();
-      const end = r.top + window.scrollY + Math.max(0, r.height - window.innerHeight);
+      const end = sceneEnd(slide);
       if (Math.abs(window.scrollY - end) > 4) window.scrollTo({ top: end, behavior: 'instant' });
     };
-    const root = deck.current;
+    // A link to a pinned stage (the map in the hero, the rail) lands where its scene is complete, not at its empty beginning.
+    const onClick = event => {
+      const link = event.target.closest?.('a[href^="#"]');
+      if (!link || event.defaultPrevented || event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const target = document.getElementById(decodeURIComponent(link.getAttribute('href').slice(1)));
+      if (!target || !root.contains(target) || !isPinnedScene(target)) return;
+      event.preventDefault();
+      window.history.pushState(null, '', link.getAttribute('href'));
+      window.scrollTo({ top: sceneEnd(target), behavior: 'smooth' });
+    };
     update();
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
     root.addEventListener('focusin', onFocus);
-    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); root.removeEventListener('focusin', onFocus); cancelAnimationFrame(frame); delete html.dataset.theme; };
+    document.addEventListener('click', onClick);
+    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); root.removeEventListener('focusin', onFocus); document.removeEventListener('click', onClick); cancelAnimationFrame(frame); delete html.dataset.theme; };
   }, []);
+  return active;
+}
+
+/* The pencil underline drawn under a scene's title. */
+function Underline() {
+  return <svg className="slide-underline" viewBox="0 0 320 14" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M3 9.5C42 4 86 3.5 128 6.5s96 5.5 189-2.5" pathLength="1" /></svg>;
+}
+
+/* The client path, one stage per screen: open knowledge (0), then the five stages of the consultation, then one closing screen.
+   Every screen has the same composition (number, name, one sentence, what it gives, one sheet, at most one link), so the reader
+   only ever moves down. Each slide carries its own theme, so the page is complete without JS. With motion the theme moves to <html>
+   and cross-fades; on a wide screen every stage is pinned while its scene plays (see useScenes). */
+function Path() {
+  const { flow } = site;
+  const stages = flow.stages;
+  const sheets = stages.length - 1;
+  const deck = useRef(null);
+  const active = useScenes(deck);
   return <div className="deck" id="przebieg" ref={deck} data-on={active >= 0 ? '' : undefined}>
     {stages.map((stage, i) => <section key={stage.title} className="slide slide-stage" id={`etap-${i}`} data-theme={flow.themes[i]} data-index={i} aria-labelledby={`etap-${i}-title`}>
       <div className="slide-pin">
@@ -367,7 +392,7 @@ function Path() {
           <div className="slide-copy">
             <p className="slide-numeral" aria-hidden="true">{i}</p>
             <h2 id={`etap-${i}-title`}><span className="visually-hidden">{`Etap ${i}: `}</span><span className="slide-title-inner">{stage.title}</span></h2>
-            <svg className="slide-underline" viewBox="0 0 320 14" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M3 9.5C42 4 86 3.5 128 6.5s96 5.5 189-2.5" pathLength="1" /></svg>
+            <Underline />
             <p className="slide-text"><Words text={stage.text} manual /></p>
             <p className="note slide-value"><Mark kind="tick" /><span>{stage.value}</span></p>
             {stage.action && <p className="slide-action"><TextLink href={stage.action.href} arrow>{stage.action.label}</TextLink></p>}
@@ -383,7 +408,7 @@ function Path() {
       <div className="wrap">
         <h2 id="path-end-title"><span className="slide-title-inner">{flow.cta.title}</span></h2>
         <p className="slide-lead">{flow.cta.text}</p>
-        <div className="slide-end-actions"><Button href="/?temat=inne#kontakt">{flow.cta.button}</Button></div>
+        <div className="slide-end-actions"><Button href={contactHref}>{flow.cta.button}</Button></div>
         <FlowTerms headingLevel="h3" />
         <Note className="section-note">{flow.note}</Note>
       </div>
@@ -394,19 +419,178 @@ function Path() {
   </div>;
 }
 
-/* Home is the client path, read screen by screen: the offer in one sentence, the path (stages 0 to 5 and its closing screen),
-   then the evidence and the background: situations, formats, the person, and the card that starts the first conversation. */
+/* The headline in two lines, the second in italics (see .hero-line). */
+function HeroTitle({ lines }) {
+  return <h1 id="hero-title">{lines.map((line, i) => <span className="hero-line" key={line} style={{ '--i': i }}><span className="hero-line-inner">{line}{i < lines.length - 1 ? ' ' : ''}</span></span>)}</h1>;
+}
+
+/* A paper from the market: an offer, a newsletter, an invitation, a note. Illustrative, written for this page. In the story
+   the red pencil asks the question the paper leaves out. */
+function Paper({ paper, index, query = false }) {
+  return <div className="sheet paper" style={{ '--i': index }}>
+    <div className="sheet-bar"><p>{paper.kind}</p><p>{site.story.paperLabel}</p></div>
+    <p className="paper-claim">{paper.claim}</p>
+    {query && <p className="note note-query paper-query"><Mark kind="query" /><span><span className="visually-hidden">Pytanie na marginesie: </span>{paper.query}</span></p>}
+  </div>;
+}
+
+/* The story the home page tells, one message per screen: the market's noise, the two reflexes, the turn (start from your own
+   work), the four steps and what is left at the end. The visitor is the hero; the consultation is the resolution. The scenes
+   use the same scroll mechanism as the client path. Problem screens carry a red pencil query, solution screens a blue tick. */
+function Story() {
+  const { story, flow, compendium } = site;
+  const deck = useRef(null);
+  useScenes(deck);
+  const scene = (id, theme, index, beat, visual, action) => <section className={`slide slide-stage beat beat-${id}`} id={`historia-${id}`} data-theme={theme} data-index={index} aria-labelledby={`historia-${id}-title`}>
+    <div className="slide-pin">
+      <div className="wrap slide-grid">
+        <div className="slide-copy">
+          <h2 id={`historia-${id}-title`}><span className="slide-title-inner">{beat.title}</span></h2>
+          <Underline />
+          <p className="slide-text"><Words text={beat.text} manual /></p>
+          {beat.query && <p className="note note-query slide-value"><Mark kind="query" /><span>{beat.query}</span></p>}
+          {beat.value && <p className="note slide-value"><Mark kind="tick" /><span>{beat.value}</span></p>}
+          {action}
+        </div>
+        <div className="slide-visual">{visual}</div>
+      </div>
+    </div>
+  </section>;
+  return <div className="deck story" ref={deck}>
+    {scene('rynek', 'desk', 0, story.chaos, <>
+      <div className="market-desk">{story.papers.map((paper, i) => <Paper key={paper.kind} paper={paper} index={i} query />)}</div>
+      <Note className="papers-note">{story.papersNote}</Note>
+    </>)}
+    {scene('stawka', 'ink', 1, story.stake, <div className="sheet plan">
+      <div className="sheet-bar"><p>{story.stake.plan.title}</p><p>{story.paperLabel}</p></div>
+      <ol className="plan-rows">{story.stake.plan.rows.map((row, i) => <li key={row.text} style={{ '--i': i }}>
+        <p className="plan-text"><del>{row.text}</del></p>
+        <p className="plan-fix"><Mark kind="bar" /><span><span className="visually-hidden">Uwaga na marginesie: </span>{row.fix}</span></p>
+      </li>)}</ol>
+    </div>)}
+    {scene('zwrot', 'blue', 2, story.turn, <FlowSheet sheet={flow.stages[1].sheet} label={story.turn.sheetLabel} />)}
+    <section className="slide beat beat-steps" id="historia-kroki" data-theme="paper" data-index={3} aria-labelledby="historia-kroki-title">
+      <div className="wrap">
+        <h2 id="historia-kroki-title"><span className="slide-title-inner">{story.steps.title}</span></h2>
+        <ol className="story-steps">{story.steps.items.map((step, i) => <li key={step.title} style={{ '--i': i }}>
+          <span className="story-step-no" aria-hidden="true">{i + 1}</span>
+          <h3>{step.title}</h3>
+          <p>{step.text}</p>
+        </li>)}</ol>
+        <p className="slide-action"><TextLink href={servicePath} arrow>{story.steps.action}</TextLink></p>
+      </div>
+    </section>
+    {scene('koniec', 'desk', 4, story.ending, <div className="sheet flow-sheet">
+      <div className="sheet-bar"><p>{story.ending.sheet.title}</p><p>{story.ending.sheet.label}</p></div>
+      <p className="sheet-part-title">{story.ending.sheet.part}</p>
+      <dl className="fs-card rec">{compendium.recommendation.map(row => <div key={row.label}><dt><Mark kind="tick" />{row.label}</dt><dd>{row.text}</dd></div>)}</dl>
+    </div>, <p className="slide-action"><TextLink href={compendiumPath} arrow>{story.ending.action}</TextLink></p>)}
+  </div>;
+}
+
+/* The three formats under the consultation umbrella. Shown on the service page. */
+function Formats() {
+  const { formats, workflow, consultation, review } = site;
+  return <section className="section formats wrap" id="zakres" aria-labelledby="formats-title">
+    <div className="section-head">
+      <h2 id="formats-title">{formats.title}</h2>
+      <p className="section-lead">{formats.lead}</p>
+    </div>
+    <div className="format-rows">
+      <article className="format-row" id="standard-dla-zespolu" aria-labelledby="format-w">
+        <header className="format-head"><h3 id="format-w">{workflow.name}</h3><p>{workflow.subtitle}</p></header>
+        <div className="format-body">
+          <p className="format-text">{workflow.text}</p>
+          <div className="disclosures">
+            <Disclosure title={workflow.resultTitle}><dl className="result-list">{workflow.result.map(item => <div key={item.title}><dt>{item.title}</dt><dd>{item.text}</dd></div>)}</dl></Disclosure>
+            <Disclosure id="warunki-w" title="Dla kogo, jak długo i czego potrzebujemy">{workflow.conditions.map(p => <p key={p}>{p}</p>)}</Disclosure>
+            <Disclosure title="Granice zakresu i odpowiedzialności">{workflow.boundaries.map(p => <p key={p}>{p}</p>)}</Disclosure>
+          </div>
+          <div className="format-links"><TextLink href="/?temat=zadanie#kontakt" arrow>Opisz zadanie zespołu</TextLink><TextLink href={samplePath}>Zobacz przykład standardu</TextLink></div>
+        </div>
+      </article>
+      <article className="format-row" id="konsultacja" aria-labelledby="format-k">
+        <header className="format-head"><h3 id="format-k">{consultation.name}</h3><p>{consultation.subtitle}</p></header>
+        <div className="format-body">
+          <p className="format-text">{consultation.text}</p>
+          <p className="format-text">{consultation.outcome}</p>
+          <div className="disclosures"><Disclosure title="Format i rezultat konsultacji">{consultation.details.map(p => <p key={p}>{p}</p>)}</Disclosure></div>
+          <div className="format-links"><TextLink href="/?temat=decyzja#kontakt" arrow>Opisz decyzję</TextLink></div>
+        </div>
+      </article>
+      <article className="format-row" id="przeglad-oferty" aria-labelledby="format-r">
+        <header className="format-head"><h3 id="format-r">{review.name}</h3><p>{review.subtitle}</p></header>
+        <div className="format-body">
+          <p className="format-text">{review.text}</p>
+          <div className="format-links"><TextLink href="/?temat=oferta#kontakt" arrow>Zapytaj o przegląd oferty</TextLink></div>
+        </div>
+      </article>
+    </div>
+    <Note className="section-note">{formats.boundaryNote}</Note>
+  </section>;
+}
+
+/* The person behind the consultation: short, after the story. */
+function About() {
+  return <section className="section about wrap" id="o-mnie" aria-labelledby="about-title">
+    <h2 id="about-title">Perspektywa produktowa. Techniczna ocena. Zrozumiały wniosek.</h2>
+    <div className="about-grid">
+      <div className="about-bio">
+        <p>{pl(`Jestem ${site.name}. Pracuję jako Technical Product Manager. Łączę analizę procesów, architekturę i integrację systemów z wiedzą o modelach językowych, agentach oraz automatyzacji.`)}</p>
+        <p>{pl('W doradztwie wykorzystuję tę perspektywę do oceny, która zmiana ma sens i jak sprawdzić jej rezultat.')}</p>
+        <p className="about-link"><TextLink href={site.principlesPath} arrow>{site.principlesTitle}</TextLink></p>
+        <Pending>zweryfikowane doświadczenie i publiczny profil zawodowy.</Pending>
+      </div>
+      <dl className="expertise">{site.expertise.map(item => <div key={item.title}><dt>{item.title}</dt><dd>{item.text}</dd></div>)}</dl>
+    </div>
+  </section>;
+}
+
+/* Home is the visitor's story, read screen by screen: their situation, the market's noise, the two reflexes, the turn, the four
+   steps and the ending; then their own version of it (situations), who is behind it, and the card that starts the first
+   conversation. The presentation of the service itself lives on the service page. */
 function Home() {
-  const { flow, formats, workflow, consultation, review } = site;
+  const { story, flow } = site;
+  return <main id="tresc" tabIndex="-1">
+    <section className="hero theme-blue story-hero" aria-labelledby="hero-title">
+      <div className="wrap">
+        <div className="hero-row">
+          <div className="hero-copy">
+            <HeroTitle lines={story.hero.lines} />
+            <p className="hero-lead">{story.hero.lead}</p>
+            <div className="hero-actions"><Button href="#kontakt">{flow.cta.button}</Button></div>
+          </div>
+          {/* The visitor's desk as it is today: the market's papers in a pile. Decorative here; the next screen lays them out. */}
+          <div className="market-pile" aria-hidden="true">
+            {story.papers.map((paper, i) => <Paper key={paper.kind} paper={paper} index={i} />)}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <Story />
+
+    <Cases />
+
+    <About />
+
+    <Contact />
+  </main>;
+}
+
+/* The service page: the offer in one sentence with the map of the stages, the client path (stages 0 to 5 and its closing
+   screen), then the three formats. */
+function ServicePage() {
+  const { flow } = site;
   const sheets = flow.stages.length - 1;
   return <main id="tresc" tabIndex="-1">
     <section className="hero theme-blue" aria-labelledby="hero-title">
       <div className="wrap">
         <div className="hero-row">
           <div className="hero-copy">
-            <h1 id="hero-title">{site.hero.lines.map((line, i) => <span className="hero-line" key={line} style={{ '--i': i }}><span className="hero-line-inner">{line}{i < site.hero.lines.length - 1 ? ' ' : ''}</span></span>)}</h1>
+            <HeroTitle lines={site.hero.lines} />
             <p className="hero-lead">{site.hero.lead}</p>
-            <div className="hero-actions"><Button href="/?temat=inne#kontakt">{flow.cta.button}</Button></div>
+            <div className="hero-actions"><Button href={contactHref}>{flow.cta.button}</Button></div>
           </div>
           {/* The finished dossier: the four sheets a consultation leaves behind, the compendium on top. Stage 0 and the optional
               fifth stage leave no document, so they are not in the pile. Decorative here; the path below carries the content. */}
@@ -423,60 +607,7 @@ function Home() {
 
     <Path />
 
-    <Cases />
-
-    <section className="section formats wrap" id="zakres" aria-labelledby="formats-title">
-      <div className="section-head">
-        <h2 id="formats-title">{formats.title}</h2>
-        <p className="section-lead">{formats.lead}</p>
-      </div>
-      <div className="format-rows">
-        <article className="format-row" id="standard-dla-zespolu" aria-labelledby="format-w">
-          <header className="format-head"><h3 id="format-w">{workflow.name}</h3><p>{workflow.subtitle}</p></header>
-          <div className="format-body">
-            <p className="format-text">{workflow.text}</p>
-            <div className="disclosures">
-              <Disclosure title={workflow.resultTitle}><dl className="result-list">{workflow.result.map(item => <div key={item.title}><dt>{item.title}</dt><dd>{item.text}</dd></div>)}</dl></Disclosure>
-              <Disclosure id="warunki-w" title="Dla kogo, jak długo i czego potrzebujemy">{workflow.conditions.map(p => <p key={p}>{p}</p>)}</Disclosure>
-              <Disclosure title="Granice zakresu i odpowiedzialności">{workflow.boundaries.map(p => <p key={p}>{p}</p>)}</Disclosure>
-            </div>
-            <div className="format-links"><TextLink href="/?temat=zadanie#kontakt" arrow>Opisz zadanie zespołu</TextLink><TextLink href={samplePath}>Zobacz przykład standardu</TextLink></div>
-          </div>
-        </article>
-        <article className="format-row" id="konsultacja" aria-labelledby="format-k">
-          <header className="format-head"><h3 id="format-k">{consultation.name}</h3><p>{consultation.subtitle}</p></header>
-          <div className="format-body">
-            <p className="format-text">{consultation.text}</p>
-            <p className="format-text">{consultation.outcome}</p>
-            <div className="disclosures"><Disclosure title="Format i rezultat konsultacji">{consultation.details.map(p => <p key={p}>{p}</p>)}</Disclosure></div>
-            <div className="format-links"><TextLink href="/?temat=decyzja#kontakt" arrow>Opisz decyzję</TextLink></div>
-          </div>
-        </article>
-        <article className="format-row" id="przeglad-oferty" aria-labelledby="format-r">
-          <header className="format-head"><h3 id="format-r">{review.name}</h3><p>{review.subtitle}</p></header>
-          <div className="format-body">
-            <p className="format-text">{review.text}</p>
-            <div className="format-links"><TextLink href="/?temat=oferta#kontakt" arrow>Zapytaj o przegląd oferty</TextLink></div>
-          </div>
-        </article>
-      </div>
-      <Note className="section-note">{formats.boundaryNote}</Note>
-    </section>
-
-    <section className="section about wrap" id="o-mnie" aria-labelledby="about-title">
-      <h2 id="about-title">Perspektywa produktowa. Techniczna ocena. Zrozumiały wniosek.</h2>
-      <div className="about-grid">
-        <div className="about-bio">
-          <p>{pl(`Jestem ${site.name}. Pracuję jako Technical Product Manager. Łączę analizę procesów, architekturę i integrację systemów z wiedzą o modelach językowych, agentach oraz automatyzacji.`)}</p>
-          <p>{pl('W doradztwie wykorzystuję tę perspektywę do oceny, która zmiana ma sens i jak sprawdzić jej rezultat.')}</p>
-          <p className="about-link"><TextLink href={site.principlesPath} arrow>{site.principlesTitle}</TextLink></p>
-          <Pending>zweryfikowane doświadczenie i publiczny profil zawodowy.</Pending>
-        </div>
-        <dl className="expertise">{site.expertise.map(item => <div key={item.title}><dt>{item.title}</dt><dd>{item.text}</dd></div>)}</dl>
-      </div>
-    </section>
-
-    <Contact />
+    <Formats />
   </main>;
 }
 
@@ -485,6 +616,7 @@ function Home() {
    A local demonstration: it validates and shows a draft; nothing is sent. */
 function Contact() {
   const { contact } = site;
+  const { later } = site.story;
   const questions = site.flow.stages[1].sheet.items;
   const [ready, setReady] = useState(false);
   const [answers, setAnswers] = useState(() => questions.map(() => ''));
@@ -539,7 +671,7 @@ function Contact() {
         <form noValidate onSubmit={submit} aria-label="Karta pierwszej rozmowy">
           <fieldset disabled={!ready}>
             <legend className="visually-hidden">Trzy pytania i adres do odpowiedzi</legend>
-            {Object.keys(errors).length > 0 && <div className="error-summary" ref={errorBox} tabIndex="-1" role="alert"><p>Dwie rzeczy są potrzebne, żeby karta była gotowa.</p>{Object.entries(errors).map(([key, text]) => <a key={key} href={`#${errorTargets[key]}`}>{text}</a>)}</div>}
+            {Object.keys(errors).length > 0 && <div className="error-summary" ref={errorBox} tabIndex="-1" role="alert"><p>{Object.keys(errors).length > 1 ? 'Dwie rzeczy są potrzebne, żeby karta była gotowa.' : 'Jedna rzecz jest potrzebna, żeby karta była gotowa.'}</p>{Object.entries(errors).map(([key, text]) => <a key={key} href={`#${errorTargets[key]}`}>{text}</a>)}</div>}
             {questions.map((question, i) => <div className="card-q" key={question} data-answered={answers[i].trim() ? '' : undefined}>
               <label htmlFor={`card-q${i}`}><span className="card-q-mark" aria-hidden="true"><Mark kind="query" /><Mark kind="tick" /></span><span>{question}</span>{i > 0 && <span className="card-q-opt">(opcjonalne)</span>}</label>
               {i === 0 && <p className="field-hint" id="card-hint">{contact.hint}</p>}
@@ -565,6 +697,17 @@ function Contact() {
           <p className="visually-hidden" role="status">{copied ? 'Kartę skopiowano do schowka.' : ''}</p>
           {copyError && <p role="status">Przeglądarka nie pozwoliła skopiować karty. Możesz zaznaczyć ją powyżej i skopiować ręcznie.</p>}
         </div>}
+      </div>
+    </div>
+    {/* For the visitor who is not ready to talk yet: open reading, and the presentation of the service. */}
+    <div className="wrap">
+      <div className="cta contact-later">
+        <div className="cta-copy">
+          <h3 className="cta-title">{later.title}</h3>
+          <p>{later.text}</p>
+          <p className="later-link"><TextLink href={servicePath} arrow>{later.link}</TextLink></p>
+        </div>
+        <FlowSheet sheet={later.sheet} label={later.sheet.label} className="later-sheet" />
       </div>
     </div>
   </section>;
@@ -593,7 +736,7 @@ function ArticleFrame({ kind, title, lead, meta, theses, terms, children, backHr
         <div className={`article-reading ${dropcap ? 'has-dropcap' : ''}`}>{children}</div>
         <Marginalia terms={terms} />
       </div>
-      <aside className="article-contact"><h2>Masz podobne pytanie w swoim zespole?</h2><Button href="/?temat=inne#kontakt">{site.flow.cta.button}</Button></aside>
+      <aside className="article-contact"><h2>Masz podobne pytanie w swoim zespole?</h2><Button href={contactHref}>{site.flow.cta.button}</Button></aside>
     </div>
   </main>;
 }
@@ -608,7 +751,7 @@ function DataTable({ block }) {
 
 function ArticlePage({ article }) {
   const meta = [formatDate(article.date), `${readingMinutes(article.blocks)} min czytania`, `Opracowanie: ${site.name}`];
-  return <ArticleFrame kind="Analiza" title={article.title} lead={article.lead} meta={meta} theses={article.theses} terms={article.terms} backHref="/#etap-0" backLabel="Wróć do wiedzy otwartej" dropcap>
+  return <ArticleFrame kind="Analiza" title={article.title} lead={article.lead} meta={meta} theses={article.theses} terms={article.terms} backHref={`${servicePath}#etap-0`} backLabel="Wróć do wiedzy otwartej" dropcap>
     {article.blocks.map((block, i) => {
       if (block.type === 'heading') return <h2 key={i}>{block.text}</h2>;
       if (block.type === 'pull') return <p key={i} className="pull" aria-hidden="true">{block.text}</p>;
@@ -620,7 +763,7 @@ function ArticlePage({ article }) {
 
 function SamplePage() {
   const { standard } = site;
-  return <ArticleFrame kind="Przykład standardu, dane syntetyczne" title={standard.title} lead="Projekt standardu: wymagane wejście, kontrola faktów, rola człowieka i warunki przerwania pracy." meta={['Materiał syntetyczny', formatDate('29.10.2026'), `Opracowanie: ${site.name}`]} terms={['standard', 'operator', 'wlasciciel-procesu', 'blad-krytyczny', 'proba']} backHref="/#standard-dla-zespolu" backLabel="Wróć do formatów współpracy">
+  return <ArticleFrame kind="Przykład standardu, dane syntetyczne" title={standard.title} lead="Projekt standardu: wymagane wejście, kontrola faktów, rola człowieka i warunki przerwania pracy." meta={['Materiał syntetyczny', formatDate('29.10.2026'), `Opracowanie: ${site.name}`]} terms={['standard', 'operator', 'wlasciciel-procesu', 'blad-krytyczny', 'proba']} backHref={`${servicePath}#standard-dla-zespolu`} backLabel="Wróć do formatów współpracy">
     <p className="boundary"><strong>Demonstracja metody, test nieprzeprowadzony.</strong> Cały materiał jest syntetyczny. Nie opisuje zlecenia, rzeczywistego klienta ani wyniku działania modelu.</p>
     <h2>Pytanie</h2><p>Jak przygotować podsumowanie dla opiekuna projektu tak, aby nie dopisywać ustaleń, których nie ma w notatce? Ten przykład pokazuje strukturę sposobu pracy, a nie skuteczność całego procesu w firmie.</p>
     <h2>Materiał syntetyczny</h2><blockquote>Rozmowa o etapowym uruchomieniu obsługi. Klient chce najpierw ustalić zakres źródeł danych i liczbę użytkowników. Budżet wymaga potwierdzenia. Termin wdrożenia nie został uzgodniony. Opiekun ma przygotować pytania do kolejnej rozmowy. Nie ustalono terminu następnego spotkania.</blockquote><p>To całość źródła przykładu.</p>
@@ -723,7 +866,7 @@ function GuidePage() {
   return <main id="tresc" tabIndex="-1" className="guide">
     <section className="scene scene-intro" aria-labelledby="guide-title">
       <div className="wrap scene-grid"><div className="scene-col">
-        <a className="back-link" href="/#etap-0"><ArrowLeft aria-hidden="true" />Wróć do wiedzy otwartej</a>
+        <a className="back-link" href={`${servicePath}#etap-0`}><ArrowLeft aria-hidden="true" />Wróć do wiedzy otwartej</a>
         <h1 id="guide-title">{guide.title}</h1>
         <p className="article-lead">{guide.lead}</p>
         <p className="meta">{guide.meta.map(m => <span key={m}>{m}</span>)}</p>
@@ -759,7 +902,7 @@ function GuidePage() {
 function CompendiumPage() {
   const { compendium: c } = site;
   let offset = 0;
-  return <ArticleFrame kind="Przykładowe kompendium, dane syntetyczne" title={c.title} lead={c.lead} meta={['Materiał syntetyczny', formatDate('22.11.2026'), `Opracowanie: ${site.name}`]} backHref="/#etap-4" backLabel="Wróć do etapu „Kompendium”">
+  return <ArticleFrame kind="Przykładowe kompendium, dane syntetyczne" title={c.title} lead={c.lead} meta={['Materiał syntetyczny', formatDate('22.11.2026'), `Opracowanie: ${site.name}`]} backHref={`${servicePath}#etap-4`} backLabel="Wróć do etapu „Kompendium”">
     <p className="boundary"><strong>Przykład syntetyczny.</strong> {c.boundary}</p>
     <h2>Czym jest kompendium</h2>{c.intro.map(p => <p key={p}>{p}</p>)}
     <h2>{c.contentsTitle}</h2>
@@ -772,7 +915,9 @@ function CompendiumPage() {
     </div>
     <p>{c.guideLink}: <a href={guidePath}>zobacz przewodnik</a>.</p>
     <h2>{c.excerptTitle}</h2><p>{c.excerptLead}</p>
-    <div className="sheet"><div className="sheet-bar"><p>{c.excerptSheet}</p><p>Rozdział 5 z 8, przykład</p></div><StandardTable rows={c.excerpt} /></div>
+    <div className="sheet"><div className="sheet-bar"><p>{c.excerptSheet}</p><p>{c.excerptLabel}</p></div><StandardTable rows={c.excerpt} /></div>
+    <h2>{c.recommendationTitle}</h2><p>{c.recommendationLead}</p>
+    <div className="sheet"><div className="sheet-bar"><p>{c.recommendationTitle}</p><p>{c.recommendationLabel}</p></div><StandardTable rows={c.recommendation.map(row => [row.label, `${row.text} ${row.more}`])} /></div>
     <p>{c.closing}</p>
   </ArticleFrame>;
 }
@@ -787,7 +932,7 @@ function PrinciplesPage() {
         <p>{site.principlesLead}</p>
       </div>
       <ul>{site.principles.map(p => <li key={p}><span className="principle-no">Nie</span><span className="principle-text">{p.replace(/^Nie\s+/, '')}</span></li>)}</ul>
-      <div className="principles-cta"><p>{site.principlesCta}</p><Button href="/?temat=inne#kontakt">{site.flow.cta.button}</Button></div>
+      <div className="principles-cta"><p>{site.principlesCta}</p><Button href={contactHref}>{site.flow.cta.button}</Button></div>
     </div>
   </main>;
 }
@@ -807,20 +952,21 @@ function NotFound() {
 export function App({ path: suppliedPath }) {
   const path = suppliedPath || (typeof window !== 'undefined' ? window.location.pathname : '/');
   const cleanPath = path === '/' ? '/' : `${path.replace(/\/+$/, '')}/`;
-  const legacyDeck = cleanPath === legacyDeckPath;
-  const normalizedPath = legacyDeck ? '/' : cleanPath;
+  const normalizedPath = cleanPath;
   useEffect(() => {
-    if (legacyDeck) window.history.replaceState(null, '', pathHref);
     const meta = getPageMeta(normalizedPath);
     document.title = meta.title;
     document.querySelector('meta[name="description"]')?.setAttribute('content', meta.description);
     if (window.location.hash) requestAnimationFrame(() => {
       const target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
-      target?.scrollIntoView({ behavior: 'instant' });
+      if (!target) return;
+      // A pinned stage is opened at the end of its scene, where it is complete.
+      if (isPinnedScene(target)) window.scrollTo({ top: sceneEnd(target), behavior: 'instant' });
+      else target.scrollIntoView({ behavior: 'instant' });
     });
     return initMotion();
   }, [normalizedPath]);
   const article = articles.find(a => normalizedPath === `/analizy/${a.slug}/`);
-  const page = normalizedPath === '/' ? <Home /> : article ? <ArticlePage article={article} /> : normalizedPath === samplePath ? <SamplePage /> : normalizedPath === guidePath ? <GuidePage /> : normalizedPath === site.principlesPath ? <PrinciplesPage /> : normalizedPath === compendiumPath ? <CompendiumPage /> : normalizedPath === '/prywatnosc/' ? <PrivacyPage /> : <NotFound />;
-  return <><Header overHero={normalizedPath === '/'} path={normalizedPath} />{page}<Footer /></>;
+  const page = normalizedPath === '/' ? <Home /> : normalizedPath === servicePath ? <ServicePage /> : article ? <ArticlePage article={article} /> : normalizedPath === samplePath ? <SamplePage /> : normalizedPath === guidePath ? <GuidePage /> : normalizedPath === site.principlesPath ? <PrinciplesPage /> : normalizedPath === compendiumPath ? <CompendiumPage /> : normalizedPath === '/prywatnosc/' ? <PrivacyPage /> : <NotFound />;
+  return <><Header overHero={normalizedPath === '/' || normalizedPath === servicePath} path={normalizedPath} />{page}<Footer /></>;
 }

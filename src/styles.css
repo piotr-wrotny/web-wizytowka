@@ -20,7 +20,7 @@
   --paper:#f0f2ef;--sheet:#fcfdfb;--desk:#e2e6e2;
   --ink:#14161a;--ink-soft:#4d5359;--line:#c6ccc7;--line-soft:#d9ddd9;--field-line:#767c83;
   --blue:#2340c8;--blue-deep:#1a31a3;--on-blue:#fcfdfb;--on-blue-soft:#cdd6ff;
-  --red:#c42b17;--red-on-ink:#ff8a75;
+  --red:#c02a16;--red-on-ink:#ff8a75;
   --serif:'Brygada 1918','Iowan Old Style',Georgia,serif;
   --sans:Archivo,'Segoe UI',system-ui,sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
@@ -292,7 +292,7 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
 .expertise{grid-column:8/-1;border-top:1px solid var(--ink)}
 .expertise>div{padding-block:18px;border-bottom:1px solid var(--line)}
 .expertise dt{font-family:var(--serif);font-size:1.3125rem;font-weight:500;line-height:1.2;letter-spacing:-.012em}
-.expertise dd{margin-top:6px;font-size:var(--t-small);line-height:1.6;color:var(--ink-soft)}
+.expertise dd{margin-top:6px;font-size:var(--t-small);line-height:1.6;color:var(--ink-soft);text-wrap:pretty}
 
 /* Contact: a form to fill in, lying on the desk */
 .contact{background:var(--desk);padding-block:var(--section)}
@@ -397,7 +397,7 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
 .mail-to{display:flex;align-items:baseline;gap:12px}
 .mail-to label,.mail-subject>span{color:var(--ink-soft)}
 .mail-to input{flex:1;min-width:0;min-height:44px;padding:6px 0;background:none;border:0;border-bottom:1px solid var(--field-line);border-radius:0;font-family:var(--mono);font-size:1rem;letter-spacing:-.01em;transition:border-color .2s ease,box-shadow .2s ease}
-.mail-to input::placeholder{color:var(--field-line);opacity:1}
+.mail-to input::placeholder{color:var(--ink-soft);opacity:1}
 .mail-to input:hover{border-bottom-color:var(--ink)}
 .mail-to input:focus-visible{outline:0;border-bottom-color:var(--blue);box-shadow:0 2px 0 var(--blue)}
 .mail-to input[aria-invalid='true']{border-bottom-color:var(--red);box-shadow:0 1px 0 var(--red)}
@@ -651,12 +651,12 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
 @property --blue-deep{syntax:'<color>';inherits:true;initial-value:#1a31a3}
 @property --on-blue{syntax:'<color>';inherits:true;initial-value:#fcfdfb}
 html[data-theme='desk'],html:not(.js-motion) .slide[data-theme='desk']{--paper:#e2e6e2}
-html[data-theme='ink'],html:not(.js-motion) .slide[data-theme='ink']{--paper:#14161a;--ink:#f0f2ef;--ink-soft:#b6bcbf;--line:#3d4248;--line-soft:#2c3036;--blue:#a9b8ff;--blue-deep:#c9d3ff;--on-blue:#14161a}
+html[data-theme='ink'],html:not(.js-motion) .slide[data-theme='ink']{--paper:#14161a;--ink:#f0f2ef;--ink-soft:#b6bcbf;--line:#3d4248;--line-soft:#2c3036;--blue:#a9b8ff;--blue-deep:#c9d3ff;--on-blue:#14161a;--red:#ff8a75}
 html[data-theme='blue'],html:not(.js-motion) .slide[data-theme='blue'],.theme-blue,.site-header[data-over-hero]{--paper:#2340c8;--ink:#fcfdfb;--ink-soft:#cdd6ff;--line:#7186e2;--line-soft:#4a62d6;--blue:#fcfdfb;--blue-deep:#dfe5ff;--on-blue:#2340c8}
 html.js-motion{transition:--paper .9s ease,--ink .9s ease,--ink-soft .9s ease,--line .9s ease,--line-soft .9s ease,--blue .9s ease,--blue-deep .9s ease,--on-blue .9s ease}
 html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 /* A sheet is always paper and ink, whatever theme surrounds it. */
-.sheet,.proof,.format-primary{--ink:#14161a;--ink-soft:#4d5359;--line:#c6ccc7;--line-soft:#d9ddd9;--blue:#2340c8;--blue-deep:#1a31a3;--on-blue:#fcfdfb;color:var(--ink)}
+.sheet,.proof,.format-primary{--ink:#14161a;--ink-soft:#4d5359;--line:#c6ccc7;--line-soft:#d9ddd9;--blue:#2340c8;--blue-deep:#1a31a3;--on-blue:#fcfdfb;--red:#c02a16;color:var(--ink)}
 
 /* ------------------------------------------------------------------
    Consultation deck (/konsultacja/): one stage per screen
@@ -728,7 +728,7 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
    Order of a stage: the sheet is laid on the desk, the numeral fills with ink, the title rises and is underlined
    in pencil, the sentence is read word by word, the sheet is filled in line by line, the value is ticked off.
    ------------------------------------------------------------------ */
-.slide-stage h2,.slide-end h2{overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em}
+.slide-stage h2,.slide-end h2,.beat-steps h2{overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em}
 .slide-title-inner{display:block}
 .slide-underline{display:block;width:min(19rem,70%);height:14px;margin-top:10px;fill:none;stroke:var(--blue);stroke-width:2.2;stroke-linecap:round;overflow:visible}
 .slide-stack{display:none}
@@ -743,7 +743,7 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 @keyframes rule{from{background-size:0 1px}}
 
 /* Derived progress values. --a: sheet arrives, --t: title, --w: words, --v: value, --x: scene leaves (pinned only). */
-.js-motion .slide-stage,.js-motion .slide-end{
+.js-motion .slide-stage,.js-motion .slide-end,.js-motion .beat-steps{
   --a:clamp(0,calc((var(--sp,1) - .04)*3.1),1);
   --t:clamp(0,calc((var(--sp,1) - .16)*5),1);
   --u:clamp(0,calc((var(--sp,1) - .3)*5),1);
@@ -813,6 +813,91 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 }
 @media(prefers-reduced-motion:reduce){html:not(.js-motion){transition:none!important}}
 @media print{.slide{--sp:1!important;min-height:0!important;height:auto!important;padding-block:24px}.slide-pin{position:static!important;height:auto!important}.deck-rail{display:none}}
+
+/* ------------------------------------------------------------------
+   The story (home page). The visitor's desk: the market's papers in loud sans, the questions nobody asked in red pencil,
+   then the consultation's own sheets with blue ticks. Scenes reuse the deck's slides and its --sp choreography.
+   ------------------------------------------------------------------ */
+.story-hero{overflow-x:clip}
+.story-hero .hero-line-inner{text-wrap:balance}
+.paper .sheet-bar{padding-block:10px}
+.paper-claim{padding:14px clamp(16px,2vw,24px) 18px;font-size:clamp(1.0625rem,1.45vw,1.3125rem);font-weight:700;font-stretch:110%;line-height:1.2;letter-spacing:-.012em;text-wrap:balance}
+.paper-query{max-width:none;margin:0 clamp(16px,2vw,24px);padding-block:11px 14px;border-top:1px solid var(--line-soft);font-size:1.1875rem}
+.market-pile{grid-column:8/-1;position:relative;align-self:center;height:min(29rem,calc(100svh - var(--header-h) - 2*clamp(24px,5vh,56px) - 24px))}
+.market-pile .paper{position:absolute;width:76%;box-shadow:0 1px 0 rgba(8,10,30,.08),0 28px 56px -28px rgba(6,10,50,.6)}
+.market-pile .paper:nth-child(1){left:0;top:0;rotate:-5deg}
+.market-pile .paper:nth-child(2){left:24%;top:20%;rotate:4deg}
+.market-pile .paper:nth-child(3){left:2%;top:42%;rotate:-2.5deg}
+.market-pile .paper:nth-child(4){left:22%;top:62%;rotate:5.5deg}
+
+.beat h2{margin-top:0}
+.beat-rynek .slide-copy{grid-column:1/span 5}
+.beat-rynek .slide-visual{grid-column:7/-1}
+.market-desk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(14px,1.8vw,26px);align-items:start}
+.market-desk .paper:nth-child(1){rotate:-1.6deg}
+.market-desk .paper:nth-child(2){rotate:1.3deg;translate:0 22px}
+.market-desk .paper:nth-child(3){rotate:.9deg}
+.market-desk .paper:nth-child(4){rotate:-1.2deg;translate:0 16px}
+.papers-note{margin-top:clamp(34px,5vh,48px)}
+.slide-visual .paper,.slide-visual .plan{box-shadow:0 1px 0 rgba(20,22,26,.05),0 30px 56px -30px rgba(8,10,20,.45)}
+
+/* The two reflexes, as a draft plan the pencil strikes out. */
+.plan-rows{list-style:none;margin:0;padding:4px 0}
+.plan-rows li{padding:18px clamp(18px,2.4vw,32px) 20px;border-bottom:1px solid var(--line-soft)}
+.plan-rows li:last-child{border-bottom:0}
+.plan-text{font-family:var(--serif);font-size:clamp(1.25rem,1.7vw,1.5rem);line-height:1.3;letter-spacing:-.01em}
+.plan-text del{text-decoration:none;color:var(--ink-soft);background:linear-gradient(var(--red),var(--red)) 0 58%/100% 2px no-repeat}
+.plan-fix{display:flex;align-items:baseline;gap:.55em;margin-top:8px;font-family:var(--serif);font-style:italic;font-size:1.1875rem;line-height:1.3;color:var(--red)}
+.plan-fix .mark{transform:translateY(.18em)}
+
+/* The ending: the recommendation, ticked off. */
+.flow-sheet .sheet-part-title{padding-top:18px}
+.rec{padding-top:2px}
+.rec dt{display:flex;align-items:baseline;gap:.5em}
+.rec .mark{color:var(--blue);transform:translateY(.16em)}
+
+/* Four steps on one screen: what changes for the visitor at each. Numerals, because the order is the content. */
+.beat-steps h2{font-size:var(--t-title);line-height:1.02;letter-spacing:-.03em;max-width:15ch}
+.story-steps{list-style:none;padding:0;margin:clamp(40px,8vh,96px) 0 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--gap)}
+.story-steps li{padding-top:18px;border-top:1px solid var(--ink)}
+.story-step-no{display:block;font-family:var(--serif);font-size:clamp(2.4rem,3.6vw,3.25rem);line-height:.9;color:var(--blue);font-variant-numeric:lining-nums}
+.story-steps h3{margin-top:14px;font-size:var(--t-h3);letter-spacing:-.015em}
+.story-steps p{margin-top:8px;line-height:1.5;color:var(--ink-soft);max-width:24ch}
+.beat-steps .slide-action{margin-top:clamp(28px,5vh,56px)}
+
+/* Not ready to talk yet: open reading under the contact card. */
+.contact-later{align-items:flex-start}
+.contact-later .cta-copy{flex:1 1 20rem}
+.later-sheet{flex:1 1 24rem;max-width:34rem}
+.later-link{margin-top:10px}
+.case-cta{margin-top:10px}
+
+/* Story choreography. The hero's papers are dropped on the desk once; in the scenes the pencil works with the scroll. */
+.js-motion .market-pile .paper{animation:drop 1s var(--ease) both;animation-delay:calc(.45s + var(--i,0)*.14s)}
+@keyframes drop{0%{opacity:0;translate:0 -56px;scale:1.05}22%{opacity:1}}
+.js-motion .market-desk .paper-query{--q:clamp(0,calc((var(--sp,1) - .48 - var(--i,0)*.07)*11),1)}
+.js-motion .market-desk .paper-query .mark path{stroke-dasharray:1;stroke-dashoffset:calc(1 - var(--q))}
+.js-motion .market-desk .paper-query>span{opacity:var(--q)}
+.js-motion .slide-visual .papers-note{opacity:var(--v)}
+.js-motion .plan-rows li{--r:clamp(0,calc((var(--sp,1) - .46 - var(--i,0)*.12)*8),1)}
+.js-motion .plan-text del{background-size:calc(var(--r)*100%) 2px}
+.js-motion .plan-fix{opacity:clamp(0,calc(var(--r)*3 - 2),1)}
+.js-motion .plan-fix .mark path{stroke-dasharray:1;stroke-dashoffset:calc(1 - var(--r))}
+.js-motion .slide-visual .rec .mark path{stroke-dasharray:1;stroke-dashoffset:calc(1 - var(--r))}
+.js-motion .beat-steps .story-steps li{--r:clamp(0,calc((var(--sp,1) - .36 - var(--i,0)*.09)*8),1);opacity:var(--r);transform:translateY(calc((1 - var(--r))*18px))}
+
+@media(max-width:1100px){.market-pile{grid-column:7/-1}}
+@media(max-width:900px){
+  .market-pile{display:none}
+  .story-steps{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:32px}
+  .later-sheet{max-width:none}
+}
+@media(max-width:600px){
+  .market-desk{grid-template-columns:1fr}
+  .market-desk .paper:nth-child(n){translate:none}
+  .story-steps{grid-template-columns:1fr}
+}
+@media print{.market-pile{display:none}}
 
 /* The draft-and-corrections exhibit inside the sample page's reading column */
 .article-reading .proof{margin-block:1.4em;font-family:var(--sans);font-size:var(--t-body)}
