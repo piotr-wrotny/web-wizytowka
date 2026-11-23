@@ -334,7 +334,9 @@ function useScenes(deck) {
         const r = el.getBoundingClientRect();
         if (r.top <= middle && r.bottom > middle) current = el;
         const pinned = r.height > vh * 1.3;
-        const travel = pinned ? vh * 0.85 + (r.height - vh) : vh * 0.95;
+        // Not pinned: the scene is complete while its top is still a quarter of a screen below the top edge, so nothing is
+        // still being drawn when the screen starts to leave.
+        const travel = pinned ? vh * 0.85 + (r.height - vh) : vh * 0.6;
         el.style.setProperty('--sp', Math.min(1, Math.max(0, (vh * 0.85 - r.top) / travel)).toFixed(4));
       }
       const theme = current?.dataset.theme;

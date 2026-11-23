@@ -875,11 +875,11 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 /* Story choreography. The hero's papers are dropped on the desk once; in the scenes the pencil works with the scroll. */
 .js-motion .market-pile .paper{animation:drop 1s var(--ease) both;animation-delay:calc(.45s + var(--i,0)*.14s)}
 @keyframes drop{0%{opacity:0;translate:0 -56px;scale:1.05}22%{opacity:1}}
-.js-motion .market-desk .paper-query{--q:clamp(0,calc((var(--sp,1) - .66 - var(--i,0)*.05)*11),1)}
+.js-motion .market-desk .paper-query{--q:clamp(0,calc((var(--sp,1) - .56 - var(--i,0)*.05)*11),1)}
 .js-motion .market-desk .paper-query .mark path{stroke-dasharray:1;stroke-dashoffset:calc(1 - var(--q))}
 .js-motion .market-desk .paper-query>span{opacity:var(--q)}
 .js-motion .slide-visual .papers-note{opacity:var(--v)}
-.js-motion .plan-rows li{--r:clamp(0,calc((var(--sp,1) - .62 - var(--i,0)*.1)*8),1)}
+.js-motion .plan-rows li{--r:clamp(0,calc((var(--sp,1) - .56 - var(--i,0)*.1)*8),1)}
 .js-motion .plan-text del{background-size:calc(var(--r)*100%) 2px}
 .js-motion .plan-fix{opacity:clamp(0,calc(var(--r)*3 - 2),1)}
 .js-motion .plan-fix .mark path{stroke-dasharray:1;stroke-dashoffset:calc(1 - var(--r))}
@@ -910,9 +910,10 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
   }
 
   /* Scenes: the visual starts far away on the tilted desk and the camera comes to rest above it, before the pencil works. */
-  /* A story scene is held a little longer than a stage of the path (200vh), so half of the camera move happens while it is pinned. */
-  .js-motion .beat.slide-stage{height:200vh}
-  .js-motion .beat{--cam:clamp(0,calc((var(--sp,1) - .15)*1.8),1)}
+  /* A story scene is held longer than a stage of the path (240vh): half of the camera move happens while it is pinned, every animation is
+     finished by about 80% of the scene, and the finished screen then stays for almost half a screen of scrolling before it leaves. */
+  .js-motion .beat.slide-stage{height:240vh;--t:clamp(0,calc((var(--sp,1) - .12)*5),1);--u:clamp(0,calc((var(--sp,1) - .26)*5),1);--w:clamp(0,calc((var(--sp,1) - .3)*3.4),1);--v:clamp(0,calc((var(--sp,1) - .66)*7),1)}
+  .js-motion .beat{--cam:clamp(0,calc((var(--sp,1) - .12)*2.2),1)}
   .js-motion .beat .slide-grid{perspective:1700px;perspective-origin:76% 42%}
   .js-motion .beat .slide-visual{opacity:1;transform-style:preserve-3d;transform-origin:50% 70%;transform:translate3d(0,calc((1 - var(--cam))*14vh),calc((1 - var(--cam))*-380px)) rotateX(calc((1 - var(--cam))*60deg)) rotateZ(calc((1 - var(--cam))*-10deg))}
   .js-motion .beat .slide-visual>.sheet,.js-motion .beat .market-desk .paper{opacity:clamp(0,calc(var(--a)*3),1)}
@@ -926,7 +927,7 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
   .market-desk .paper:nth-child(4){--ty:16px;--z:220px;--rx:16deg;--ry:12deg}
 
   /* The turn: the card of the first conversation lies face down and is turned over. */
-  .js-motion .beat-zwrot{--flip:clamp(0,calc((var(--sp,1) - .2)*2.4),1)}
+  .js-motion .beat-zwrot{--flip:clamp(0,calc((var(--sp,1) - .16)*2.6),1)}
   .js-motion .beat-zwrot .slide-visual{transform:translate3d(0,calc((1 - var(--cam))*10vh),calc((1 - var(--cam))*-260px)) rotateX(calc((1 - var(--cam))*46deg)) rotateY(calc((1 - var(--flip))*-180deg))}
   .js-motion .beat-zwrot .slide-visual>.sheet{opacity:1;position:relative;transform-style:preserve-3d}
   .js-motion .beat-zwrot .flow-sheet::after{content:'';position:absolute;inset:-1px;border:1px solid #c6ccc7;border-radius:3px;background:#f4f6f3;transform:rotateY(180deg) translateZ(1px);backface-visibility:hidden}
