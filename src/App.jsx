@@ -557,8 +557,8 @@ function About() {
 function Home() {
   const { story, flow } = site;
   const film = useRef(null);
-  // The film: on a wide screen with motion and WebGL, a small 3D scene plays behind the text and replaces the flat sheets of
-  // the first screens. It is loaded on demand; if anything is missing the page simply stays as it is.
+  // The film: on a wide screen with motion, a small drawn scene (SVG, moved by GSAP) plays behind the text and replaces the flat
+  // sheets of the first screens. It is loaded on demand; if anything is missing the page simply stays as it is.
   useEffect(() => {
     const html = document.documentElement;
     if (!html.classList.contains('js-motion')) return;
@@ -569,14 +569,11 @@ function Home() {
       if (stop || starting) return;
       starting = true;
       try {
-        const probe = document.createElement('canvas');
-        if (probe.getContext('webgl2') || probe.getContext('webgl')) {
-          const { startFilm } = await import('./film.js');
-          const sections = [document.querySelector('.story-hero'), ...document.querySelectorAll('.story .slide')];
-          const dispose = await startFilm({ canvas: film.current, sections, papers: story.papers, paperLabel: story.paperLabel, say: story.turn.say, card: { title: flow.stages[1].sheet.title, label: story.turn.sheetLabel, questions: flow.stages[1].sheet.items } });
-          if (cancelled || !wide.matches) dispose();
-          else { stop = dispose; html.classList.add('film-on'); }
-        }
+        const { startFilm } = await import('./film.js');
+        const sections = [document.querySelector('.story-hero'), ...document.querySelectorAll('.story .slide')];
+        const dispose = await startFilm({ root: film.current, sections, papers: story.papers, paperLabel: story.paperLabel, say: story.turn.say, card: { title: flow.stages[1].sheet.title, label: story.turn.sheetLabel, questions: flow.stages[1].sheet.items }, karta: flow.stages[2].sheet, slide: flow.stages[3].sheet, ending: { ...story.ending.sheet, rows: site.compendium.recommendation }, team: story.ending.team });
+        if (cancelled || !wide.matches) dispose();
+        else { stop = dispose; html.classList.add('film-on'); }
       } catch { /* the flat page stays */ }
       starting = false;
     };
@@ -586,7 +583,7 @@ function Home() {
     return () => { cancelled = true; wide.removeEventListener('change', sync); off(); };
   }, []);
   return <main id="tresc" tabIndex="-1">
-    <canvas className="film" ref={film} aria-hidden="true" />
+    <div className="film" ref={film} aria-hidden="true" />
     <section className="hero theme-blue story-hero" aria-labelledby="hero-title">
       <div className="wrap">
         <div className="hero-row">

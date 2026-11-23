@@ -946,23 +946,36 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
   .js-motion .beat-koniec .slide-visual::after{translate:0 0 calc(-3px - (1 - var(--cam))*75px)}
 }
 
-/* The film (src/film.js): a WebGL scene fixed behind the story's text. It replaces the flat visuals of the first screens;
-   their content stays in the page for assistive technology. The sheets of the turn and of the ending remain real sheets. */
+/* The film (src/film.js): a pencil drawing (SVG) fixed behind the story's text, moved by the scroll. It replaces the flat
+   visuals of the first screens; their content stays in the page for assistive technology. The sheet of the ending remains a
+   real sheet. The drawing keeps to the right 60% of the screen; each shape exists twice and the two alternate (.boil). */
 .film{display:none}
 /* The film never runs under the text column: it fades out towards the left, so papers emerge from behind the words. */
 .film-on .film{display:block;position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent 30%,#000 44%);mask-image:linear-gradient(90deg,transparent 30%,#000 44%)}
+.film svg{position:absolute;right:0;top:0;width:60%;height:100%;overflow:visible}
+.film path{stroke-linecap:round;stroke-linejoin:round}
+.film .b1,.film .boil .b0{visibility:hidden}
+.film .boil .b1{visibility:inherit}
 .film-on .beat h2{max-width:11ch}
-.film-on .story-hero>.wrap,.film-on .story .beat-steps>.wrap{position:relative;z-index:2}
+.film-on .story-hero>.wrap{position:relative;z-index:2}
 .film-on .story .slide-pin{z-index:2}
 .film-on .market-pile{visibility:hidden}
-.film-on .beat-rynek .slide-visual,.film-on .beat-stawka .slide-visual,.film-on .beat-zwrot .slide-visual{clip-path:inset(50%)}
+.film-on .beat-rynek .slide-visual,.film-on .beat-stawka .slide-visual,.film-on .beat-zwrot .slide-visual,.film-on .beat-koniec .slide-visual{clip-path:inset(50%)}
 /* While the film plays, a flat sheet never lies on top of the animation: the card of the first conversation is an object of
-   the film too. The fridge screen says nothing until he has opened it: it is longer (300vh), its text arrives with the burst,
+   the film too. The fridge screen says nothing until he has opened it: it is longer (360vh), its text arrives with the burst,
    and it is still held for a third of a screen afterwards. */
-.film-on.js-motion .beat-stawka.slide-stage{height:300vh;--t:clamp(0,calc((var(--sp,1) - .5)*9),1);--u:clamp(0,calc((var(--sp,1) - .56)*8),1);--w:clamp(0,calc((var(--sp,1) - .56)*5),1);--v:clamp(0,calc((var(--sp,1) - .76)*8),1)}
+.film-on.js-motion .beat-stawka.slide-stage{height:360vh;--t:clamp(0,calc((var(--sp,1) - .55)*9),1);--u:clamp(0,calc((var(--sp,1) - .61)*8),1);--w:clamp(0,calc((var(--sp,1) - .61)*5),1);--v:clamp(0,calc((var(--sp,1) - .775)*8),1)}
 .film-on .beat-stawka .slide-copy{opacity:var(--t)}
 /* The turn is held longer too (280vh): the room has to leave and the card has to arrive and be read. */
 .film-on.js-motion .beat-zwrot.slide-stage{height:280vh}
+/* The four steps are one screen, pinned while the film plays them one after another above the columns (440vh): each title
+   arrives with its step of the film, and the finished screen is held before it leaves. */
+.film-on.js-motion .beat-steps{display:block;min-height:0;height:440vh;padding:0}
+.film-on.js-motion .beat-steps>.wrap{position:sticky;top:0;z-index:2;height:100vh;display:flex;flex-direction:column;padding-block:calc(var(--header-h) + clamp(20px,5vh,56px)) clamp(20px,4vh,48px)}
+.film-on.js-motion .beat-steps .story-steps{margin-top:auto}
+.film-on.js-motion .beat-steps .story-steps li{--r:clamp(0,calc((var(--sp,1) - .23 - var(--i,0)*.18)*10),1)}
+/* The ending is the fourth act of the film: the compendium opens as its object, then the hero sits among his team (300vh). */
+.film-on.js-motion .beat-koniec.slide-stage{height:300vh}
 @media print{.film{display:none!important}}
 
 @media(max-width:1100px){.market-pile{grid-column:7/-1}}

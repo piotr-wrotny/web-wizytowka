@@ -86,6 +86,9 @@ export const site = {
       value: 'Zamawiasz dokument, do którego zespół wraca, a nie godziny spotkania.',
       action: 'Zobacz przykładowe kompendium',
       sheet: { title: 'Kompendium: dział obsługi klienta', label: 'Przykład syntetyczny', part: 'Rekomendacja' },
+      // DRAFT 2026-11-23: what the people of the hero's team say in the last picture of the film (founder decision 2026-11-23:
+      // he ends up not alone with the problem, among a team that can finally act). Figures of the story, not client quotes.
+      team: ['Wreszcie możemy działać.', 'Nareszcie wiem, o co chodzi.'],
     },
     later: {
       title: 'Jeszcze nie teraz?',
