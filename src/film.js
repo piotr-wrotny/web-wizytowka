@@ -332,7 +332,8 @@ export async function startFilm({ root, sections, papers, paperLabel, say, card:
   {
     let y = 100;
     const rows = ending.rows.map(row => { const lines = wrap(row.text, `17px ${SERIF}`, COMP[0] - 96); const from = y; y += 30 + lines.length * 22 + 20; return { row, lines, from }; });
-    COMP[1] = y + 30;
+    // Room under the last row for the seal: it never lands on the words of the recommendation.
+    COMP[1] = y + 64;
     sheet(comp, ...COMP, ending.title, ending.label);
     label(comp, ending.part, 22, 72, `font:500 13px ${SANS};letter-spacing:.04em;fill:${C.soft}`);
     rows.forEach(({ row, lines, from }, i) => {
@@ -361,7 +362,9 @@ export async function startFilm({ root, sections, papers, paperLabel, say, card:
     label(cover, line, 54, k ? 176 : 142, `font:${font(size)};fill:${C.ink}`);
   });
   label(cover, ending.label, 54, 78, `font:500 12.5px ${SANS};fill:${C.soft}`);
-  seal(group(cover, { transform: `translate(${COVER[0] - 58} ${COVER[1] - 78}) rotate(-12)` }), 30);
+  // The cover carries the seal only once the plan has been sealed: while the four steps play the book has no sign on it,
+  // and green is kept for the ending.
+  const coverSeal = seal(group(cover, { transform: `translate(${COVER[0] - 58} ${COVER[1] - 78}) rotate(-12)` }), 30);
   // The consultation is a conversation: the advisor asks from the screen, each of them answers about their own work,
   // and what they say goes onto the shared slide as a task of their own.
   const chips = team.map(() => {
@@ -543,21 +546,22 @@ export async function startFilm({ root, sections, papers, paperLabel, say, card:
   // Act IV. The compendium opens on its recommendation: where to start, what to check, what to leave. It gets its seal.
   at(5.0, .05, { big: 1 });
   at(5.05, .05, { comp: 1 });
-  [0, 1, 2].forEach(i => at(5.14 + i * .04, .02, { [`c${i}`]: 1, ease: 'none' }));
-  at(5.25, .03, { seal: 1, ease: 'back.out(2.6)' });
-  // It closes into a book again and comes back to his hand. He stands in the middle, his team gathers round and they
-  // celebrate. The camera closes in on him.
-  at(5.37, .03, { comp: 0 });
-  at(5.39, .09, { mx: 735, walk: 4 });
-  at(5.4, .09, { x: 520 }, M[0]);
-  at(5.4, .09, { x: 628 }, M[1]);
-  at(5.4, .09, { x: 904 }, M[2]);
-  at(5.43, .06, { big: 0 });
-  at(5.42, .08, { day: 1 });
-  at(5.505, .05, { cheer: 1, ease: pop });
-  at(5.49, .1, { cs: .95, cx: -198, cy: 112 });
-  at(5.54, .035, { b0: 1, ease: pop });
-  at(5.57, .035, { b1: 1, ease: pop });
+  [0, 1, 2].forEach(i => at(5.13 + i * .035, .02, { [`c${i}`]: 1, ease: 'none' }));
+  at(5.235, .03, { seal: 1, ease: 'back.out(2.6)' });
+  // The sealed plan is held (over half a screen of scroll: it is the frame with the most to read). Then it closes into a book
+  // again and comes back to his hand. He stands in the middle, his team gathers round and they celebrate. The camera closes
+  // in on him.
+  at(5.4, .03, { comp: 0 });
+  at(5.42, .09, { mx: 735, walk: 4 });
+  at(5.43, .09, { x: 520 }, M[0]);
+  at(5.43, .09, { x: 628 }, M[1]);
+  at(5.43, .09, { x: 904 }, M[2]);
+  at(5.46, .06, { big: 0 });
+  at(5.45, .08, { day: 1 });
+  at(5.535, .05, { cheer: 1, ease: pop });
+  at(5.52, .1, { cs: .95, cx: -198, cy: 112 });
+  at(5.57, .035, { b0: 1, ease: pop });
+  at(5.6, .035, { b1: 1, ease: pop });
 
   root.appendChild(svg);
   const lastSection = sections[sections.length - 1];
@@ -733,11 +737,12 @@ export async function startFilm({ root, sections, papers, paperLabel, say, card:
     // The compendium. A book: handed over between them, then held up in his hand; in between it opens, big, on its last page.
     const hand = [S.mx + 92, 322], bookAt = [lerp(lerp(538, hand[0], S.hold), 820, S.big), lerp(lerp(528, hand[1], S.hold), 330, S.big)];
     show(cover, S.bk > .001 && S.comp < .5);
+    coverSeal.setAttribute('opacity', S.seal > .5 ? 1 : 0);
     set(cover, `translate(${n(bookAt[0])} ${n(bookAt[1])}) rotate(${n(lerp(4, -3, S.big))}) scale(${n(Math.max(.0001, S.bk) * lerp(lerp(.4, .34, S.hold), 1, S.big))}) translate(${-COVER[0] / 2} ${-COVER[1] / 2})`);
     show(comp, S.comp > .001);
     place(comp, COMP, 820, 330, 0, lerp(.7, COMPK, S.comp), -1.2);
     compRows.forEach(({ tick: mark }, i) => mark.setAttribute('stroke-dashoffset', n(1 - S[`c${i}`])));
-    set(compSeal, `translate(${COMP[0] - 58} ${COMP[1] - 52}) rotate(-12) scale(${n(Math.max(.0001, S.seal))})`);
+    set(compSeal, `translate(${COMP[0] - 58} ${COMP[1] - 46}) rotate(-12) scale(${n(Math.max(.0001, S.seal))})`);
 
     // Small sheets: a stream from left to right; then a red, restless cloud over him; then, third by third, quiet: each
     // falls into one of three neat stacks on the floor. In the end the stacks become the book.

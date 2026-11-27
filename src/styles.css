@@ -971,8 +971,9 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 /* The turn is held longer too (280vh): the room has to leave and the card has to arrive and be read. */
 .film-on.js-motion .beat-zwrot.slide-stage{height:280vh}
 /* The four steps are one screen, pinned while the film plays them one after another (560vh; the third step, the conversation, takes the most). The film has the stage: the
-   steps are a short list in the text column, and each line arrives with its step of the film. The finished screen is held. */
-.film-on.js-motion .beat-steps{display:block;min-height:0;height:560vh;padding:0}
+   steps are a short list in the text column, and each line arrives with its step of the film; the link under the list comes
+   after the fourth line, never before it. The finished screen is held. */
+.film-on.js-motion .beat-steps{display:block;min-height:0;height:560vh;padding:0;--v:clamp(0,calc((var(--sp,1) - .93)*20),1)}
 .film-on.js-motion .beat-steps>.wrap{position:sticky;top:0;z-index:2;height:100vh;display:flex;flex-direction:column;justify-content:center;padding-block:calc(var(--header-h) + 12px) 16px}
 .film-on.js-motion .beat-steps h2{font-size:clamp(1.9rem,min(4.2vw,7.4vh),3.5rem)}
 .film-on.js-motion .beat-steps .story-steps{grid-template-columns:minmax(0,1fr);gap:0;width:min(34%,26rem);margin-top:clamp(14px,3.4vh,36px);perspective:none}
@@ -984,8 +985,9 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 .film-on.js-motion .beat-steps .story-steps h3{margin-top:0;font-size:clamp(1.05rem,2.6vh,1.35rem)}
 .film-on.js-motion .beat-steps .story-steps p{margin-top:3px;font-size:clamp(.875rem,2vh,1rem);line-height:1.4;max-width:none}
 .film-on.js-motion .beat-steps .slide-action{margin-top:clamp(10px,2.4vh,24px)}
-/* The ending is the fourth act of the film: the compendium opens as its object, then the hero stands among his team (380vh). */
-.film-on.js-motion .beat-koniec.slide-stage{height:380vh}
+/* The ending is the fourth act of the film: the compendium opens as its object, then the hero stands among his team (420vh:
+   the sealed plan is held for over half a screen before it closes, and the last picture is held as long again). */
+.film-on.js-motion .beat-koniec.slide-stage{height:420vh}
 /* The way out of the happy ending: one green button under the hero, only while the film plays. It arrives after the team
    has started celebrating. Green is used nowhere else, so it reads as "now you". */
 .story-go,.contact-guest{display:none}
