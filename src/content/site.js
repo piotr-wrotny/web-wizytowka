@@ -75,7 +75,8 @@ export const site = {
       items: [
         { title: 'Rozmowa', text: 'Wiesz, czy to temat na konsultację. Krótko i bezpłatnie.' },
         { title: 'Rozpoznanie', text: 'Twoje bolączki i program spotkania są na jednej karcie.' },
-        { title: 'Konsultacja w firmie', text: 'Zespół widzi AI na własnych zadaniach, na danych demonstracyjnych.' },
+        // 2026-11-27, founder: "konsultacja" is the whole package; the meeting is "Spotkanie w firmie" (was 'Konsultacja w firmie').
+        { title: 'Spotkanie w firmie', text: 'Zespół widzi AI na własnych zadaniach, na danych demonstracyjnych.' },
         { title: 'Kompendium', text: 'Zostaje dokument z rekomendacją, od czego zacząć.' },
       ],
       action: 'Zobacz, jak przebiega konsultacja',
@@ -89,7 +90,8 @@ export const site = {
     },
     ending: {
       title: 'Na końcu wiesz, od czego zacząć.',
-      text: 'Po konsultacji dostajesz kompendium. Porządkuje to, co padło na spotkaniu, i kończy się rekomendacją: od czego zacząć, co sprawdzić, co odpuścić.',
+      // 2026-11-27: 'Po spotkaniu' (was 'Po konsultacji'): the compendium is part of the consultation, it comes after the meeting.
+      text: 'Po spotkaniu dostajesz kompendium. Porządkuje to, co na nim padło, i kończy się rekomendacją: od czego zacząć, co sprawdzić, co odpuścić.',
       value: 'Zamawiasz dokument, do którego zespół wraca, a nie godziny spotkania.',
       action: 'Zobacz przykładowe kompendium',
       sheet: { title: 'Kompendium: dział obsługi klienta', label: 'Przykład syntetyczny', part: 'Rekomendacja' },
@@ -158,7 +160,8 @@ export const site = {
         sheet: { kind: 'card', title: 'Karta rozpoznania', rows: [['Problemy', 'Co dziś nie działa i gdzie ucieka czas.'], ['Bolączki', 'Co najbardziej przeszkadza w codziennej pracy.'], ['Program', 'Tematy spotkania, do akceptacji.']], scale: { label: 'Poziom wiedzy', from: 'początki', to: 'praktyka', steps: 5, at: 2 } },
       },
       {
-        title: 'Konsultacja w firmie',
+        // 2026-11-27, founder: the stage is the meeting; "konsultacja" names the whole package (was 'Konsultacja w firmie').
+        title: 'Spotkanie w firmie',
         text: 'Prezentacja prowadzi od wspólnych pojęć do realiów Twojej firmy. Pokazuję dwa lub trzy Wasze zastosowania na danych demonstracyjnych, potem dyskutujemy w grupie.',
         value: 'Zespół widzi AI na własnych zadaniach, bez wynoszenia poufnych danych.',
         sheet: { kind: 'slide', title: 'Prezentacja', heading: 'Od wspólnych pojęć do Waszych zadań', items: ['Wspólne pojęcia', 'Wasze zastosowania', 'Dyskusja w grupie'] },
@@ -179,16 +182,26 @@ export const site = {
       },
     ],
   },
-  // DRAFT 2026-11-22: stage 0 of the client path, "open knowledge". Written by the assistant from
-  // ~/Work/ai-ekspert/oferta/sciezka-klienta.md. The guide (PDF) does not exist yet; its date, the update terms,
-  // the e-mail delivery and the consents are open founder decisions. The form on /przewodnik/ is a local demonstration.
-  // The stack list is a proposal: every item is a block the founder has to write, date and maintain.
+  // DRAFT 2026-11-27: stage 0 of the client path, "open knowledge", re-cut by the assistant after the founder's decisions of
+  // 2026-11-27: the guide is available at once, without an address, and leaving an address gives an analysis of the visitor's own
+  // situation. The page carries two separate offers: the guide for everyone, the analysis for the address.
+  // Previous cut (2026-11-22): one form, "PDF for an e-mail address"; the form was the letter carrying the guide and the blocks
+  // ('Dowiedz się o AI i narzędziach.' / 'Bezpłatny przewodnik, który wyrównuje słownictwo przed pierwszą rozmową: co AI potrafi,
+  // czego nie i jak nazwać to, z czego już korzystasz.').
+  // The guide (PDF) does not exist yet and no commentary on any tool has been written: both are the founder's to write and date.
+  // Its date, the update terms, the e-mail delivery, the model for the note and the consents are open founder decisions.
   guide: {
     path: '/przewodnik/',
-    title: 'Dowiedz się o AI i narzędziach.',
-    lead: 'Bezpłatny przewodnik, który wyrównuje słownictwo przed pierwszą rozmową: co AI potrafi, czego nie i jak nazwać to, z czego już korzystasz.',
-    meta: ['PDF', 'Bezpłatny, za adres e-mail', 'Wydanie w przygotowaniu'],
-    jump: 'Pobierz przewodnik',
+    name: 'Przewodnik po AI i narzędziach',
+    title: 'Bezpłatny przewodnik po AI i narzędziach.',
+    lead: 'Co AI potrafi, czego nie i jak nazwać to, z czego już korzystasz. Czytasz od razu, bez podawania adresu.',
+    author: 'Pisze Piotr Wrotny, niezależny doradca AI.',
+    meta: ['PDF', 'Bez adresu', 'Wydanie w przygotowaniu'],
+    // The path of the PDF once the first edition exists; the button then downloads it. Until then the button leads to the contents.
+    file: null,
+    download: 'Pobierz przewodnik',
+    jump: 'Zobacz, co jest w środku',
+    jumpAnalysis: 'Analiza Twoich narzędzi',
     contentsTitle: 'Co jest w środku',
     chapters: [
       { title: 'Co AI potrafi, a czego nie', text: 'Gdzie model pomaga, gdzie zgaduje i po czym to poznać.' },
@@ -199,38 +212,55 @@ export const site = {
     ],
     // Dated and updated: said by the document itself, in the foot of its contents sheet.
     tocFoot: 'Każde wydanie ma datę stanu. Nowe powstaje, gdy zmienia się coś istotnego.',
-    pending: 'przewodnik (PDF), data wydania, zasady aktualizacji oraz rzeczywista wysyłka.',
-    // The form is the e-mail itself: ticking a tool writes its block into the letter below, the address goes in the "Do:" line.
-    form: {
-      title: 'Pobierz przewodnik.',
-      intro: 'Zaznacz, z czego korzystasz, i zobacz, co dopisuje się do maila. Adres podajesz na końcu.',
-      note: 'To demonstracja: mail składa się w tej karcie, nic nie jest wysyłane ani zapisywane.',
+    pending: 'przewodnik (PDF), data wydania i zasady aktualizacji.',
+    // The second offer. Ticking a tool opens its commentary on the page at once; the address is asked only for the analysis as a
+    // letter. A local demonstration: nothing is sent, stored or generated.
+    analysis: {
+      title: 'Analiza Twojej sytuacji.',
+      intro: 'Zaznacz, z czego korzystasz. Komentarz do każdego narzędzia rozwija się od razu. Adres podajesz tylko wtedy, gdy chcesz dostać całość jako analizę.',
+      note: 'To demonstracja: analiza składa się w tej karcie, nic nie jest wysyłane ani zapisywane.',
+      pending: 'komentarze do narzędzi z datą stanu, komentarz do zestawu oraz rzeczywista wysyłka.',
       stackLegend: 'Z czego korzystasz?',
-      stackHint: 'Możesz zaznaczyć kilka pozycji albo żadnej.',
+      stackHint: 'Zaznacz jedną pozycję albo kilka.',
+      // The list is a proposal: every item is a commentary the founder has to write, date and maintain.
       groups: [
         { id: 'asystent', title: 'Asystent lub agent', items: ['ChatGPT', 'Microsoft Copilot', 'Gemini', 'Claude'] },
         { id: 'srodowisko', title: 'Środowisko pracy', items: ['Microsoft 365', 'Google Workspace'] },
         { id: 'automatyzacje', title: 'Automatyzacje', items: ['Power Automate', 'Zapier', 'Make', 'n8n'] },
       ],
       none: 'Nie wiem albo nie korzystam',
-      mailTitle: 'Twój mail',
-      subject: 'Przewodnik po AI i narzędziach',
-      addressNote: 'Adres służy do wysłania przewodnika. Bez newslettera.',
-      guideRow: 'Przewodnik (PDF)',
-      guideSub: 'Pięć rozdziałów, z datą stanu. W przygotowaniu.',
-      blockLabel: 'Omówienie',
-      blockParts: 'W każdym omówieniu: co to jest, do czego się nadaje, co nowego (z datą), ograniczenia i poufność, jeden praktyczny tip.',
-      noteRow: 'Dopisek: co ten zestaw daje razem',
-      noteTag: 'Wygenerowany automatycznie, wyłącznie z omówień powyżej.',
-      noneRow: 'Bez omówień narzędzi',
-      noneSub: 'Dobry początek: rozdział „Mapa narzędzi”.',
-      emptyHint: 'Zaznacz narzędzie powyżej, a jego omówienie dopisze się tutaj.',
-      updates: 'Chcę dostać wiadomość, gdy przewodnik albo zaznaczone narzędzia istotnie się zmienią. To osobna zgoda; można ją wycofać.',
+      emptyHint: 'Zaznacz narzędzie, a jego komentarz rozwinie się tutaj.',
+      noneTitle: 'Nie potrzebujesz analizy, żeby zacząć.',
+      noneText: 'Dobry początek: rozdział „Mapa narzędzi” w przewodniku.',
+      // The parts of one commentary, in the founder's words of 2026-11-27 (strong and weak sides). Shown as the shape of a
+      // commentary until its text exists. Previous (2026-11-22): co to jest · do czego się nadaje · co nowego (z datą) ·
+      // ograniczenia i poufność · jeden praktyczny tip.
+      parts: [
+        ['Mocne strony', 'Do czego to narzędzie naprawdę się nadaje.'],
+        ['Słabe strony', 'Gdzie zawodzi i po czym to poznać.'],
+        ['Dane i poufność', 'Co wolno mu przekazać, a czego nie.'],
+      ],
+      pendingLabel: 'Komentarz w przygotowaniu',
+      stateLabel: 'Stan na',
+      // Commentaries written and dated by the founder, keyed by the tool's name as listed above:
+      //   'ChatGPT': { state: '2026-12-01', rows: [['Mocne strony', '…'], ['Słabe strony', '…'], ['Dane i poufność', '…']] }
+      // None exists yet. Never write one as a fact on the founder's behalf.
+      comments: {},
+      // The note about the set appears only for two or more tools and is always labelled as generated.
+      setTitle: 'Twój zestaw razem',
+      setTag: 'Wygenerowany automatycznie, wyłącznie z komentarzy powyżej.',
+      setPending: 'Pojawi się, gdy powstaną komentarze do zaznaczonych narzędzi.',
+      mailTitle: 'Twoja analiza',
+      subject: 'Analiza Twoich narzędzi',
+      addressNote: 'Adres służy do wysłania analizy. Bez newslettera.',
+      rowLabel: 'Komentarz',
+      updates: 'Chcę dostać wiadomość, gdy zaznaczone narzędzia istotnie się zmienią. To osobna zgoda; można ją wycofać.',
       button: 'Sprawdź adres',
       doneTitle: 'Adres jest poprawny.',
-      doneText: 'W działającej wersji ten mail trafiłby teraz do Ciebie. Dziś nic nie zostało wysłane ani zapisane.',
+      doneText: 'W działającej wersji analiza trafiłaby teraz do Ciebie. Dziś nic nie zostało wysłane ani zapisane.',
     },
-    next: { title: 'Wolisz najpierw zobaczyć efekt końcowy?', text: 'Kompendium to dokument, który zostaje po konsultacji. Przykład jest w całości syntetyczny.', button: 'Zobacz przykładowe kompendium', link: 'Zobacz całą ścieżkę' },
+    // The step towards the first conversation; the ticked tools travel to its card.
+    next: { title: 'Chcesz to omówić dla swojej firmy?', text: 'Krótka, bezpłatna rozmowa. Zaznaczone narzędzia przejdą do karty pierwszej rozmowy.', button: 'Opisz swoją sytuację', link: 'Zobacz przykładowe kompendium' },
   },
   // DRAFT 2026-11-22: a synthetic sample compendium, written by the assistant. The team, the meeting and every detail are invented
   // and unrelated to any engagement; no model was run. It shows the structure only (general modules + client chapters)
@@ -242,7 +272,7 @@ export const site = {
     lead: 'Przykład dokumentu, który zostaje po spotkaniu: moduły ogólne i rozdziały napisane dla jednej firmy.',
     boundary: 'Zespół, spotkanie i wszystkie szczegóły są zmyślone. Nie opisują zlecenia ani klienta; nie uruchamiano żadnego modelu.',
     intro: [
-      'Kompendium porządkuje i rozwija to, o czym była mowa na spotkaniu, razem z wątkami, które pojawiły się dopiero w dyskusji. Uczestnicy dostają je po konsultacji i mogą do niego wracać.',
+      'Kompendium porządkuje i rozwija to, o czym była mowa na spotkaniu, razem z wątkami, które pojawiły się dopiero w dyskusji. Uczestnicy dostają je po spotkaniu i mogą do niego wracać.',
       'Ma dwie części. Moduły ogólne pochodzą z tej samej bazy co przewodnik i są dobierane do poziomu zespołu. Rozdziały klienta powstają dla jednej firmy: opisują jej zastosowania pokazane na danych demonstracyjnych oraz to, co wyszło w rozmowie. Na końcu jest rekomendacja: od czego zacząć, co sprawdzić, co odpuścić.',
     ],
     contentsTitle: 'Spis treści przykładu',
@@ -303,6 +333,8 @@ export const site = {
     pending: 'adres e-mail i termin odpowiedzi.',
     sheetTitle: 'Pierwsza rozmowa',
     replyLabel: 'Odpowiedź na:',
+    // Shown on the card when the visitor comes from the guide page with tools ticked there.
+    toolsLabel: 'Narzędzia z przewodnika:',
     button: 'Sprawdź kartę',
     topics: { zadanie: 'Standard dla zespołu', decyzja: 'Jedna decyzja', oferta: 'Przegląd oferty' },
     hint: 'Zadanie lub decyzja, obecne narzędzie i główna trudność.',
@@ -310,7 +342,8 @@ export const site = {
   formats: {
     title: 'Trzy formaty. Zakres ustalamy razem.',
     // DRAFT 2026-11-22: lead re-written so the formats sit beside the full consultation path instead of competing with it.
-    lead: 'Pełna konsultacja kończy się kompendium. Gdy pytanie jest węższe albo idziemy krok dalej, wystarcza jeden z trzech formatów. Każdy kończy się zapisem: rekomendacją, standardem albo oceną oferty.',
+    // 2026-11-27: 'Konsultacja' (was 'Pełna konsultacja'): the word has one meaning now, the whole package.
+    lead: 'Konsultacja kończy się kompendium. Gdy pytanie jest węższe albo idziemy krok dalej, wystarcza jeden z trzech formatów. Każdy kończy się zapisem: rekomendacją, standardem albo oceną oferty.',
     boundaryNote: 'Zakres, cenę i terminy potwierdzam przed rozpoczęciem współpracy.',
   },
   workflow: {
@@ -345,7 +378,7 @@ export const site = {
     details: [
       'Sesja 60 minut, maksymalnie dwóch uczestników i do pięciu stron materiału. Dopasowanie sprawdzamy przed rezerwacją.',
       'Memo 1–2 strony do dwóch dni roboczych: rekomendacja, uzasadnienie, niewiadome i następny krok. Jedna zbiorcza odpowiedź do tego samego pytania w ciągu pięciu dni roboczych.',
-      'Rozległy research, ocena dużej oferty, konfiguracja zespołu i test działającego systemu wymagają osobnego ustalenia. Konsultacja jest samodzielną usługą; nie trzeba jej kupować przed pracą z zespołem.',
+      'Rozległy research, ocena dużej oferty, konfiguracja zespołu i test działającego systemu wymagają osobnego ustalenia. Jedna decyzja jest samodzielną usługą; nie trzeba jej kupować przed pracą z zespołem.',
     ],
   },
   review: {

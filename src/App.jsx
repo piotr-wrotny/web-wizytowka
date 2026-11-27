@@ -34,7 +34,7 @@ export function getPageMeta(path) {
   if (article) return { title: `${article.title} — ${site.descriptor}`, description: article.lead };
   if (path === samplePath) return { title: 'Przykład standardu pracy z AI — dane syntetyczne', description: 'Otwarta demonstracja metody: wejście, kontrola faktów, odpowiedzialność i warunki przerwania pracy.' };
   if (path === site.principlesPath) return { title: `${site.principlesTitle} — ${site.name}`, description: site.principlesLead };
-  if (path === guidePath) return { title: `Przewodnik po AI i narzędziach — ${site.name}`, description: site.guide.lead };
+  if (path === guidePath) return { title: `${site.guide.name} — ${site.name}`, description: `${site.guide.title} ${site.guide.lead}` };
   if (path === compendiumPath) return { title: 'Przykładowe kompendium po konsultacji — dane syntetyczne', description: 'Jak wygląda dokument, który zostaje po konsultacji: moduły ogólne i rozdziały napisane dla jednej firmy. Przykład w całości syntetyczny.' };
   if (path === '/prywatnosc/') return { title: 'Prywatność prototypu — niezależny doradca AI', description: 'Jak działają demonstracyjne formularze i co wymaga uzupełnienia przed uruchomieniem obsługi zapytań.' };
   if (path === servicePath) return { title: `Konsultacje AI szyte na miarę — ${site.name}`, description: 'Jak przebiega konsultacja: rozmowa, rozpoznanie, spotkanie w firmie i kompendium z rekomendacją. Trzy formaty współpracy i bezpłatny przewodnik po AI i narzędziach.' };
@@ -203,7 +203,7 @@ function Proof() {
 
 /* Stage 0 keeps what can be read without talking to anyone: the guide and the analyses. Its sheet is a real index. */
 const openLinks = [
-  { label: site.guide.form.subject, meta: 'PDF', href: guidePath },
+  { label: site.guide.name, meta: 'PDF', href: guidePath },
   ...articles.map(a => ({ label: a.title, meta: `${readingMinutes(a.blocks)} min`, href: `/analizy/${a.slug}/` })),
 ];
 
@@ -547,7 +547,7 @@ function Formats() {
         <div className="format-body">
           <p className="format-text">{consultation.text}</p>
           <p className="format-text">{consultation.outcome}</p>
-          <div className="disclosures"><Disclosure title="Format i rezultat konsultacji">{consultation.details.map(p => <p key={p}>{p}</p>)}</Disclosure></div>
+          <div className="disclosures"><Disclosure title="Format i rezultat">{consultation.details.map(p => <p key={p}>{p}</p>)}</Disclosure></div>
           <div className="format-links"><TextLink href="/?temat=decyzja#kontakt" arrow>Opisz decyzję</TextLink></div>
         </div>
       </article>
@@ -682,6 +682,7 @@ function Contact() {
   const [answers, setAnswers] = useState(() => questions.map(() => ''));
   const [email, setEmail] = useState('');
   const [topic, setTopic] = useState(null);
+  const [tools, setTools] = useState([]);
   const [errors, setErrors] = useState({});
   const [preview, setPreview] = useState(null);
   const [copied, setCopied] = useState(false);
@@ -693,6 +694,16 @@ function Contact() {
     setReady(true);
     const requested = new URLSearchParams(window.location.search).get('temat');
     if (contact.topics[requested]) setTopic(requested);
+    // Tools ticked on the guide page arrive in the session memory, are read once and removed; only known names are kept.
+    try {
+      const raw = sessionStorage.getItem(toolsKey);
+      if (raw) {
+        sessionStorage.removeItem(toolsKey);
+        const known = site.guide.analysis.groups.flatMap(g => g.items);
+        const list = JSON.parse(raw);
+        if (Array.isArray(list)) setTools(known.filter(item => list.includes(item)));
+      }
+    } catch { /* the card stays as it is */ }
   }, []);
   useEffect(() => { if (focusSummary.current) { focusSummary.current = false; errorBox.current?.focus(); } }, [errors]);
   useEffect(() => { if (preview) previewBox.current?.focus(); }, [preview]);
@@ -711,7 +722,7 @@ function Contact() {
     if (Object.keys(next).length) { focusSummary.current = true; setErrors(next); return; }
     setErrors({});
     const parts = questions.map((q, i) => answers[i].trim() ? `${q}\n${answers[i].trim()}` : null).filter(Boolean);
-    setPreview(`${topic ? `Temat: ${contact.topics[topic]}\n\n` : ''}${parts.join('\n\n')}\n\n${contact.replyLabel} ${email.trim()}`);
+    setPreview(`${topic ? `Temat: ${contact.topics[topic]}\n\n` : ''}${tools.length ? `${contact.toolsLabel} ${tools.join(', ')}\n\n` : ''}${parts.join('\n\n')}\n\n${contact.replyLabel} ${email.trim()}`);
   }
   async function copyDraft() {
     try { await navigator.clipboard.writeText(preview); setCopied(true); setCopyError(false); }
@@ -733,6 +744,7 @@ function Contact() {
           <fieldset disabled={!ready}>
             <legend className="visually-hidden">Trzy pytania i adres do odpowiedzi</legend>
             {Object.keys(errors).length > 0 && <div className="error-summary" ref={errorBox} tabIndex="-1" role="alert"><p>{Object.keys(errors).length > 1 ? 'Dwie rzeczy są potrzebne, żeby karta była gotowa.' : 'Jedna rzecz jest potrzebna, żeby karta była gotowa.'}</p>{Object.entries(errors).map(([key, text]) => <a key={key} href={`#${errorTargets[key]}`}>{text}</a>)}</div>}
+            {tools.length > 0 && <p className="card-tools"><span>{contact.toolsLabel}</span> <span translate="no">{tools.join(', ')}</span> <button type="button" className="card-tools-clear" onClick={() => { reset(); setTools([]); }}>Usuń</button></p>}
             {questions.map((question, i) => <div className="card-q" key={question} data-answered={answers[i].trim() ? '' : undefined}>
               <label htmlFor={`card-q${i}`}><span className="card-q-mark" aria-hidden="true"><Mark kind="query" /><Mark kind="tick" /></span><span>{question}</span>{i > 0 && <span className="card-q-opt">(opcjonalne)</span>}</label>
               {i === 0 && <p className="field-hint" id="card-hint">{contact.hint}</p>}
@@ -843,16 +855,21 @@ function SamplePage() {
   </ArticleFrame>;
 }
 
-/* Stage 0 of the client path: the free guide. The form is the e-mail the visitor would receive: ticking a tool writes its block
-   into the letter, two or more add the generated note, and the address goes in the letter's own "Do:" line.
+/* Stage 0 of the client path: the free guide, and beside it the analysis of the visitor's own tools (founder, 2026-11-27).
+   The guide needs no address. The analysis answers at once: ticking a tool opens its commentary on the page, two or more add
+   the note about the set, and only then comes the letter that would carry it, with the address in its own "Do:" line.
    A local demonstration: nothing is sent, stored or generated. */
 /* A box to tick, as on a paper form: the pencil tick is drawn larger than the box. Used for every choice on the guide page. */
 function Pick({ children, plain = false, ...input }) {
   return <label className={`pick${plain ? ' pick-plain' : ''}`}><input type="checkbox" {...input} /><span className="pick-box" aria-hidden="true"><Mark kind="tick" /></span><span className="pick-text">{children}</span></label>;
 }
 
-function GuideForm() {
-  const { form } = site.guide;
+/* The ticked tools travel to the card of the first conversation in the browser's session memory, never in the address of the
+   page: they are read once there and removed. */
+const toolsKey = 'pw-tools';
+
+function GuideAnalysis() {
+  const { analysis, next } = site.guide;
   const [ready, setReady] = useState(false);
   const [email, setEmail] = useState('');
   const [picked, setPicked] = useState([]);
@@ -874,87 +891,110 @@ function GuideForm() {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) { setError('Wpisz adres e-mail w poprawnym formacie.'); setDone(false); field.current?.focus(); return; }
     setError(''); setDone(true);
   }
-  const ordered = form.groups.flatMap(g => g.items).filter(item => picked.includes(item));
+  const ordered = analysis.groups.flatMap(g => g.items).filter(item => picked.includes(item));
   const n = ordered.length;
-  const summary = ['przewodnik', n > 0 && `${n} ${n === 1 ? 'omówienie' : n < 5 ? 'omówienia' : 'omówień'}`, n > 1 && 'dopisek'].filter(Boolean).join(' + ');
-  return <form className="guide-form" noValidate onSubmit={submit} aria-label="Przewodnik i Twoje narzędzia">
-    <fieldset disabled={!ready}>
-      <legend className="visually-hidden">Narzędzia i adres</legend>
-      <fieldset className="picks">
-        <legend>{form.stackLegend} <span>(opcjonalne)</span></legend>
-        <p className="field-hint">{form.stackHint}</p>
-        {form.groups.map(group => <div className="pick-group" role="group" aria-labelledby={`pick-${group.id}`} key={group.id}>
-          <p id={`pick-${group.id}`}>{group.title}</p>
-          <div className="pick-options">{group.items.map(item => <Pick key={item} name="stack" value={item} checked={picked.includes(item)} onChange={() => toggle(item)}><span translate="no">{item}</span></Pick>)}</div>
-        </div>)}
-        <div className="pick-group pick-none"><Pick plain name="stack-none" checked={none} onChange={toggleNone}>{form.none}</Pick></div>
-      </fieldset>
-      <p className="mail-status" role="status"><span>W mailu:</span> {summary}</p>
-      <div className="sheet mail" data-done={done ? '' : undefined}>
-        <div className="sheet-bar"><p>{form.mailTitle}</p><p>Podgląd, nic nie jest wysyłane</p></div>
-        <div className="mail-head">
-          <div className="mail-to"><label htmlFor="guide-email">Do:<span className="visually-hidden"> adres e-mail (wymagany)</span></label><input id="guide-email" ref={field} name="email" type="email" autoComplete="email" spellCheck="false" maxLength="254" placeholder="twoj@adres.pl" value={email} onChange={e => { setEmail(e.target.value); setError(''); setDone(false); }} required aria-invalid={Boolean(error)} aria-describedby={error ? 'guide-error-email' : undefined} /></div>
-          {error && <p className="field-error" id="guide-error-email" role="alert">{error}</p>}
-          <p className="mail-subject"><span>Temat:</span> {form.subject}</p>
-          <p className="mail-address-note">{form.addressNote}</p>
+  const summary = n ? [`${n} ${n === 1 ? 'komentarz' : n < 5 ? 'komentarze' : 'komentarzy'}`, n > 1 && 'zestaw razem'].filter(Boolean).join(' + ') : 'jeszcze nic';
+  function carry() {
+    try { if (n) sessionStorage.setItem(toolsKey, JSON.stringify(ordered)); else sessionStorage.removeItem(toolsKey); } catch { /* the card simply opens without them */ }
+  }
+  return <>
+    <form className="guide-form" noValidate onSubmit={submit} aria-label="Analiza Twoich narzędzi">
+      <fieldset disabled={!ready}>
+        <legend className="visually-hidden">Narzędzia i adres</legend>
+        <fieldset className="picks">
+          <legend>{analysis.stackLegend}</legend>
+          <p className="field-hint">{analysis.stackHint}</p>
+          {analysis.groups.map(group => <div className="pick-group" role="group" aria-labelledby={`pick-${group.id}`} key={group.id}>
+            <p id={`pick-${group.id}`}>{group.title}</p>
+            <div className="pick-options">{group.items.map(item => <Pick key={item} name="stack" value={item} checked={picked.includes(item)} onChange={() => toggle(item)}><span translate="no">{item}</span></Pick>)}</div>
+          </div>)}
+          <div className="pick-group pick-none"><Pick plain name="stack-none" checked={none} onChange={toggleNone}>{analysis.none}</Pick></div>
+        </fieldset>
+        <p className="mail-status" role="status"><span>W analizie:</span> {summary}</p>
+        <div className="tool-cards">
+          {n === 0 && !none && <p className="tool-empty">{analysis.emptyHint}</p>}
+          {n === 0 && none && <div className="sheet tool-card tool-none">
+            <div className="sheet-bar"><p>{analysis.noneTitle}</p></div>
+            <p className="tool-body">{analysis.noneText} <a href="#w-srodku">Zobacz spis treści</a>.</p>
+          </div>}
+          {ordered.map(item => {
+            const comment = analysis.comments[item];
+            return <article className="sheet tool-card" key={item} data-pending={comment ? undefined : ''} aria-label={`${analysis.rowLabel}: ${item}`}>
+              <div className="sheet-bar"><p translate="no">{item}</p><p>{comment ? `${analysis.stateLabel} ${comment.state}` : analysis.pendingLabel}</p></div>
+              <dl className="tool-rows">{(comment ? comment.rows : analysis.parts).map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+            </article>;
+          })}
+          {n > 1 && <div className="sheet tool-card tool-set" key="set">
+            <div className="sheet-bar"><p>{analysis.setTitle}</p><p>{analysis.setTag}</p></div>
+            <p className="tool-body">{analysis.setPending}</p>
+          </div>}
         </div>
-        <ul className="mail-rows">
-          <li><Mark kind="tick" /><div><p className="mail-item">{form.guideRow}</p><p className="mail-sub">{form.guideSub}</p></div></li>
-          {ordered.map(item => <li key={item}><Mark kind="tick" /><div><p className="mail-item">{form.blockLabel}: <span translate="no">{item}</span></p></div></li>)}
-          {n > 1 && <li key="note" className="mail-note"><Mark kind="bar" /><div><p className="mail-item">{form.noteRow}</p><p className="mail-sub">{form.noteTag}</p></div></li>}
-          {n > 0 && <li key="parts" className="mail-parts"><p className="mail-sub">{form.blockParts}</p></li>}
-          {n === 0 && none && <li key="none"><Mark kind="bar" /><div><p className="mail-item">{form.noneRow}</p><p className="mail-sub">{form.noneSub}</p></div></li>}
-          {n === 0 && !none && <li key="empty" className="mail-empty"><p className="mail-sub">{form.emptyHint}</p></li>}
-        </ul>
-        <div className="mail-foot">
-          <Pick plain name="updates" checked={updates} onChange={() => { setUpdates(v => !v); setDone(false); }}>{form.updates}</Pick>
-          <Button type="submit" compact>{form.button}</Button>
-        </div>
-        {done && <div className="mail-done" ref={doneBox} tabIndex="-1" role="status">
-          <p className="draft-title"><Mark kind="tick" />{form.doneTitle}</p>
-          <p>{form.doneText}</p>
+        {n > 0 && <div className="sheet mail" data-done={done ? '' : undefined}>
+          <div className="sheet-bar"><p>{analysis.mailTitle}</p><p>Podgląd, nic nie jest wysyłane</p></div>
+          <div className="mail-head">
+            <div className="mail-to"><label htmlFor="guide-email">Do:<span className="visually-hidden"> adres e-mail (wymagany)</span></label><input id="guide-email" ref={field} name="email" type="email" autoComplete="email" spellCheck="false" maxLength="254" placeholder="twoj@adres.pl" value={email} onChange={e => { setEmail(e.target.value); setError(''); setDone(false); }} required aria-invalid={Boolean(error)} aria-describedby={error ? 'guide-error-email' : undefined} /></div>
+            {error && <p className="field-error" id="guide-error-email" role="alert">{error}</p>}
+            <p className="mail-subject"><span>Temat:</span> {analysis.subject}</p>
+            <p className="mail-address-note">{analysis.addressNote}</p>
+          </div>
+          <ul className="mail-rows">
+            {ordered.map(item => <li key={item}><Mark kind="tick" /><div><p className="mail-item">{analysis.rowLabel}: <span translate="no">{item}</span></p></div></li>)}
+            {n > 1 && <li key="set" className="mail-note"><Mark kind="bar" /><div><p className="mail-item">{analysis.setTitle}</p><p className="mail-sub">{analysis.setTag}</p></div></li>}
+          </ul>
+          <div className="mail-foot">
+            <Pick plain name="updates" checked={updates} onChange={() => { setUpdates(v => !v); setDone(false); }}>{analysis.updates}</Pick>
+            <Button type="submit" compact>{analysis.button}</Button>
+          </div>
+          {done && <div className="mail-done" ref={doneBox} tabIndex="-1" role="status">
+            <p className="draft-title"><Mark kind="tick" />{analysis.doneTitle}</p>
+            <p>{analysis.doneText}</p>
+          </div>}
         </div>}
-      </div>
-    </fieldset>
-    <noscript><p>Składanie maila wymaga JavaScript. Formularz niczego nie wysyła.</p></noscript>
-  </form>;
+      </fieldset>
+      <noscript><p>Analiza składa się w przeglądarce i wymaga JavaScript. Formularz niczego nie wysyła.</p></noscript>
+    </form>
+    <Note>{analysis.note} <a href="/prywatnosc/">Prywatność prototypu</a>.</Note>
+    <Pending>{analysis.pending}</Pending>
+    <div className="cta">
+      <div className="cta-copy"><h2 className="cta-title">{next.title}</h2><p>{next.text}</p></div>
+      <div className="cta-actions"><a className="btn" href={contactHref} onClick={carry}><span>{next.button}</span><ArrowRight aria-hidden="true" /></a><TextLink href={compendiumPath} arrow>{next.link}</TextLink></div>
+    </div>
+  </>;
 }
 
-/* The guide page is read top to bottom, one question per screen: what is it, what is inside, how do I get it.
-   Everything sits on one column of the grid. The only motion is the letter answering the reader's choices. */
+/* The guide page is read top to bottom, one question per screen: what do I get and from whom, what is inside, what about my
+   own tools. Everything sits on one column of the grid. The only motion is the page answering the reader's choices. */
 function GuidePage() {
   const { guide } = site;
   return <main id="tresc" tabIndex="-1" className="guide">
     <section className="scene scene-intro" aria-labelledby="guide-title">
       <div className="wrap scene-grid"><div className="scene-col">
-        <a className="back-link" href={`${servicePath}#etap-0`}><ArrowLeft aria-hidden="true" />Wróć do wiedzy otwartej</a>
         <h1 id="guide-title">{guide.title}</h1>
         <p className="article-lead">{guide.lead}</p>
+        <p className="guide-author">{guide.author}</p>
         <p className="meta">{guide.meta.map(m => <span key={m}>{m}</span>)}</p>
-        <div className="guide-jump"><Button href="#pobierz">{guide.jump}</Button></div>
+        <div className="guide-jump">{guide.file ? <Button href={guide.file}>{guide.download}</Button> : <Button href="#w-srodku">{guide.jump}</Button>}<TextLink href="#analiza" arrow>{guide.jumpAnalysis}</TextLink></div>
       </div></div>
     </section>
-    <section className="scene scene-desk" aria-labelledby="guide-contents-title">
+    <section className="scene scene-desk" id="w-srodku" aria-labelledby="guide-contents-title">
       <div className="wrap scene-grid"><div className="scene-col">
         <h2 className="scene-title" id="guide-contents-title">{guide.contentsTitle}</h2>
         <div className="sheet guide-toc">
-          <div className="sheet-bar"><p>{guide.form.subject}</p><p>Spis treści</p></div>
+          <div className="sheet-bar"><p>{guide.name}</p><p>Spis treści</p></div>
           <ol>{guide.chapters.map((chapter, i) => <li key={chapter.title}>
             <span className="guide-numeral" aria-hidden="true">{i + 1}</span>
             <div><h3>{chapter.title}</h3><p>{chapter.text}</p></div>
           </li>)}</ol>
           <div className="sheet-foot"><p>{guide.tocFoot}</p></div>
         </div>
-        <Pending>{guide.pending}</Pending>
+        {guide.file ? <div className="guide-jump"><Button href={guide.file}>{guide.download}</Button></div> : <Pending>{guide.pending}</Pending>}
       </div></div>
     </section>
-    <section className="scene" id="pobierz" aria-labelledby="guide-get-title">
+    <section className="scene" id="analiza" aria-labelledby="guide-analysis-title">
       <div className="wrap scene-grid"><div className="scene-col">
-        <h2 className="scene-title" id="guide-get-title">{guide.form.title}</h2>
-        <p className="scene-lead">{guide.form.intro}</p>
-        <GuideForm />
-        <Note>{guide.form.note} <a href="/prywatnosc/">Prywatność prototypu</a>.</Note>
-        <CallToAction headingLevel="h2" title={guide.next.title} text={guide.next.text} button={guide.next.button} href={compendiumPath} secondary={<TextLink href={pathHref} arrow>{guide.next.link}</TextLink>} />
+        <h2 className="scene-title" id="guide-analysis-title">{guide.analysis.title}</h2>
+        <p className="scene-lead">{guide.analysis.intro}</p>
+        <GuideAnalysis />
       </div></div>
     </section>
   </main>;
@@ -1000,9 +1040,9 @@ function PrinciplesPage() {
 
 function PrivacyPage() {
   return <ArticleFrame kind="Prototyp" title="Najpierw jasny opis. Poufne materiały później." lead="Ten podgląd pozwala zapoznać się ze stroną i sprawdzić opis zadania. Nie uruchamia rzeczywistej obsługi zapytań." backHref="/#kontakt" backLabel="Wróć do kontaktu">
-    <h2>Jak działają formularze</h2><p>Dotyczy to obu formularzy: karty pierwszej rozmowy i przewodnika. Wpisane informacje pozostają w pamięci tej karty przeglądarki. Żaden z formularzy nie wysyła ich do serwera, poczty ani modelu AI i nie zapisuje ich w cookies lub localStorage. Odświeżenie albo zamknięcie strony usuwa roboczy opis z formularza.</p><p>Formularz przewodnika pokazuje wyłącznie podgląd wiadomości. Przewodnik nie jest jeszcze wysyłany, adres nie jest zapisywany, a zaznaczone narzędzia i zgoda na kolejne wiadomości nie opuszczają tej karty. Dopisek do zestawu narzędzi nie jest generowany: żadne dane nie trafiają do modelu AI.</p><p>Przycisk kopiowania przenosi opis do schowka wyłącznie po Twoim kliknięciu. Strona nie odczytuje zawartości schowka.</p>
+    <h2>Jak działają formularze</h2><p>Dotyczy to obu formularzy: karty pierwszej rozmowy i przewodnika. Wpisane informacje pozostają w pamięci tej karty przeglądarki. Żaden z formularzy nie wysyła ich do serwera, poczty ani modelu AI i nie zapisuje ich w cookies lub localStorage. Odświeżenie albo zamknięcie strony usuwa roboczy opis z formularza.</p><p>Przewodnik nie wymaga adresu. Formularz analizy na jego stronie pokazuje wyłącznie podgląd wiadomości: analiza nie jest wysyłana, adres nie jest zapisywany, a zgoda na kolejne wiadomości nie opuszcza tej karty. Komentarz do zestawu narzędzi nie jest generowany: żadne dane nie trafiają do modelu AI.</p><p>Jeden wyjątek dotyczy przejścia z przewodnika do karty pierwszej rozmowy: lista zaznaczonych narzędzi jest na czas tego przejścia trzymana w pamięci sesji przeglądarki (sessionStorage), odczytywana raz i od razu usuwana. Nie trafia do adresu strony ani do serwera.</p><p>Przycisk kopiowania przenosi opis do schowka wyłącznie po Twoim kliknięciu. Strona nie odczytuje zawartości schowka.</p>
     <h2>Odwiedziny strony</h2><p>Strona nie zawiera narzędzi reklamowych, zewnętrznej analityki, osadzonych kalendarzy ani formularzy innych dostawców. Fonty są ładowane z tego samego serwisu. Hosting może przetwarzać techniczne dane żądań; nie oznacza to, że prototyp jest usługą bez jakiegokolwiek przetwarzania danych.</p>
-    <h2>Przed uruchomieniem kontaktu</h2><p>Przed uruchomieniem wysyłki przewodnika potrzebne będą osobne podstawy: jedna dla dostarczenia zamówionego pliku, druga, dobrowolna, dla kolejnych wiadomości. Do uzupełnienia pozostają rzeczywiste dane administratora, adres kontaktowy, dostawcy i odbiorcy, cele oraz podstawy przetwarzania, retencja, zasady transferów i realizacji praw. Dokument musi odpowiadać faktycznej konfiguracji hostingu, poczty i endpointu.</p><p>Ten opis dotyczy prototypu. Nie jest gotową polityką prywatności dla działającej praktyki. Rzeczywista wysyłka zostanie uruchomiona dopiero po ustaleniu tych elementów.</p>
+    <h2>Przed uruchomieniem kontaktu</h2><p>Przed uruchomieniem wysyłki analizy potrzebne będą osobne podstawy: jedna dla dostarczenia zamówionej analizy, druga, dobrowolna, dla kolejnych wiadomości. Do uzupełnienia pozostają rzeczywiste dane administratora, adres kontaktowy, dostawcy i odbiorcy, cele oraz podstawy przetwarzania, retencja, zasady transferów i realizacji praw. Dokument musi odpowiadać faktycznej konfiguracji hostingu, poczty i endpointu.</p><p>Ten opis dotyczy prototypu. Nie jest gotową polityką prywatności dla działającej praktyki. Rzeczywista wysyłka zostanie uruchomiona dopiero po ustaleniu tych elementów.</p>
   </ArticleFrame>;
 }
 

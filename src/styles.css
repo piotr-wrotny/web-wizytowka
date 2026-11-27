@@ -348,7 +348,8 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
 .scene-intro h1{margin-top:clamp(28px,8vh,96px);font-size:var(--t-display);line-height:.98;letter-spacing:-.032em}
 .scene-intro .article-lead{margin-top:clamp(20px,2.4vw,32px);max-width:34ch}
 .scene-intro .meta{margin-top:clamp(20px,2.4vw,32px)}
-.guide-jump{margin-top:clamp(24px,3vw,36px)}
+.guide-author{margin-top:14px;font-size:var(--t-small);color:var(--ink-soft)}
+.guide-jump{display:flex;flex-wrap:wrap;align-items:center;gap:14px 30px;margin-top:clamp(24px,3vw,36px)}
 .scene-title{font-size:var(--t-title);line-height:1.02;letter-spacing:-.03em}
 .scene-lead{margin-top:18px;font-size:var(--t-lead);line-height:1.5;color:var(--ink-soft);max-width:38ch}
 .scene .scene-col>.note{margin-top:28px}
@@ -392,6 +393,26 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
 .pick-plain .pick-box{margin-top:1px}
 .pick-none .pick-plain{font-size:1rem;align-items:center}
 .mail-status{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+
+/* The analysis answers on the page: one sheet per chosen tool, opening under the choices, then the set as a whole. A sheet
+   whose commentary is not written yet shows the shape of one, in the soft ink, and says so in its bar. */
+.tool-cards{display:grid;gap:14px;margin-top:clamp(20px,2.6vw,32px)}
+.tool-empty{padding-block:14px;border-top:1px solid var(--line);font-size:var(--t-small);color:var(--ink-soft)}
+.tool-rows{margin:0;padding:4px clamp(18px,2.4vw,32px) 8px}
+.tool-rows>div{display:grid;grid-template-columns:9.5rem minmax(0,1fr);gap:4px 16px;padding-block:12px;border-bottom:1px solid var(--line-soft)}
+.tool-rows>div:last-child{border-bottom:0}
+.tool-rows dt{font-size:var(--t-small);font-weight:600;font-stretch:94%;line-height:1.55}
+.tool-rows dd{margin:0;font-size:var(--t-small);line-height:1.55}
+.tool-card[data-pending] dd{color:var(--ink-soft)}
+.tool-card .sheet-bar>p:first-child{font-family:var(--serif);font-size:1.125rem;font-weight:500;font-stretch:100%;letter-spacing:-.012em}
+.tool-set .sheet-bar>p:first-child{font-style:italic;font-weight:400;color:var(--blue)}
+.tool-body{padding:14px clamp(18px,2.4vw,32px) 18px;font-size:var(--t-small);line-height:1.55;color:var(--ink-soft)}
+.tool-body a{color:var(--blue)}
+@media(max-width:600px){.tool-rows>div{grid-template-columns:1fr}}
+/* Tools ticked on the guide page, carried to the card of the first conversation. */
+.card-tools{padding:12px clamp(18px,2.4vw,32px);border-bottom:1px solid var(--line-soft);font-size:var(--t-small);line-height:1.5}
+.card-tools>span:first-child{color:var(--ink-soft)}
+.card-tools-clear{margin-left:.4em;padding:10px 4px;margin-block:-10px;background:none;border:0;color:var(--blue);font:inherit;text-decoration:underline;text-underline-offset:.18em;cursor:pointer}
 
 /* The letter: address line, subject, then one row per thing it will carry. Rows are written in as the reader chooses. */
 .mail{margin-top:clamp(20px,2.6vw,32px)}
@@ -618,7 +639,7 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
 .js-motion .motion-on{display:none}
 
 /* The letter writes itself: a new row slides in under the pencil, and the checked letter is lifted off the desk once. */
-.js-motion .mail-rows>li{animation:mail-in .6s var(--ease) both}
+.js-motion .mail-rows>li,.js-motion .tool-card{animation:mail-in .6s var(--ease) both}
 .js-motion .mail-rows .mark path{stroke-dasharray:1;animation:draw .5s var(--ease) .18s both}
 .js-motion .mail[data-done]{animation:mail-lift .9s var(--ease)}
 .js-motion .mail-done{animation:settle .7s var(--ease) both}

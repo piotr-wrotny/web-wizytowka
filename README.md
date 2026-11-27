@@ -23,10 +23,10 @@ Strona jest złożona jak sprawdzony dokument. Jedynym motywem graficznym jest o
 
 ## Edycja
 
-- Przewodnik (`site.guide`, `/przewodnik/`): trzy ekrany czytane z góry na dół (co to jest, co jest w środku, jak to dostać). Formularz jest mailem, który składa się na oczach odwiedzającego: odhaczone narzędzie dopisuje swoje omówienie, przy dwóch pojawia się oznaczony dopisek, adres wpisuje się w linii „Do:”. Demonstracja; niczego nie wysyła. Przykładowe kompendium (`site.compendium`) jest w całości syntetyczne.
+- Przewodnik (`site.guide`, `/przewodnik/`): trzy ekrany czytane z góry na dół (co dostaję i od kogo, co jest w środku, co z moimi narzędziami). Od 2026-11-27 strona niesie dwie osobne oferty: przewodnik bez adresu oraz analizę własnych narzędzi (`site.guide.analysis`). Odhaczone narzędzie od razu rozwija na stronie kartkę ze swoim komentarzem (dopóki komentarz nie jest napisany, kartka pokazuje jego budowę i mówi „w przygotowaniu”), przy dwóch pojawia się oznaczona kartka o zestawie, a dopiero potem list z adresem w linii „Do:”. Zaznaczone narzędzia przechodzą do karty pierwszej rozmowy przez pamięć sesji, nie przez adres strony. Demonstracja; niczego nie wysyła. Przykładowe kompendium (`site.compendium`) jest w całości syntetyczne.
 - `src/content/site.js`: hero (DRAFT), ilustracja sprawdzania szkicu (DRAFT), przebieg konsultacji (DRAFT), przewodnik, wiedza otwarta i przykładowe kompendium (DRAFT), sytuacje przykładowe (DRAFT), formaty, przykład standardu, metoda, zasady „Czego nie robię” (DRAFT), ekspertyza.
 - `src/content/articles.js`, `src/content/glossary.js`: analizy i słownik pokazywany na marginesie.
-- `src/App.jsx`: skład stron i komponenty (`Path`, `Cases`, `Contact`, `GuideForm`, `Pick`). `src/motion.js`: rozświetlanie słów.
+- `src/App.jsx`: skład stron i komponenty (`Path`, `Cases`, `Contact`, `GuideAnalysis`, `Pick`). `src/motion.js`: rozświetlanie słów.
 - `AGENTS.md`: wiążące zasady treści. `docs/launch-readiness.md`: zadania przed publikacją.
 
 ## Uruchomienie

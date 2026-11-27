@@ -169,7 +169,7 @@ Kartka leżąca na biurku: tło `--sheet`, krawędź `--line`, promień 3 px, ci
 - Pasek u góry (`.sheet-bar`): tytuł po lewej w tuszu, licznik lub status po prawej („2 z 5”, „Formularz demonstracyjny”), Archivo `--t-meta`, zwężony.
 - Opcjonalna stopka (`.sheet-foot`) w tym samym stylu.
 - Wewnątrz: wiersze `dt/dd` lub listy oddzielone `--line-soft`.
-- Kartką są: kartki etapów ścieżki (teczka), karta pierwszej rozmowy (formularz kontaktowy, p. 5.9), spis treści przewodnika, list z przewodnikiem (p. 5.12), spis treści i fragment przykładowego kompendium, panel sytuacji, przykład standardu, szkic do sprawdzenia, rozwijane menu na telefonie.
+- Kartką są: kartki etapów ścieżki (teczka), karta pierwszej rozmowy (formularz kontaktowy, p. 5.9), spis treści przewodnika, kartki komentarzy i list z analizą na stronie przewodnika (p. 5.12), spis treści i fragment przykładowego kompendium, panel sytuacji, przykład standardu, szkic do sprawdzenia, rozwijane menu na telefonie.
 - Kartka nie jest „kafelkiem” do układania w siatce. Nie stawiamy obok siebie rzędu równych kartek. Kartki leżą pojedynczo albo w **stosie** (teczka: każda kolejna przesunięta o 48 px w dół, widać paski poprzednich).
 
 Rodzaje treści kartek etapów (`FlowSheet`): `card` (wiersze i skala 1–5), `questions`/`list` (pozycje ze znakiem), `slide` (tytuł i trzy numerowane punkty), `contents` (spis z kropkami i numerami stron), `links` (prawdziwy spis z linkami: tylko etap 0; cały wiersz jest celem kliknięcia, metadana po prawej). Kartki etapów 1–5 noszą w pasku „n z 5”, kartka etapu 0 nie należy do teczki.
@@ -194,7 +194,7 @@ Domyślny sposób pokazania zbioru rzeczy to **wiersze rozdzielone liniami** w s
 - **Przycisk** stoi tylko tam, gdzie zaczyna się rozmowa albo pobranie: hero obu stron, ekran zamykający ścieżkę, panel sytuacji, strona „Czego nie robię”, przewodnik, kontakt.
 - **Działanie etapu** to link tekstowy ze strzałką pod uwagą o wartości (`.slide-action`), najwyżej jeden na etap. Etapy bez naturalnego działania (2, 3) go nie mają.
 - **`CallToAction`** (linia tuszu u góry, tytuł szeryfowy po lewej, przycisk i ewentualnie link po prawej) zamyka stronę przewodnika.
-- Działanie nosi tę samą nazwę w całej drodze: „Opisz swoją sytuację” na przycisku, w linku etapu 1 i w tytule sekcji kontaktu; „Pobierz przewodnik” w etapie 0, na przycisku i w tytule ekranu z listem.
+- Działanie nosi tę samą nazwę w całej drodze: „Opisz swoją sytuację” na przycisku, w linku etapu 1 i w tytule sekcji kontaktu; „Pobierz przewodnik” w etapie 0 i na przycisku przewodnika, gdy plik istnieje (do tego czasu przycisk prowadzi do spisu treści).
 
 ### 5.8 Rozwijane sekcje (`Disclosure`)
 
@@ -202,7 +202,7 @@ Natywne `<details>`, min. 56 px, strzałka `CaretDown` obraca się o 180°, wyso
 
 ### 5.9 Formularze
 
-Formularz nie jest zbiorem pól obok treści. **Jest dokumentem, który odwiedzający wypełnia albo dostaje**, leżącym na kartce: w kontakcie to karta pierwszej rozmowy, na stronie przewodnika to list (p. 5.12). Formularz zawsze mówi wprost, że niczego nie wysyła.
+Formularz nie jest zbiorem pól obok treści. **Jest dokumentem, który odwiedzający wypełnia albo dostaje**, leżącym na kartce: w kontakcie to karta pierwszej rozmowy, na stronie przewodnika to analiza: kartki komentarzy i list (p. 5.12). Formularz zawsze mówi wprost, że niczego nie wysyła.
 
 - **Pole to linia do pisania**: bez ramki, sama dolna krawędź `--field-line` (kontrast ≥ 3:1; podpowiedź w polu jest tekstem, więc ma kolor `--ink-soft`), hover: tusz, fokus: niebieska i pogrubiona do 2 px, błąd: czerwona. Min. 44 px. Pól w pełnej ramce nie używamy.
 - **Adres** stoi w wierszu nagłówka w mono („Do:”, „Odpowiedź na:”), bo to surowa linia listu.
@@ -220,15 +220,16 @@ Linia tuszu u góry, wiersze `--line`, liczby wyrównane do prawej i tabularne, 
 
 Tekst szkicu w mono, poprawki na marginesie czerwoną kursywą, skreślenie czerwoną kreską 1.5 px (nie `line-through`). Przełącznik „Z poprawkami / Po sprawdzeniu” to segmentowany przełącznik na tle biurka. Wersja po sprawdzeniu przechodzi na szeryf z niebieskim ✓ i cytatem źródła.
 
-### 5.12 List, który składa się sam (`GuideForm`)
+### 5.12 Analiza, która odpowiada od razu (`GuideAnalysis`)
 
-Formularz przewodnika nie jest zbiorem pól obok treści. Jest **mailem, który odwiedzający dostanie**, leżącym na kartce:
+Od 2026-11-27 przewodnik nie wymaga adresu, a formularz na jego stronie jest osobną ofertą: analizą własnych narzędzi. Nie jest zbiorem pól obok treści. **Najpierw odpowiada na stronie, potem prosi o adres**:
 
 - Nad kartką grupy pól do odhaczenia (p. 5.9), rozdzielone liniami; pierwsza linia tuszem.
-- Kartka: pasek („Twój mail” / „Podgląd, nic nie jest wysyłane”), nagłówek listu w mono („Do:” z polem adresu, „Temat:”), wiersze z tym, co list zawiera, stopka ze zgodą i jednym przyciskiem.
+- Pod polami każde odhaczone narzędzie rozwija własną kartkę (`tool-card`): pasek z nazwą szeryfem i stanem („Stan na …” albo „Komentarz w przygotowaniu”), pod nim wiersze komentarza (etykieta półgruba, treść obok). Kartka bez napisanego komentarza pokazuje jego budowę miękkim tuszem. Przy dwóch i więcej dochodzi kartka zestawu: tytuł niebieską kursywą szeryfową i podpis, że jest wygenerowana.
+- List pojawia się dopiero, gdy coś jest zaznaczone. Kartka: pasek („Twoja analiza” / „Podgląd, nic nie jest wysyłane”), nagłówek listu w mono („Do:” z polem adresu, „Temat:”), wiersze z tym, co list zawiera, stopka ze zgodą i jednym przyciskiem.
 - Pole adresu to linia do pisania w wierszu „Do:” (p. 5.9), pod nim zdanie o tym, do czego adres służy.
-- Każde odhaczone narzędzie dopisuje wiersz „Omówienie: …” ze znakiem ✓. Przy dwóch i więcej pojawia się wiersz dopisku: niebieska kursywa szeryfowa ze znakiem ⊢ i podpisem, że jest wygenerowany. Pusty stan mówi, co zrobić.
-- Na ekranie ≤ 900 px list jest pod zgięciem w chwili wyboru, więc do dołu ekranu przykleja się jedna linia „W mailu: przewodnik + 2 omówienia + dopisek” (tło biurka, linia tuszu u góry). To też komunikat `role="status"` dla czytników.
+- W liście każde odhaczone narzędzie ma wiersz „Komentarz: …” ze znakiem ✓. Przy dwóch i więcej pojawia się wiersz zestawu: niebieska kursywa szeryfowa ze znakiem ⊢ i podpisem, że jest wygenerowany. Pusty stan nad listem mówi, co zrobić; „Nie wiem albo nie korzystam” odsyła do spisu treści i nie pokazuje listu.
+- Na ekranie ≤ 900 px list jest pod zgięciem w chwili wyboru, więc do dołu ekranu przykleja się jedna linia „W analizie: 2 komentarze + zestaw razem” (tło biurka, linia tuszu u góry). To też komunikat `role="status"` dla czytników.
 - Po sprawdzeniu adresu kartka dostaje dolny wiersz z dużym ✓ i zdaniem, że nic nie wysłano.
 
 Zasada ogólna dla interakcji: **efekt ma być odpowiedzią na działanie czytelnika i ma pokazywać, co się zmieniło.** Element, który tylko się rusza, nie wchodzi.
@@ -281,7 +282,7 @@ Jeden język: **ołówek stawia znaki, kartki są kładzione na biurku, tusz wyp
 | `strike` | czerwone skreślenie przeciąga się w poprzek | szkic w `Proof` |
 | `rule` | linia tuszu rysuje się od lewej | mapa etapów w hero |
 | `appear` | samo krycie | panel sytuacji, uwagi |
-| `mail-in` | wiersz listu wsuwa się z −10 px, znak ✓ się rysuje | list przewodnika, po odhaczeniu narzędzia |
+| `mail-in` | kartka komentarza i wiersz listu wsuwają się z −10 px, znak ✓ się rysuje | strona przewodnika, po odhaczeniu narzędzia |
 | `mail-lift` | kartka unosi się o 10 px z obrotem −0.5° i wraca | list przewodnika, po sprawdzeniu adresu |
 
 ### 7.4 Sceny sterowane przewijaniem
