@@ -70,22 +70,23 @@ export const site = {
       // What the little man says in the film when he has had enough.
       say: 'Muszę to uporządkować.',
     },
-    steps: {
-      title: 'Cztery kroki od chaosu do decyzji.',
-      items: [
-        { title: 'Rozmowa', text: 'Wiesz, czy to temat na konsultację. Krótko i bezpłatnie.' },
-        { title: 'Rozpoznanie', text: 'Twoje bolączki i program spotkania są na jednej karcie.' },
-        // 2026-11-27, founder: "konsultacja" is the whole package; the meeting is "Spotkanie w firmie" (was 'Konsultacja w firmie').
-        { title: 'Spotkanie w firmie', text: 'Zespół widzi AI na własnych zadaniach, na danych demonstracyjnych.' },
-        { title: 'Kompendium', text: 'Zostaje dokument z rekomendacją, od czego zacząć.' },
-      ],
+    // DRAFT 2026-11-27. Founder decision of that day (confirming the assistant's proposal): the middle of the story is one scene,
+    // the meeting in the company. It replaces the screen 'Cztery kroki od chaosu do decyzji.' (Rozmowa: 'Wiesz, czy to temat na
+    // konsultację. Krótko i bezpłatnie.' / Rozpoznanie: 'Twoje bolączki i program spotkania są na jednej karcie.' / Spotkanie w
+    // firmie: 'Zespół widzi AI na własnych zadaniach, na danych demonstracyjnych.' / Kompendium: 'Zostaje dokument z rekomendacją,
+    // od czego zacząć.'). The order of the path is told only on /konsultacja/; this screen links there.
+    meeting: {
+      title: 'Przychodzę do firmy. Porządkujemy to razem.',
+      text: 'Zespół mówi, jak dziś pracuje. Każda odpowiedź staje się zadaniem do sprawdzenia, na danych demonstracyjnych.',
       action: 'Zobacz, jak przebiega konsultacja',
-      // DRAFT 2026-11-23: what is said in the film during the consultation (founder decision 2026-11-23: everyone speaks,
-      // and the work is done on the team's own use cases). Figures of the story, no client, no product named.
+      // What is said at the meeting (founder decision 2026-11-23: everyone speaks, and the work is done on the team's own use
+      // cases). Each answer is written on the slide as a task, in the same order. Figures of the story: no client, no product
+      // named. Until 2026-11-27 the advisor closed with 'Pokażę to na danych demonstracyjnych.'; the sentence beside the scene
+      // says it now.
       talk: {
         ask: 'Jak dziś to robicie?',
         answers: ['Oferty piszemy ręcznie.', 'Mamy CRM, a notatki w mailach.', 'A co z danymi klientów?'],
-        close: 'Pokażę to na danych demonstracyjnych.',
+        tasks: ['Pisanie ofert', 'Notatki z rozmów', 'Dane klientów'],
       },
     },
     ending: {

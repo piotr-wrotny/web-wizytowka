@@ -440,7 +440,7 @@ function Paper({ paper, index, query = false }) {
 }
 
 /* The story the home page tells, one message per screen: the market's noise, the two reflexes, the turn (start from your own
-   work), the four steps and what is left at the end. The visitor is the hero; the consultation is the resolution. The scenes
+   work), the meeting in the company and what is left at the end. The visitor is the hero; the consultation is the resolution. The scenes
    use the same scroll mechanism as the client path. Problem screens carry a red pencil query, solution screens a blue tick. */
 function Story() {
   const { story, flow, compendium } = site;
@@ -501,17 +501,11 @@ function Story() {
       </li>)}</ol>
     </div>)}
     {scene('zwrot', 'blue', 2, story.turn, <FlowSheet sheet={flow.stages[1].sheet} label={story.turn.sheetLabel} />)}
-    <section className="slide beat beat-steps" id="historia-kroki" data-theme="paper" data-index={3} aria-labelledby="historia-kroki-title">
-      <div className="wrap">
-        <h2 id="historia-kroki-title"><span className="slide-title-inner">{story.steps.title}</span></h2>
-        <ol className="story-steps">{story.steps.items.map((step, i) => <li key={step.title} style={{ '--i': i }}>
-          <span className="story-step-no" aria-hidden="true">{i + 1}</span>
-          <h3>{step.title}</h3>
-          <p>{step.text}</p>
-        </li>)}</ol>
-        <p className="slide-action"><TextLink href={servicePath} arrow>{story.steps.action}</TextLink></p>
-      </div>
-    </section>
+    {/* One scene, the meeting in the company (founder, 2026-11-27). Flat, it is the slide of that meeting with the team's own
+        tasks on it; the order of the path is told on the service page, which the link leads to. */}
+    {scene('spotkanie', 'paper', 3, story.meeting,
+      <FlowSheet sheet={{ kind: 'slide', title: flow.stages[3].sheet.title, heading: flow.stages[3].sheet.heading, items: story.meeting.talk.tasks }} label={story.paperLabel} />,
+      <p className="slide-action"><TextLink href={servicePath} arrow>{story.meeting.action}</TextLink></p>)}
     {scene('koniec', 'desk', 4, story.ending, <div className="sheet flow-sheet">
       <div className="sheet-bar"><p>{story.ending.sheet.title}</p><p>{story.ending.sheet.label}</p></div>
       <p className="sheet-part-title">{story.ending.sheet.part}</p>
@@ -579,8 +573,8 @@ function About() {
   </section>;
 }
 
-/* Home is the visitor's story, read screen by screen: their situation, the market's noise, the two reflexes, the turn, the four
-   steps and the ending; then their own version of it (situations), who is behind it, and the card that starts the first
+/* Home is the visitor's story, read screen by screen: their situation, the market's noise, the two reflexes, the turn, the
+   meeting in the company and the ending; then their own version of it (situations), who is behind it, and the card that starts the first
    conversation. The presentation of the service itself lives on the service page. */
 function Home() {
   const { story, flow } = site;
@@ -599,7 +593,7 @@ function Home() {
       try {
         const { startFilm } = await import('./film.js');
         const sections = [document.querySelector('.story-hero'), ...document.querySelectorAll('.story .slide')];
-        const dispose = await startFilm({ root: film.current, sections, papers: story.papers, paperLabel: story.paperLabel, say: story.turn.say, card: { title: flow.stages[1].sheet.title, label: story.turn.sheetLabel, questions: flow.stages[1].sheet.items }, karta: flow.stages[2].sheet, slide: flow.stages[3].sheet, ending: { ...story.ending.sheet, rows: site.compendium.recommendation, book: story.ending.book }, team: story.ending.team, talk: story.steps.talk });
+        const dispose = await startFilm({ root: film.current, sections, papers: story.papers, paperLabel: story.paperLabel, say: story.turn.say, card: { title: flow.stages[1].sheet.title, label: story.turn.sheetLabel, questions: flow.stages[1].sheet.items }, slide: flow.stages[3].sheet, ending: { ...story.ending.sheet, rows: site.compendium.recommendation, book: story.ending.book }, team: story.ending.team, talk: story.meeting.talk });
         if (cancelled || !wide.matches) dispose();
         else { stop = dispose; html.classList.add('film-on'); }
       } catch { /* the flat page stays */ }

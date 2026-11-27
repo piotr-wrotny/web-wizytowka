@@ -16,11 +16,11 @@
 //   III  the solution: every step of working together puts out a part of the chaos
 //        2.75 zwrot  "Muszę to uporządkować." The bedroom leaves; the market's papers hang over him, red and restless.
 //                    He picks up the phone. The advisor answers and asks his three questions; each answer is ticked
-//        4 kroki     the four steps, one after another, each lighting its line on the page: the call ends and the first
-//                    third of the papers falls quiet into a neat stack; the Karta rozpoznania reaches him and the second
-//                    third follows; the team comes in, the advisor presents at a projector, everyone speaks and each
-//                    answer becomes a task of their own on the slide, and the last papers settle; the stacks are bound
-//                    into the compendium, which the advisor hands over before he goes
+//        4 spotkanie one scene, the meeting in the company (founder, 2026-11-27; it replaces the four steps played one after
+//                    another, with the Karta rozpoznania): the call ends and the first part of the papers falls quiet;
+//                    the team comes in, the advisor stands at a projector and asks, everyone answers, and each answer is
+//                    written on the slide as a task of their own while its part of the papers falls quiet; the slide
+//                    becomes the compendium, which the advisor hands over before he goes
 //   IV   the better world
 //        5 koniec    the compendium opens on its recommendation and gets its green seal, then closes into a book. No desk,
 //                    no advisor: the hero stands in the middle with the book in his hand, his team around him celebrating;
@@ -144,7 +144,7 @@ export function drawGuest(container) {
   booklet(group(guest.arms[1], { transform: 'translate(0 96) rotate(180)' }));
 }
 
-export async function startFilm({ root, sections, papers, paperLabel, say, card: cardContent, karta: kartaContent, slide: slideContent, ending, team: teamSays, talk }) {
+export async function startFilm({ root, sections, papers, paperLabel, say, card: cardContent, slide: slideContent, ending, team: teamSays, talk }) {
   await Promise.all([`700 19px Archivo`, `800 52px Archivo`, `500 13px Archivo`, `italic 30px "Brygada 1918"`, `17px "Brygada 1918"`].map(f => document.fonts.load(f, 'AIąż?')));
   const svg = el('svg', { viewBox: '0 0 1000 800', preserveAspectRatio: 'xMaxYMid meet', focusable: 'false' });
   const { sketch, stroke, shade, tickMark, figure, seal, booklet } = kit(svg);
@@ -307,22 +307,15 @@ export async function startFilm({ root, sections, papers, paperLabel, say, card:
     label(g, question, 60, 0, `font:italic 23px ${SERIF};fill:${C.ink}`, { 'dominant-baseline': 'central' });
     return { g, tick: tickMark(g, 20, 0, .9) };
   });
-  const KARTA = [300, 206];
-  const karta = sheet(top, ...KARTA, kartaContent.title);
-  kartaContent.rows.forEach(([name], i) => {
-    const y = 78 + i * 46;
-    label(karta, name, 22, y, `font:700 15px ${SANS};fill:${C.ink}`, { 'dominant-baseline': 'central' });
-    stroke(karta, `M118 ${y + 2}L${250 - i * 24} ${y}`, C.soft, 1.3, true);
-    if (i < kartaContent.rows.length - 1) stroke(karta, `M22 ${y + 23}L${KARTA[0] - 22} ${y + 23}`, C.line, 1, true);
-  });
-  const SLIDE = [300, 206], SLIDE_AT = [850, 275, 1.15];
+  // The slide on the projector screen, where it is handed over as a book, and the height of each of its rows.
+  const SLIDE = [300, 216], SLIDE_AT = [850, 275, 1.15], HANDOVER = [550, 528], rowY = i => 150 + i * 23;
   const slide = sheet(top, ...SLIDE, slideContent.title);
   wrap(slideContent.heading, `600 22px ${SERIF}`, SLIDE[0] - 44).forEach((line, k) => label(slide, line, 22, 86 + k * 27, `font:600 22px ${SERIF};fill:${C.ink}`));
-  // The rows of the slide are the team's own tasks: each arrives when its owner has spoken.
-  const slideRows = slideContent.items.map((_, i) => {
+  // The rows of the slide are the team's own tasks, in words: each is written in when its owner has spoken.
+  const slideRows = talk.tasks.map((task, i) => {
     const row = group(slide, { opacity: 0 });
-    sketch(row, circle(28, 152 + i * 16, 2.5), { fill: C.blue, stroke: null, still: true });
-    stroke(row, `M40 ${152 + i * 16}L${200 - i * 30} ${151 + i * 16}`, C.soft, 1.2, true);
+    sketch(row, circle(28, rowY(i), 3), { fill: C.blue, stroke: null, still: true });
+    label(row, task, 42, rowY(i), `font:600 18px ${SANS};fill:${C.ink}`, { 'dominant-baseline': 'central' });
     return row;
   });
   // The compendium, open on its last page: the recommendation of the synthetic sample.
@@ -374,11 +367,14 @@ export async function startFilm({ root, sections, papers, paperLabel, say, card:
     sketch(g, circle(-9, 14, 3), { fill: C.blue, stroke: null, still: true });
     return g;
   });
-  const lines = [speech(top, talk.ask, true), ...talk.answers.map((text, i) => speech(top, text, i > 1)), speech(top, talk.close, true)];
+  const lines = [speech(top, talk.ask, true), ...talk.answers.map((text, i) => speech(top, text, i > 1))];
   const bubble = speech(top, say);
   const teamBubbles = teamSays.map((text, i) => speech(top, text, i % 2 === 0));
 
   // --- The market's papers: a stream of small sheets, and four that can be read.
+  // Order is less, not neater (founder, 2026-11-27): when its part of the work is done, most of a part's papers fall away and
+  // one is kept, and the few kept ones go into the book. Until then every paper landed in a neat stack and the stacks were bound.
+  const STACK_X = 1040;              // where the kept papers lie, on the floor to the right of the projector
   const N = 24;
   const sheets = Array.from({ length: N }, (_, i) => {
     const g = group(swarmLayer);
@@ -414,8 +410,8 @@ export async function startFilm({ root, sections, papers, paperLabel, say, card:
     mx: 400, my: 520, mr: -90, faceX: 0, faceY: 0, eye: .1, walk: 0, reach: 0, startle: 0,
     zs: 1, bl: 1, puzzled: 0, panic: 0, decide: 0, hint: 0, thump: 0, storm: 0, door: 1,
     bedX: 0, fridgeX: 0, stream: 0, gather: 0, chaos: 0, say: 0,
-    call: 0, vig: 0, talk: 0, pills: 1, q0: 0, q1: 0, q2: 0, t0: 0, t1: 0, t2: 0, quiet0: 0, quiet1: 0, stackX: 1000,
-    kartaS: 0, tuck: 0, proj: 0, slideS: 0, bind: 0, bk: 0, big: 0, hold: 0,
+    call: 0, vig: 0, talk: 0, pills: 1, q0: 0, q1: 0, q2: 0, t0: 0, t1: 0, t2: 0, quiet0: 0,
+    proj: 0, slideS: 0, bind: 0, bk: 0, big: 0, hold: 0,
     comp: 0, c0: 0, c1: 0, c2: 0, seal: 0, smile: 0, day: 0, cheer: 0, b0: 0, b1: 0,
   };
   const P = homes.map(([, y, r], i) => ({ x: -1000 - i * 130, y: y - 50, r: r - 22, q: 0 }));
@@ -497,52 +493,47 @@ export async function startFilm({ root, sections, papers, paperLabel, say, card:
     at(3.4 + i * .07, .02, { [`q${i}`]: 1, ease: pop });
     at(3.445 + i * .07, .016, { [`t${i}`]: 1, ease: 'none' });
   });
-  // The screen of the turn leaves; the camera settles for the four steps.
+  // The screen of the turn leaves; the camera settles for the meeting.
   at(3.8, .2, { cs: .9, cx: -85, cy: 124 });
   at(3.9, .06, { pills: 0 });
-  // Step 1, the conversation: it was short. A wave, the call ends, and the first third of the papers falls quiet.
-  at(4.01, .025, { bye: 1 }, V);
-  at(4.03, .08, { quiet0: 1, ease: 'none' });
-  at(4.075, .035, { vig: 0, ease: 'power2.in' });
-  at(4.1, .03, { call: 0, faceX: 0 });
-  // Step 2, recognition: the Karta rozpoznania reaches him, with the programme of the meeting on it. The second third.
-  at(4.17, .04, { kartaS: 1, ease: pop });
-  at(4.18, .03, { faceX: 7, faceY: -4 });
-  at(4.2, .07, { quiet1: 1, ease: 'none' });
-  at(4.255, .04, { tuck: 1, faceY: 0 });
-  // Step 3, the consultation in the company: the team comes in, the advisor sets up at a projector. It is a conversation:
-  // he asks, each of them answers about how they work, and every answer goes up on the slide as a task of their own.
-  // With each task the last of the papers settle.
-  at(4.285, .07, { mx: 480, walk: 3 });
-  at(4.29, .05, { stackX: 1100 });
-  at(4.3, .07, { x: 175, walk: 1, ease: 'sine.out' }, M[0]);
-  at(4.305, .07, { x: 275, walk: 1, ease: 'sine.out' }, M[1]);
-  at(4.31, .07, { x: 375, walk: 1, ease: 'sine.out' }, M[2]);
-  at(4.3, .05, { proj: 1, ease: 'power2.out' });
-  at(4.31, .07, { x: 592, walk: 1, ease: 'sine.out' }, V);
-  at(4.37, .03, { slideS: 1, ease: pop });
-  at(4.385, .025, { present: 1 }, V);
+  // The call was short. A wave, it ends, and the first part of the papers falls quiet.
+  at(4.0, .03, { bye: 1 }, V);
+  at(4.02, .06, { quiet0: 1, ease: 'none' });
+  at(4.055, .03, { vig: 0, ease: 'power2.in' });
+  at(4.08, .03, { call: 0, faceX: 0 });
+  // One scene, the meeting in the company (the screen is 420vh, so 0.01 here is about 4vh of scroll): the team comes in, the
+  // advisor sets up at a projector. It is a conversation: he asks, each of them answers about how they work, and every answer
+  // is written on the slide as a task of their own. Each bubble stays for about a third of a screen; with each task its part
+  // of the papers falls quiet.
+  at(4.09, .08, { mx: 480, walk: 3 });
+  at(4.1, .08, { x: 175, walk: 1, ease: 'sine.out' }, M[0]);
+  at(4.106, .08, { x: 275, walk: 1, ease: 'sine.out' }, M[1]);
+  at(4.112, .08, { x: 375, walk: 1, ease: 'sine.out' }, M[2]);
+  at(4.1, .06, { proj: 1, ease: 'power2.out' });
+  at(4.11, .08, { x: 620, walk: 1, ease: 'sine.out' }, V);
+  at(4.19, .03, { slideS: 1, ease: pop });
+  at(4.205, .025, { present: 1 }, V);
   const speak = (i, from, to) => { at(from, .018, { on: 1, ease: pop }, L[i]); at(to, .012, { on: 0 }, L[i]); };
-  speak(0, 4.395, 4.44);
+  speak(0, 4.225, 4.3);
   [0, 1, 2].forEach(i => {
-    const t0 = 4.455 + i * .058;
-    speak(i + 1, t0, t0 + .053);
-    at(t0 + .028, .024, { aha: 1, ease: 'sine.in' }, M[i]);
+    const t0 = 4.315 + i * .09;
+    speak(i + 1, t0, t0 + .08);
+    at(t0 + .036, .034, { aha: 1, ease: 'sine.in' }, M[i]);
   });
-  speak(4, 4.632, 4.682);
-  at(4.69, .02, { present: 0 }, V);
-  at(4.695, .025, { slideS: 0, ease: 'power2.in' });
-  at(4.71, .03, { proj: 0, ease: 'power2.in' });
-  // Step 4, the compendium: the stacks are bound into one book, and the advisor hands it over.
-  at(4.72, .04, { bind: 1 });
-  at(4.72, .03, { give: 1 }, V);
-  at(4.75, .035, { bk: 1, ease: pop });
-  at(4.76, .03, { smile: 1, faceX: 6 });
+  at(4.585, .02, { present: 0 }, V);
+  // What they said becomes the book: the slide comes down from the screen into the advisor's hands and is the compendium he
+  // hands over. The screen folds away behind it. Then the picture is held until the screen is released (at 4.76).
+  at(4.595, .045, { bind: 1 });
+  at(4.6, .03, { give: 1 }, V);
+  at(4.63, .02, { slideS: 0, ease: 'power2.in' });
+  at(4.63, .035, { bk: 1, ease: pop });
+  at(4.635, .04, { proj: 0, ease: 'power2.in' });
+  at(4.645, .03, { smile: 1, faceX: 6 });
   // The work is theirs now: a wave, and the advisor goes.
-  at(4.83, .03, { hold: 1 });
-  at(4.83, .03, { give: 0, wave: 1 }, V);
-  at(4.87, .1, { x: 1900, walk: 2, ease: 'power1.in' }, V);
-  at(4.9, .04, { faceX: 0 });
+  at(4.79, .03, { hold: 1 });
+  at(4.79, .03, { give: 0, wave: 1 }, V);
+  at(4.83, .11, { x: 1900, walk: 2, ease: 'power1.in' }, V);
+  at(4.87, .04, { faceX: 0 });
   // Act IV. The compendium opens on its recommendation: where to start, what to check, what to leave. It gets its seal.
   at(5.0, .05, { big: 1 });
   at(5.05, .05, { comp: 1 });
@@ -640,7 +631,7 @@ export async function startFilm({ root, sections, papers, paperLabel, say, card:
       const swing = walking ? -stride * 14 * (i ? (1 - S.reach) * (1 - S.hold) : 1) : 0;
       const acting = i
         ? -S.reach * 76 - S.decide * 168 * (1 - S.call) - S.startle * 30 - S.call * 152 - S.hold * 150 - S.cheer * (1 - S.hold) * 128
-        : S.decide * 10 + S.startle * 30 + S.cheer * (128 + Math.sin(time * 6 + 2) * 10) + S.kartaS * (1 - S.tuck) * 20;
+        : S.decide * 10 + S.startle * 30 + S.cheer * (128 + Math.sin(time * 6 + 2) * 10);
       set(arm, `rotate(${n(side * (7 + S.puzzled * 24 + panic * (150 + Math.sin(time * 13 + i) * 9)) + acting + swing)}) scale(1 ${n(i ? lerp(1, .58, S.call) : 1)})`);
     });
     zs.forEach((z, i) => {
@@ -710,13 +701,13 @@ export async function startFilm({ root, sections, papers, paperLabel, say, card:
       set(inner, `rotate(${n(Math.sin(time * 4 + i * 1.3) * 5)}) scale(${n(1 + Math.sin(time * 7 + i * 2.1) * .06)})`);
     });
     // Who says what, where: each above their own head, one at a time.
-    [[V.x - 6, 384], [M[0].x + 8, 388], [M[1].x + 8, 386], [M[2].x - 6, 390], [V.x - 6, 384]].forEach(([x, y], i) => {
+    [[V.x - 6, 384], [M[0].x + 8, 388], [M[1].x + 8, 386], [M[2].x - 6, 390]].forEach(([x, y], i) => {
       const on = Math.max(0, L[i].on);
       show(lines[i], on > .001);
       set(lines[i], `translate(${n(x)} ${y}) scale(${n(Math.max(.0001, on) * .62)})`);
     });
     chips.forEach((chip, i) => {
-      const u = M[i].aha, to = [SLIDE_AT[0] + (60 - SLIDE[0] / 2) * SLIDE_AT[2], SLIDE_AT[1] + (152 + i * 16 - SLIDE[1] / 2) * SLIDE_AT[2]];
+      const u = M[i].aha, to = [SLIDE_AT[0] + (60 - SLIDE[0] / 2) * SLIDE_AT[2], SLIDE_AT[1] + (rowY(i) - SLIDE[1] / 2) * SLIDE_AT[2]];
       show(chip, u > .001 && u < .999);
       set(chip, `translate(${n(lerp(M[i].x, to[0], u))} ${n(lerp(360, to[1], u) - Math.sin(u * Math.PI) * 60)}) rotate(${n((1 - u) * (i - 1) * 14)}) scale(${n(lerp(.9, .3, u))})`);
       slideRows[i].setAttribute('opacity', n(seg(u, .85, 1)));
@@ -729,13 +720,12 @@ export async function startFilm({ root, sections, papers, paperLabel, say, card:
       set(teamBubbles[i], `translate(${x} ${y}) scale(${n(Math.max(0, b) * .66)})`);
     });
 
-    // The Karta rozpoznania comes to him and he tucks it away; the slide is thrown onto the projector screen.
-    show(karta, S.kartaS > .001 && S.tuck < 1);
-    place(karta, KARTA, lerp(lerp(1300, 690, clamp01(S.kartaS)), S.mx - 44, S.tuck), lerp(290, 520, S.tuck), 0, S.kartaS * lerp(1.25, .12, S.tuck), -2 * (1 - S.tuck));
+    // The slide is thrown onto the projector screen; when the meeting is over it comes down to where the book is handed over.
+    const fold = seg(S.bind, 0, 1);
     show(slide, S.slideS > .001);
-    place(slide, SLIDE, SLIDE_AT[0], SLIDE_AT[1], 0, Math.max(0, S.slideS) * SLIDE_AT[2]);
+    place(slide, SLIDE, lerp(SLIDE_AT[0], HANDOVER[0], fold), lerp(SLIDE_AT[1], HANDOVER[1], fold) - Math.sin(fold * Math.PI) * 40, 0, Math.max(0, S.slideS) * lerp(SLIDE_AT[2], .3, fold), fold * -5);
     // The compendium. A book: handed over between them, then held up in his hand; in between it opens, big, on its last page.
-    const hand = [S.mx + 92, 322], bookAt = [lerp(lerp(538, hand[0], S.hold), 820, S.big), lerp(lerp(528, hand[1], S.hold), 330, S.big)];
+    const hand = [S.mx + 92, 322], bookAt = [lerp(lerp(HANDOVER[0], hand[0], S.hold), 820, S.big), lerp(lerp(HANDOVER[1], hand[1], S.hold), 330, S.big)];
     show(cover, S.bk > .001 && S.comp < .5);
     coverSeal.setAttribute('opacity', S.seal > .5 ? 1 : 0);
     set(cover, `translate(${n(bookAt[0])} ${n(bookAt[1])}) rotate(${n(lerp(4, -3, S.big))}) scale(${n(Math.max(.0001, S.bk) * lerp(lerp(.4, .34, S.hold), 1, S.big))}) translate(${-COVER[0] / 2} ${-COVER[1] / 2})`);
@@ -744,18 +734,20 @@ export async function startFilm({ root, sections, papers, paperLabel, say, card:
     compRows.forEach(({ tick: mark }, i) => mark.setAttribute('stroke-dashoffset', n(1 - S[`c${i}`])));
     set(compSeal, `translate(${COMP[0] - 58} ${COMP[1] - 46}) rotate(-12) scale(${n(Math.max(.0001, S.seal))})`);
 
-    // Small sheets: a stream from left to right; then a red, restless cloud over him; then, third by third, quiet: each
-    // falls into one of three neat stacks on the floor. In the end the stacks become the book.
-    const quiet = [S.quiet0, S.quiet1, (M[0].aha + M[1].aha + M[2].aha) / 3];
+    // Small sheets: a stream from left to right; then a red, restless cloud over him; then, part by part, quiet. There are
+    // four parts: one for the phone call, one for each answer at the meeting. A part's papers fall away and fade, except one
+    // that is kept and lands in a small neat stack. The kept ones go into the book.
+    const quiet = [S.quiet0, M[0].aha, M[1].aha, M[2].aha], per = N / 4;
     for (let i = 0; i < N; i++) {
       const p = rand(i), q = rand(i + 50), s = rand(i + 99);
       const u = (T * .55 + time * .035 * (.6 + q) + p) % 1;
       const fx = -760 + u * 1900, fy = 50 + q * 600 + Math.sin(u * 9 + i) * 42;
-      const g = seg(S.gather, q * .5, .5 + q * .5), pile = i % 3, rank = Math.floor(i / 3), calm = seg(quiet[pile], rank / 8 * .6, .4 + rank / 8 * .6), bound = seg(S.bind, 0, .8);
-      const merged = bound, flat = g * calm;
+      const g = seg(S.gather, q * .5, .5 + q * .5), part = i % 4, rank = Math.floor(i / 4), calm = seg(quiet[part], rank / per * .6, .4 + rank / per * .6), bound = seg(S.bind, 0, .8);
+      const kept = rank === 0;
+      const merged = kept ? bound : seg(calm, .45, 1), flat = kept ? g * calm : 0;
       const cloud = [S.mx + (p - .5) * 560 + Math.sin(time * .7 + i) * 16, 4 + q * 100 + Math.cos(time * .9 + i * 2) * 9];
-      const wx = lerp(lerp(cloud[0], S.stackX + pile * 42 + (s - .5) * 5, calm), 538, bound);
-      const wy = lerp(lerp(cloud[1], 634 - rank * 2.2, calm), 528, bound);
+      const wx = kept ? lerp(lerp(cloud[0], STACK_X + (s - .5) * 5, calm), HANDOVER[0], bound) : cloud[0] + (p - .5) * 90 * calm;
+      const wy = kept ? lerp(lerp(cloud[1], 634 - part * 2.2, calm), HANDOVER[1], bound) : lerp(cloud[1], 470, calm * calm);
       const [tx, ty] = toStage(wx, wy);
       const flip = Math.cos(u * 15 + i * 2);
       const scale = lerp(S.stream * (.95 + s * .6), cam.s * .95, g) * (1 - merged);

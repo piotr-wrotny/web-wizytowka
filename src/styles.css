@@ -753,7 +753,7 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
    Order of a stage: the sheet is laid on the desk, the numeral fills with ink, the title rises and is underlined
    in pencil, the sentence is read word by word, the sheet is filled in line by line, the value is ticked off.
    ------------------------------------------------------------------ */
-.slide-stage h2,.slide-end h2,.beat-steps h2{overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em}
+.slide-stage h2,.slide-end h2{overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em}
 .slide-title-inner{display:block}
 .slide-underline{display:block;width:min(19rem,70%);height:14px;margin-top:10px;fill:none;stroke:var(--blue);stroke-width:2.2;stroke-linecap:round;overflow:visible}
 .slide-stack{display:none}
@@ -768,7 +768,7 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 @keyframes rule{from{background-size:0 1px}}
 
 /* Derived progress values. --a: sheet arrives, --t: title, --w: words, --v: value, --x: scene leaves (pinned only). */
-.js-motion .slide-stage,.js-motion .slide-end,.js-motion .beat-steps{
+.js-motion .slide-stage,.js-motion .slide-end{
   --a:clamp(0,calc((var(--sp,1) - .04)*3.1),1);
   --t:clamp(0,calc((var(--sp,1) - .16)*5),1);
   --u:clamp(0,calc((var(--sp,1) - .3)*5),1);
@@ -883,15 +883,6 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 .rec dt{display:flex;align-items:baseline;gap:.5em}
 .rec .mark{color:var(--blue);transform:translateY(.16em)}
 
-/* Four steps on one screen: what changes for the visitor at each. Numerals, because the order is the content. */
-.beat-steps h2{font-size:var(--t-title);line-height:1.02;letter-spacing:-.03em;max-width:15ch}
-.story-steps{list-style:none;padding:0;margin:clamp(40px,8vh,96px) 0 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--gap)}
-.story-steps li{padding-top:18px;border-top:1px solid var(--ink)}
-.story-step-no{display:block;font-family:var(--serif);font-size:clamp(2.4rem,3.6vw,3.25rem);line-height:.9;color:var(--blue);font-variant-numeric:lining-nums}
-.story-steps h3{margin-top:14px;font-size:var(--t-h3);letter-spacing:-.015em}
-.story-steps p{margin-top:8px;line-height:1.5;color:var(--ink-soft);max-width:24ch}
-.beat-steps .slide-action{margin-top:clamp(28px,5vh,56px)}
-
 /* Not ready to talk yet: open reading under the contact card. */
 .contact-later{align-items:flex-start}
 .contact-later .cta-copy{flex:1 1 20rem}
@@ -911,7 +902,6 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 .js-motion .plan-fix{opacity:clamp(0,calc(var(--r)*3 - 2),1)}
 .js-motion .plan-fix .mark path{stroke-dasharray:1;stroke-dashoffset:calc(1 - var(--r))}
 .js-motion .slide-visual .rec .mark path{stroke-dasharray:1;stroke-dashoffset:calc(1 - var(--r))}
-.js-motion .beat-steps .story-steps li{--r:clamp(0,calc((var(--sp,1) - .36 - var(--i,0)*.09)*8),1);opacity:var(--r);transform:translateY(calc((1 - var(--r))*18px))}
 
 /* The ending is a dossier: two earlier sheets show under the compendium. */
 .beat-koniec .slide-visual{position:relative}
@@ -960,10 +950,6 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
   .js-motion .beat-zwrot .slide-visual>.sheet{opacity:1;position:relative;transform-style:preserve-3d}
   .js-motion .beat-zwrot .flow-sheet::after{content:'';position:absolute;inset:-1px;border:1px solid #c6ccc7;border-radius:3px;background:#f4f6f3;transform:rotateY(180deg) translateZ(1px);backface-visibility:hidden}
 
-  /* The four steps unfold from their rules towards the reader. */
-  .js-motion .beat-steps .story-steps{perspective:1400px;perspective-origin:50% 0}
-  .js-motion .beat-steps .story-steps li{transform-origin:50% 0;transform:rotateX(calc((1 - var(--r))*-78deg));opacity:clamp(0,calc(var(--r)*2.5),1)}
-
   /* The ending: the earlier sheets lie deeper under the compendium and close up as the camera comes down. */
   .js-motion .beat-koniec .slide-visual::before{translate:0 0 calc(-6px - (1 - var(--cam))*150px)}
   .js-motion .beat-koniec .slide-visual::after{translate:0 0 calc(-3px - (1 - var(--cam))*75px)}
@@ -983,7 +969,7 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 .film-on .story-hero>.wrap{position:relative;z-index:2}
 .film-on .story .slide-pin{z-index:2}
 .film-on .market-pile{visibility:hidden}
-.film-on .beat-rynek .slide-visual,.film-on .beat-stawka .slide-visual,.film-on .beat-zwrot .slide-visual,.film-on .beat-koniec .slide-visual{clip-path:inset(50%)}
+.film-on .beat-rynek .slide-visual,.film-on .beat-stawka .slide-visual,.film-on .beat-zwrot .slide-visual,.film-on .beat-spotkanie .slide-visual,.film-on .beat-koniec .slide-visual{clip-path:inset(50%)}
 /* While the film plays, a flat sheet never lies on top of the animation: the card of the first conversation is an object of
    the film too. The fridge screen says nothing until he has opened it: it is longer (360vh), its text arrives with the burst,
    and it is still held for a third of a screen afterwards. */
@@ -991,21 +977,9 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 .film-on .beat-stawka .slide-copy{opacity:var(--t)}
 /* The turn is held longer too (280vh): the room has to leave and the card has to arrive and be read. */
 .film-on.js-motion .beat-zwrot.slide-stage{height:280vh}
-/* The four steps are one screen, pinned while the film plays them one after another (560vh; the third step, the conversation, takes the most). The film has the stage: the
-   steps are a short list in the text column, and each line arrives with its step of the film; the link under the list comes
-   after the fourth line, never before it. The finished screen is held. */
-.film-on.js-motion .beat-steps{display:block;min-height:0;height:560vh;padding:0;--v:clamp(0,calc((var(--sp,1) - .93)*20),1)}
-.film-on.js-motion .beat-steps>.wrap{position:sticky;top:0;z-index:2;height:100vh;display:flex;flex-direction:column;justify-content:center;padding-block:calc(var(--header-h) + 12px) 16px}
-.film-on.js-motion .beat-steps h2{font-size:clamp(1.9rem,min(4.2vw,7.4vh),3.5rem)}
-.film-on.js-motion .beat-steps .story-steps{grid-template-columns:minmax(0,1fr);gap:0;width:min(34%,26rem);margin-top:clamp(14px,3.4vh,36px);perspective:none}
-.film-on.js-motion .beat-steps .story-steps li{display:grid;grid-template-columns:2.2rem minmax(0,1fr);column-gap:10px;padding-block:clamp(8px,1.5vh,14px);--at:.17;--r:clamp(0,calc((var(--sp,1) - var(--at))*12),1);transform:translateY(calc((1 - var(--r))*12px));opacity:var(--r)}
-.film-on.js-motion .beat-steps .story-steps li:nth-child(2){--at:.33}
-.film-on.js-motion .beat-steps .story-steps li:nth-child(3){--at:.46}
-.film-on.js-motion .beat-steps .story-steps li:nth-child(4){--at:.89}
-.film-on.js-motion .beat-steps .story-step-no{grid-row:1/span 2;font-size:clamp(1.6rem,4.4vh,2.4rem);line-height:1}
-.film-on.js-motion .beat-steps .story-steps h3{margin-top:0;font-size:clamp(1.05rem,2.6vh,1.35rem)}
-.film-on.js-motion .beat-steps .story-steps p{margin-top:3px;font-size:clamp(.875rem,2vh,1rem);line-height:1.4;max-width:none}
-.film-on.js-motion .beat-steps .slide-action{margin-top:clamp(10px,2.4vh,24px)}
+/* The meeting in the company is one scene (420vh): the call ends, the team comes in, everyone speaks, the slide becomes the
+   book. The link to the service page comes after the book has been handed over, never before it. */
+.film-on.js-motion .beat-spotkanie.slide-stage{height:420vh;--v:clamp(0,calc((var(--sp,1) - .905)*14),1)}
 /* The ending is the fourth act of the film: the compendium opens as its object, then the hero stands among his team (420vh:
    the sealed plan is held for over half a screen before it closes, and the last picture is held as long again). */
 .film-on.js-motion .beat-koniec.slide-stage{height:420vh}
@@ -1036,13 +1010,11 @@ html:not(.js-motion) .slide{background:var(--paper);color:var(--ink)}
 @media(max-width:1100px){.market-pile{grid-column:7/-1}}
 @media(max-width:900px){
   .market-pile{display:none}
-  .story-steps{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:32px}
   .later-sheet{max-width:none}
 }
 @media(max-width:600px){
   .market-desk{grid-template-columns:1fr}
   .market-desk .paper:nth-child(n){translate:none}
-  .story-steps{grid-template-columns:1fr}
 }
 @media print{.market-pile{display:none}}
 
