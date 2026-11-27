@@ -13,13 +13,13 @@
 //        1.6 to 2.3  the papers leave and it goes quiet. He walks over to the fridge, slower and slower; it trembles, it thumps,
 //                    he flinches, looks back at us, reaches again
 //        2.3 stawka  he opens it, and "AI!" bursts out at him; then it shouts from everywhere. Now the problem has a name
-//   III  the solution: every step of working together puts out a part of the chaos
-//        2.75 zwrot  "Muszę to uporządkować." The bedroom leaves; the market's papers hang over him, red and restless.
+//   III  the solution (founder, 2026-11-28): quiet, a thought, a call, a meeting, something concrete for them
+//        2.75 zwrot  the shouting stops, the papers are gone, the bedroom leaves. Alone, he thinks: "Muszę to uporządkować."
 //                    He picks up the phone. The advisor answers and asks his three questions; each answer is ticked
 //        4 spotkanie one scene, the meeting in the company (founder, 2026-11-27; it replaces the four steps played one after
-//                    another, with the Karta rozpoznania): the call ends and the first part of the papers falls quiet;
+//                    another, with the Karta rozpoznania): the call ends;
 //                    the team comes in, the advisor stands at a projector and asks, everyone answers, and each answer is
-//                    written on the slide as a task of their own while its part of the papers falls quiet; the slide
+//                    written on the slide as a task of their own; the slide
 //                    becomes the compendium, which the advisor hands over before he goes
 //   IV   the better world
 //        5 koniec    the compendium opens on its recommendation and gets its green seal, then closes into a book. No desk,
@@ -76,11 +76,11 @@ function kit(svg) {
   const tickMark = (parent, x, y, k = 1, color = C.blue) => el('path', { d: `M${x} ${y + 1 * k}L${x + 9 * k} ${y + 11 * k}L${x + 26 * k} ${y - 12 * k}`, fill: 'none', stroke: color, 'stroke-width': 3.4 * Math.sqrt(k), 'stroke-linecap': 'round', 'stroke-linejoin': 'round', pathLength: 1, 'stroke-dasharray': 1, 'stroke-dashoffset': 1 }, parent);
   /* A figure, built around its feet; arms, legs and face are separate so it can act. The hero wears a suit and a blue tie;
      the people of his team are drawn the same way and are nobody in particular either. */
-  function figure(parent, { tie = false, hair = 'short', cloth = { hatch: C.ink, gap: 3.2, weight: 1.25 }, smile = false, glasses = false, beard = false } = {}) {
+  function figure(parent, { tie = false, hair = 'short', cloth = { hatch: C.ink, gap: 3.2, weight: 1.25 }, smile = false, glasses = false, beard = false, trousers = cloth } = {}) {
     const g = group(parent);
     const limb = (x, y, d, opts) => { const inner = group(group(g, { transform: `translate(${x} ${y})` })); sketch(inner, d, opts); return inner; };
     const legs = [-1, 1].map(side => {
-      const leg = limb(side * 16, -98, rrect(-12, -4, 24, 98, 9), cloth);
+      const leg = limb(side * 16, -98, rrect(-12, -4, 24, 98, 9), trousers);
       sketch(leg, rrect(-15 + side * 5, 86, 34, 13, 6), { hatch: C.ink, gap: 2.2 });
       return leg;
     });
@@ -90,12 +90,21 @@ function kit(svg) {
       sketch(g, poly([[-13, -193], [13, -193], [0, -148]]), { width: 1.4 });
       sketch(g, poly([[-4.5, -190], [4.5, -190], [6.5, -150], [0, -138], [-6.5, -150]]), { fill: C.blue, width: 1.2 });
     } else sketch(g, 'M-12 -193Q0 -176 12 -193Z', { width: 1.3 });
+    // The advisor wears a shirt, collar open and no tie: collar points, a placket down the front and its buttons.
+    if (beard) {
+      [-1, 1].forEach(side => sketch(g, poly([[side * 13, -194], [side * 2, -177], [side * 17, -171]]), { ...cloth, width: 1.3 }));
+      stroke(g, 'M0 -176L0 -92', C.ink, 1.2, true);
+      for (const y of [-160, -138, -116]) sketch(g, circle(0, y, 2.2), { width: 1, still: true });
+    }
     const head = group(group(g, { transform: 'translate(0 -224)' }));
     const ink = { hatch: C.ink, gap: 2.4, angle: 20, weight: 1.3 };
     if (hair === 'long') sketch(head, 'M-36 -6Q-44 30 -38 52L-24 50Q-28 20 -26 -6ZM36 -6Q44 30 38 52L24 50Q28 20 26 -6Z', ink);
     if (hair === 'bun') sketch(head, circle(0, -40, 13), ink);
     sketch(head, circle(0, 0, 35));
     if (hair === 'bald') stroke(head, 'M-30 -18Q0 -30 30 -18', C.ink, 1.4);
+    // The advisor's hair (after the founder's photo, 2026-11-28): an ordinary short cut, a little fuller on top than the
+    // others' and brushed to one side. It keeps close to the head: any higher and it reads as a big head of hair.
+    else if (beard) sketch(head, 'M-34 -9Q-37 -27 -22 -35Q-2 -41 16 -37Q35 -30 34 -9Q26 -19 12 -22Q-10 -25 -34 -9Z', { ...ink, gap: 2 });
     else sketch(head, hair === 'long' ? 'M-34 -8A35 35 0 0 1 34 -8Q20 -22 4 -24Q-16 -22 -34 -8Z' : 'M-33 -12A35 35 0 0 1 33 -12Q16 -25 0 -20Q-18 -16 -33 -12Z', ink);
     const face = group(head);
     const eyes = [-1, 1].map(side => el('ellipse', { cx: side * 11.5, cy: 3, rx: 3.3, ry: 3.3, fill: C.ink }, face));
@@ -104,9 +113,11 @@ function kit(svg) {
     const mouth = el('path', { d: 'M-5 18Q0 20 5 18', ...line, opacity: smile ? 0 : 1 }, face);
     const grin = el('path', { d: beard ? 'M-6 17Q0 23 6 17' : 'M-8 15Q0 25 8 15', ...line, opacity: smile ? 1 : 0 }, face);
     if (beard) {
-      // A small moustache and a small beard: a few short pencil strokes, nothing bushy.
-      el('path', { d: 'M-8 13Q-4 9.5 0 12Q4 9.5 8 13', fill: 'none', stroke: C.ink, 'stroke-width': 2.6, 'stroke-linecap': 'round' }, face);
-      sketch(face, 'M-11 22Q-9 34 0 36Q9 34 11 22Q0 27 -11 22Z', { hatch: C.ink, gap: 1.6, angle: 80, weight: 1.3, width: 1.2 });
+      // After the founder's photo (2026-11-28): dark, strong eyebrows, a full moustache, and a goatee on the chin only, not
+      // along the jaw. A few pencil strokes each, nothing bushy.
+      el('path', { d: 'M-19 -7Q-12 -11.5 -5 -7.5M5 -7.5Q12 -11.5 19 -7', fill: 'none', stroke: C.ink, 'stroke-width': 3.2, 'stroke-linecap': 'round' }, face);
+      el('path', { d: 'M-10.5 14.5Q-5.5 8.5 0 11.5Q5.5 8.5 10.5 14.5', fill: 'none', stroke: C.ink, 'stroke-width': 3.8, 'stroke-linecap': 'round' }, face);
+      sketch(face, 'M-7.5 23.5Q-9 33 0 36.5Q9 33 7.5 23.5Q0 26.5 -7.5 23.5Z', { fill: C.ink, hatch: C.ink, gap: 1.4, angle: 80, weight: 1.4, width: 1.2 });
     }
     const gasp = el('ellipse', { cx: 0, cy: 19, rx: 5, ry: 7, fill: C.ink, opacity: 0 }, face);
     const arms = [-1, 1].map(side => {
@@ -255,12 +266,15 @@ export async function startFilm({ root, sections, papers, paperLabel, say, card:
   ];
   // The advisor wears the site's blue: the colour that confirms and carries the offer.
   const blue = { hatch: C.blue, gap: 3.4, angle: -50, weight: 1.15 };
-  const advisor = figure(world, { beard: true, smile: true, cloth: blue });
+  const advisor = figure(world, { beard: true, smile: true, cloth: blue, trousers: { hatch: C.ink, gap: 3.2, weight: 1.25 } });
   // A phone, in a hand.
   const handset = arm => {
     const g = group(arm, { visibility: 'hidden', transform: 'translate(0 90) rotate(180)' });
-    sketch(g, rrect(-9, -4, 18, 32, 4), { hatch: C.ink, gap: 2, width: 1.3 });
-    sketch(g, rrect(-6, 0, 12, 21, 2), { fill: C.blueSoft, stroke: null, still: true });
+    // A smartphone that reads as one at this size: a dark body, a lit screen, the line of the speaker and a camera dot.
+    sketch(g, rrect(-12, -7, 24, 44, 5), { hatch: C.ink, gap: 1.8, width: 1.5 });
+    sketch(g, rrect(-9, -1, 18, 30, 2), { fill: C.blueSoft, stroke: C.ink, width: 1, still: true });
+    stroke(g, 'M-4 -4L4 -4', C.paper, 1.6, true);
+    sketch(g, circle(0, 33, 1.6), { fill: C.paper, stroke: null, still: true });
     return g;
   };
   const phone = handset(hero.arms[1]);
@@ -269,7 +283,7 @@ export async function startFilm({ root, sections, papers, paperLabel, say, card:
   const vig = group(top, { visibility: 'hidden' });
   sketch(vig, circle(...VIG), { hatch: C.line, gap: 10, angle: -30, weight: .7, width: 1 });
   el('circle', { cx: VIG[0], cy: VIG[1], r: VIG[2] }, el('clipPath', { id: 'film-vig' }, defs));
-  const caller = figure(group(group(vig, { 'clip-path': 'url(#film-vig)' }), { transform: `translate(${VIG[0]} ${VIG[1] + 156}) scale(1.08)` }), { beard: true, smile: true, cloth: blue });
+  const caller = figure(group(group(vig, { 'clip-path': 'url(#film-vig)' }), { transform: `translate(${VIG[0]} ${VIG[1] + 262}) scale(1.3)` }), { beard: true, smile: true, cloth: blue });
   caller.legGroup.forEach(leg => leg.setAttribute('visibility', 'hidden'));
   handset(caller.arms[0]).setAttribute('visibility', 'visible');
   caller.arms[0].setAttribute('transform', 'rotate(154) scale(1 .58)');
@@ -308,14 +322,16 @@ export async function startFilm({ root, sections, papers, paperLabel, say, card:
     return { g, tick: tickMark(g, 20, 0, .9) };
   });
   // The slide on the projector screen, where it is handed over as a book, and the height of each of its rows.
-  const SLIDE = [300, 216], SLIDE_AT = [850, 275, 1.15], HANDOVER = [550, 528], rowY = i => 150 + i * 23;
+  const SLIDE = [300, 216], SLIDE_AT = [850, 275, 1.15], HANDOVER = [550, 528], rowY = i => 151 + i * 24;
   const slide = sheet(top, ...SLIDE, slideContent.title);
   wrap(slideContent.heading, `600 22px ${SERIF}`, SLIDE[0] - 44).forEach((line, k) => label(slide, line, 22, 86 + k * 27, `font:600 22px ${SERIF};fill:${C.ink}`));
   // The rows of the slide are the team's own tasks, in words: each is written in when its owner has spoken.
   const slideRows = talk.tasks.map((task, i) => {
     const row = group(slide, { opacity: 0 });
-    sketch(row, circle(28, rowY(i), 3), { fill: C.blue, stroke: null, still: true });
-    label(row, task, 42, rowY(i), `font:600 18px ${SANS};fill:${C.ink}`, { 'dominant-baseline': 'central' });
+    // A row as on the site's own sheets: a hairline above, a blue serif numeral, the task in words. No bullet points.
+    stroke(row, `M22 ${rowY(i) - 12}L${SLIDE[0] - 22} ${rowY(i) - 12}`, C.line, 1, true);
+    label(row, String(i + 1), 24, rowY(i), `font:500 20px ${SERIF};fill:${C.blue}`, { 'dominant-baseline': 'central' });
+    label(row, task, 48, rowY(i), `font:600 17px ${SANS};fill:${C.ink}`, { 'dominant-baseline': 'central' });
     return row;
   });
   // The compendium, open on its last page: the recommendation of the synthetic sample.
@@ -372,17 +388,14 @@ export async function startFilm({ root, sections, papers, paperLabel, say, card:
   const teamBubbles = teamSays.map((text, i) => speech(top, text, i % 2 === 0));
 
   // --- The market's papers: a stream of small sheets, and four that can be read.
-  // Order is less, not neater (founder, 2026-11-27): when its part of the work is done, most of a part's papers fall away and
-  // one is kept, and the few kept ones go into the book. Until then every paper landed in a neat stack and the stacks were bound.
-  const STACK_X = 1040;              // where the kept papers lie, on the floor to the right of the projector
+  // The small sheets belong to the trouble only (founder, 2026-11-28): they stream past and are gone when the shouting stops.
+  // Nothing of the market hangs over him afterwards. Until then they gathered into a red cloud that the work quieted part by part.
   const N = 24;
   const sheets = Array.from({ length: N }, (_, i) => {
     const g = group(swarmLayer);
     sketch(g, rrect(-17, -22, 34, 44, 2), { width: 1.4, still: true });
     stroke(g, `M-10 -11L${4 + rand(i) * 6} -11M-10 -3L10 -3M-10 5L${rand(i + 9) * 9} 5`, C.soft, 1, true);
-    const tint = sketch(g, rrect(-17, -22, 34, 44, 2), { fill: C.red, stroke: C.red, width: 1.6, still: true });
-    tint.setAttribute('opacity', '0');
-    return { g, tint };
+    return g;
   });
   const PW = 292;
   const homes = [[96, 30, -4], [470, 8, 3], [40, 262, 2.5], [520, 250, -3]];
@@ -409,8 +422,8 @@ export async function startFilm({ root, sections, papers, paperLabel, say, card:
     cs: 1.45, cx: 138, cy: -208,
     mx: 400, my: 520, mr: -90, faceX: 0, faceY: 0, eye: .1, walk: 0, reach: 0, startle: 0,
     zs: 1, bl: 1, puzzled: 0, panic: 0, decide: 0, hint: 0, thump: 0, storm: 0, door: 1,
-    bedX: 0, fridgeX: 0, stream: 0, gather: 0, chaos: 0, say: 0,
-    call: 0, vig: 0, talk: 0, pills: 1, q0: 0, q1: 0, q2: 0, t0: 0, t1: 0, t2: 0, quiet0: 0,
+    bedX: 0, fridgeX: 0, stream: 0, say: 0,
+    call: 0, vig: 0, talk: 0, pills: 1, q0: 0, q1: 0, q2: 0, t0: 0, t1: 0, t2: 0,
     proj: 0, slideS: 0, bind: 0, bk: 0, big: 0, hold: 0,
     comp: 0, c0: 0, c1: 0, c2: 0, seal: 0, smile: 0, day: 0, cheer: 0, b0: 0, b1: 0,
   };
@@ -473,18 +486,19 @@ export async function startFilm({ root, sections, papers, paperLabel, say, card:
     at(t0, .1, { k: 1, ease: 'power2.out' }, h);
     at(2.84 + i * .02, .16, { d: 1, ease: 'power2.in' }, h);
   });
-  // Act III. Enough: the bedroom leaves. The market's papers do not: they hang over him, red and restless.
-  at(2.74, .16, { panic: 0, decide: 1 });
+  // Act III (founder, 2026-11-28). The shouting stops, the papers are gone and the bedroom leaves: nothing is left on the screen
+  // but him. In that quiet he thinks about what he wants to do with it, and only then says so. Then he gets in touch.
+  at(2.74, .16, { panic: 0 });
   at(2.76, .44, { cs: 1, cx: -140, cy: 80 });
-  at(2.8, .12, { say: 1, ease: pop });
+  at(2.8, .14, { stream: 0 });
   at(2.82, .18, { storm: 0 });
   at(2.86, .14, { door: 1 });
-  at(2.9, .3, { bedX: -900, fridgeX: 900, ease: 'power2.in' });
-  at(2.97, .3, { gather: 1, ease: 'none' });
-  at(3.0, .2, { mx: 400, walk: 2 });
-  at(3.12, .14, { chaos: 1 });
-  at(3.18, .08, { say: 0 });
-  at(3.2, .08, { decide: 0 });
+  at(2.9, .2, { bedX: -900, fridgeX: 900, ease: 'power2.in' });
+  at(2.96, .14, { mx: 400, walk: 2 });
+  at(3.1, .04, { decide: 1 });
+  at(3.11, .03, { say: 1, ease: pop });
+  at(3.22, .03, { say: 0 });
+  at(3.23, .04, { decide: 0 });
   // He picks up the phone. The advisor answers, and asks his three questions; each answer gets its tick.
   at(3.27, .05, { call: 1, faceX: 6 });
   at(3.33, .05, { vig: 1, ease: pop });
@@ -496,15 +510,13 @@ export async function startFilm({ root, sections, papers, paperLabel, say, card:
   // The screen of the turn leaves; the camera settles for the meeting.
   at(3.8, .2, { cs: .9, cx: -85, cy: 124 });
   at(3.9, .06, { pills: 0 });
-  // The call was short. A wave, it ends, and the first part of the papers falls quiet.
+  // The call was short. A wave, and it ends.
   at(4.0, .03, { bye: 1 }, V);
-  at(4.02, .06, { quiet0: 1, ease: 'none' });
   at(4.055, .03, { vig: 0, ease: 'power2.in' });
   at(4.08, .03, { call: 0, faceX: 0 });
   // One scene, the meeting in the company (the screen is 420vh, so 0.01 here is about 4vh of scroll): the team comes in, the
   // advisor sets up at a projector. It is a conversation: he asks, each of them answers about how they work, and every answer
-  // is written on the slide as a task of their own. Each bubble stays for about a third of a screen; with each task its part
-  // of the papers falls quiet.
+  // is written on the slide as a task of their own. Each bubble stays for about a third of a screen.
   at(4.09, .08, { mx: 480, walk: 3 });
   at(4.1, .08, { x: 175, walk: 1, ease: 'sine.out' }, M[0]);
   at(4.106, .08, { x: 275, walk: 1, ease: 'sine.out' }, M[1]);
@@ -557,7 +569,6 @@ export async function startFilm({ root, sections, papers, paperLabel, say, card:
   root.appendChild(svg);
   const lastSection = sections[sections.length - 1];
   const cam = { s: 1, x: 0, y: 0 };
-  const toStage = (x, y) => [x * cam.s + cam.x, y * cam.s + cam.y];
   const set = (node, value) => node.setAttribute('transform', value);
   const show = (node, on) => node.setAttribute('visibility', on ? 'visible' : 'hidden');
   /* A sheet about its own centre: upright (lie 0) or lying flat (lie 1). */
@@ -734,27 +745,15 @@ export async function startFilm({ root, sections, papers, paperLabel, say, card:
     compRows.forEach(({ tick: mark }, i) => mark.setAttribute('stroke-dashoffset', n(1 - S[`c${i}`])));
     set(compSeal, `translate(${COMP[0] - 58} ${COMP[1] - 46}) rotate(-12) scale(${n(Math.max(.0001, S.seal))})`);
 
-    // Small sheets: a stream from left to right; then a red, restless cloud over him; then, part by part, quiet. There are
-    // four parts: one for the phone call, one for each answer at the meeting. A part's papers fall away and fade, except one
-    // that is kept and lands in a small neat stack. The kept ones go into the book.
-    const quiet = [S.quiet0, M[0].aha, M[1].aha, M[2].aha], per = N / 4;
+    // Small sheets: a stream from left to right while the trouble lasts, tumbling as they go. When it ends they are gone.
     for (let i = 0; i < N; i++) {
       const p = rand(i), q = rand(i + 50), s = rand(i + 99);
       const u = (T * .55 + time * .035 * (.6 + q) + p) % 1;
       const fx = -760 + u * 1900, fy = 50 + q * 600 + Math.sin(u * 9 + i) * 42;
-      const g = seg(S.gather, q * .5, .5 + q * .5), part = i % 4, rank = Math.floor(i / 4), calm = seg(quiet[part], rank / per * .6, .4 + rank / per * .6), bound = seg(S.bind, 0, .8);
-      const kept = rank === 0;
-      const merged = kept ? bound : seg(calm, .45, 1), flat = kept ? g * calm : 0;
-      const cloud = [S.mx + (p - .5) * 560 + Math.sin(time * .7 + i) * 16, 4 + q * 100 + Math.cos(time * .9 + i * 2) * 9];
-      const wx = kept ? lerp(lerp(cloud[0], STACK_X + (s - .5) * 5, calm), HANDOVER[0], bound) : cloud[0] + (p - .5) * 90 * calm;
-      const wy = kept ? lerp(lerp(cloud[1], 634 - part * 2.2, calm), HANDOVER[1], bound) : lerp(cloud[1], 470, calm * calm);
-      const [tx, ty] = toStage(wx, wy);
       const flip = Math.cos(u * 15 + i * 2);
-      const scale = lerp(S.stream * (.95 + s * .6), cam.s * .95, g) * (1 - merged);
-      const simmer = S.chaos * g * (1 - calm), jump = Math.max(0, Math.sin(time * (6 + p * 5) + i * 1.7)) * 11 * simmer * cam.s;
-      sheets[i].tint.setAttribute('opacity', n(simmer * (.5 + .3 * Math.sin(time * 4 + i))));
-      show(sheets[i].g, scale > .01);
-      set(sheets[i].g, `translate(${n(lerp(fx, tx, g))} ${n(lerp(fy, ty, g) - Math.sin(g * Math.PI) * 60 - jump)}) matrix(1 0 ${n(-.6 * flat)} ${n(lerp(1, .42, flat))} 0 0) rotate(${n(lerp(u * 420 + i * 40, (s - .5) * 50 * (1 - calm), g) + Math.sin(time * (9 + q * 4) + i) * 12 * simmer)}) scale(${n(scale * lerp(Math.sign(flip) * Math.max(.18, Math.abs(flip)), 1, g))} ${n(scale)})`);
+      const scale = S.stream * (.95 + s * .6);
+      show(sheets[i], scale > .01);
+      set(sheets[i], `translate(${n(fx)} ${n(fy)}) rotate(${n(u * 420 + i * 40)}) scale(${n(scale * Math.sign(flip) * Math.max(.18, Math.abs(flip)))} ${n(scale)})`);
     }
   }
   gsap.ticker.add(tick);
